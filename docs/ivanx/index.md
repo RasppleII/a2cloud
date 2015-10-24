@@ -42,8 +42,8 @@ II][15], [Raspberry Pi][16] on July 14, 2013 by [ivanx][17]
 
 <article id="post-14" class="post-14 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: what you need][18]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: what you need][18]
+
 
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][19]
@@ -136,14 +136,14 @@ FTDI may also work; I just haven’t tried them.)</small>
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T02:11:22+00:00">July 14,
 2013</time>
 
-][18]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][18]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -152,8 +152,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-21" class="post-21 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: prepare your Pi][44]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: prepare your Pi][44]
+
 
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][45]
@@ -203,14 +203,14 @@ patient, as it takes a little while to install.
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T11:47:20+00:00">July 14,
 2013</time>
 
-][44]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][44]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -219,8 +219,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-285" class="post-285 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: go headless (optional)][38]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: go headless (optional)][38]
+
 
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][48]
@@ -256,8 +256,8 @@ current-day computer on your network.
 <span style="line-height: 1.714285714; font-size: 1rem;"> On a Mac, open
 Terminal (in the Utilities folder of the Applications folder), and at
 the prompt, type `ssh pi@raspberrypi.local` to connect. If you have
-Windows, you can install [Bonjour Print Services][49]{: target="new"},
-and then use [PuTTY][50]{: target="new"} to connect to the address
+Windows, you can install [Bonjour Print Services][49],
+and then use [PuTTY][50] to connect to the address
 “raspberrypi.local”.</span>
 
 If that doesn’t work, try updating A2CLOUD by typing `a2cloud-setup`. If
@@ -316,14 +316,14 @@ rather than asking your router for it) via the method discussed
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T11:53:57+00:00">July 14,
 2013</time>
 
-][38]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][38]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -332,8 +332,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-273" class="post-273 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: install the software][56]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: install the software][56]
+
 
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][57]
@@ -379,14 +379,14 @@ access for your Apple II!
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T12:00:01+00:00">July 14,
 2013</time>
 
-][56]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][56]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -395,8 +395,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-334" class="post-334 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: attach your cables][58]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: attach your cables][58]
+
 
 <div class="comments-link">
 [2 Replies][59]
@@ -490,14 +490,14 @@ figure out which one is the lowest and which one is the highest.
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T12:02:57+00:00">July 14,
 2013</time>
 
-][58]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][58]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -506,8 +506,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-33" class="post-33 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: make your boot disk][60]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: make your boot disk][60]
+
 
 <div class="comments-link">
 [1 Reply][61]
@@ -575,14 +575,14 @@ USB-to-serial adapter on the lower USB port.
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T12:03:20+00:00">July 14,
 2013</time>
 
-][60]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][60]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -591,8 +591,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-306" class="post-306 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: use virtual drives!][67]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: use virtual drives!][67]
+
 
 <div class="comments-link">
 [3 Replies][68]
@@ -648,14 +648,14 @@ I’ll explain in a later post.
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T12:04:51+00:00">July 14,
 2013</time>
 
-][67]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][67]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -664,8 +664,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-56" class="post-56 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: log in from your Apple II][71]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: log in from your Apple II][71]
+
 
 <div class="comments-link">
 [2 Replies][72]
@@ -785,14 +785,14 @@ relevant discussion thread][79].
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T19:58:40+00:00">July 14,
 2013</time>
 
-][71]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][71]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -801,8 +801,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-550" class="post-550 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: make a floppy or image][80]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: make a floppy or image][80]
+
 
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][81]
@@ -861,21 +861,21 @@ to the ADTDISKS network volume on your newer computer.
 
 Unix-type computers can also use `scp` to copy files to and from
 A2SERVER; Windows computers can also do so in the command window by
-using `pscp` in [PuTTY][50]{: target="new"}. The shared volume is at
+using `pscp` in [PuTTY][50]. The shared volume is at
 /media/A2SHARED/ADTDISKS.
 
 </div>
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T23:00:30+00:00">July 14,
 2013</time>
 
-][80]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][80]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -884,8 +884,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-67" class="post-67 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: learn some Unix][83]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: learn some Unix][83]
+
 
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][84]
@@ -975,14 +975,14 @@ which should be included here, please mention them in the comments.
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-15T02:24:12+00:00">July 15,
 2013</time>
 
-][83]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][83]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -991,8 +991,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-158" class="post-158 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: “insert” a disk image][85]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: “insert” a disk image][85]
+
 
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][86]
@@ -1044,14 +1044,14 @@ called Virtual.po or Virtual2.po, respectively.)</small>
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T01:03:57+00:00">August 11,
 2013</time>
 
-][85]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][85]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -1060,8 +1060,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-471" class="post-471 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: connect with other people][87]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: connect with other people][87]
+
 
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][88]
@@ -1135,14 +1135,14 @@ started, and look for help on Linux forums if you need it.
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T02:00:19+00:00">August 11,
 2013</time>
 
-][87]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][87]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -1151,8 +1151,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-110" class="post-110 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: browse &#038; download][93]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: browse &#038; download][93]
+
 
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][94]
@@ -1174,7 +1174,7 @@ Firefox.
 
 <span style="line-height: 1.714285714; font-size: 1rem;">You can also
 download with a modern computer, and </span>[copy to your Pi over your
-network][80]{: style="line-height: 1.714285714; font-size: 1rem;"}<span
+network][80]<span
 style="line-height: 1.714285714; font-size: 1rem;">. If you don’t want
 to immediately create a real floppy, see the next post for what to do
 with your downloads.</span>
@@ -1228,14 +1228,14 @@ http://appleii.ivanx.com/slammer/files/SLAMMER111P.DSK`
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T07:42:26+00:00">August 11,
 2013</time>
 
-][93]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][93]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -1244,8 +1244,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-539" class="post-539 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: use disk images][99]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: use disk images][99]
+
 
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][100]
@@ -1321,14 +1321,14 @@ path.
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T08:00:28+00:00">August 11,
 2013</time>
 
-][99]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][99]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -1337,8 +1337,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-164" class="post-164 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: expand archives][101]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: expand archives][101]
+
 
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][102]
@@ -1402,7 +1402,7 @@ For other (and older) Apple II formats: `sciibin filename`{:
 style="line-height: 1.714285714;"}<span style="line-height: 1.714285714;
 font-size: 1rem;"> will decode a BinSCII file (.BSC, .BSQ); note that
 .BSQ files produce ShrinkIt archives when decoded, so use </span>`nulib2
--x`{: style="line-height: 1.714285714;"}<span style="line-height:
+-x`<span style="line-height:
 1.714285714; font-size: 1rem;"> or </span>`shk2image`{:
 style="line-height: 1.714285714;"}<span style="line-height: 1.714285714;
 font-size: 1rem;"> on the result. `nulib2 -x filename` will extract
@@ -1418,14 +1418,14 @@ monitor input.
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T14:42:26+00:00">August 11,
 2013</time>
 
-][101]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][101]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -1434,8 +1434,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-199" class="post-199 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: transfer files][104]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: transfer files][104]
+
 
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][105]
@@ -1546,14 +1546,14 @@ modern formats. If you want it to give that a shot, use `-e` instead of
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T22:55:17+00:00">August 11,
 2013</time>
 
-][104]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][104]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -1562,8 +1562,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-207" class="post-207 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: increase serial port speed][75]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: increase serial port speed][75]
+
 
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][107]
@@ -1623,14 +1623,14 @@ then rename the appropriate globals file to PT3.GLOBALS.
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T23:34:43+00:00">August 11,
 2013</time>
 
-][75]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][75]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -1639,8 +1639,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-483" class="post-483 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: emulate an Apple II][109]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: emulate an Apple II][109]
+
 
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][110]
@@ -1684,14 +1684,14 @@ target="_blank"}.
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-11-29T01:26:34+00:00">November 29,
 2013</time>
 
-][109]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][109]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -1700,8 +1700,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-474" class="post-474 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: Apple II Pi][42]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: Apple II Pi][42]
+
 
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][115]
@@ -1754,14 +1754,14 @@ target="_blank"}.
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-11-29T06:05:17+00:00">November 29,
 2013</time>
 
-][42]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][42]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -1770,8 +1770,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-597" class="post-597 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: release history and notes][13]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: release history and notes][13]
+
 
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][119]
@@ -1893,9 +1893,9 @@ enhancements. To update, type `a2cloud-update`.
   style="line-height: 1.714285714;"}<span style="line-height:
   1.714285714; font-size: 1rem;"> command</span>
 * <span style="line-height: 1.714285714; font-size: 1rem;">Added
-  </span>`sciibin`{: style="line-height: 1.714285714;"}<span
+  </span>`sciibin`<span
   style="line-height: 1.714285714; font-size: 1rem;"> and
-  </span>`unblu`{: style="line-height: 1.714285714;"}<span
+  </span>`unblu`<span
   style="line-height: 1.714285714; font-size: 1rem;"> for converting
   BinSCII and Binary II files</span>
 * `baud` command supports 300 baud, in case you *really* want to kick it
@@ -1962,14 +1962,14 @@ enhancements. To update, type `a2cloud-update`.
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-12-28T20:07:02+00:00">December 28,
 2013</time>
 
-][13]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][13]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -1978,8 +1978,8 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 
 <article id="post-655" class="post-655 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
-#  [A2CLOUD: other stuff][121]{: rel="bookmark"} 
-{: .entry-title}
+#  [A2CLOUD: other stuff][121]
+
 
 <div class="comments-link">
 [4 Replies][122]
@@ -2004,14 +2004,14 @@ it, or just go to [http://ivanx.com/a2cloud][123].
 <!-- .entry-content -->
 
 <footer class="entry-meta">
-This entry was posted in [A2CLOUD][2]{: rel="category tag"}, [A2CLOUD
-(newest first)][14]{: rel="category tag"}, [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16]{: rel="category tag"} on [<time
+This entry was posted in [A2CLOUD][2], [A2CLOUD
+(newest first)][14], [Apple II][15]{:
+rel="category tag"}, [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2014-01-26T15:10:58+00:00">January 26,
 2014</time>
 
-][121]{: rel="bookmark"}<span class="by-author"> by <span class="author
-vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
+][121]<span class="by-author"> by <span class="author
+vcard">[ivanx][17]</span></span>.
 </footer>
 <!-- .entry-meta -->
 
@@ -2027,97 +2027,97 @@ vcard">[ivanx][17]{: .url .fn .n rel="author"}</span></span>.
 <div id="secondary" class="widget-area" role="complementary">
 <aside id="dpe_fp_widget-2" class="widget widget_dpe_fp_widget" markdown="1">
 ### A2CLOUD Table of Contents
-{: .widget-title}
 
-* {: #post-6 .post-6 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: intro
-  {: .title}
-  
+
+*  [ #### A2CLOUD: intro
+
+
    ][5]
-* {: #post-14 .post-14 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: what you need
-  {: .title}
-  
+*  [ #### A2CLOUD: what you need
+
+
    ][18]
-* {: #post-21 .post-21 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: prepare your Pi
-  {: .title}
-  
+*  [ #### A2CLOUD: prepare your Pi
+
+
    ][44]
-* {: #post-285 .post-285 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: go headless (optional)
-  {: .title}
-  
+*  [ #### A2CLOUD: go headless (optional)
+
+
    ][38]
-* {: #post-273 .post-273 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: install the software
-  {: .title}
-  
+*  [ #### A2CLOUD: install the software
+
+
    ][56]
-* {: #post-334 .post-334 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: attach your cables
-  {: .title}
-  
+*  [ #### A2CLOUD: attach your cables
+
+
    ][58]
-* {: #post-33 .post-33 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: make your boot disk
-  {: .title}
-  
+*  [ #### A2CLOUD: make your boot disk
+
+
    ][60]
-* {: #post-306 .post-306 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: use virtual drives!
-  {: .title}
-  
+*  [ #### A2CLOUD: use virtual drives!
+
+
    ][67]
-* {: #post-56 .post-56 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: log in from your Apple II
-  {: .title}
-  
+*  [ #### A2CLOUD: log in from your Apple II
+
+
    ][71]
-* {: #post-550 .post-550 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: make a floppy or image
-  {: .title}
-  
+*  [ #### A2CLOUD: make a floppy or image
+
+
    ][80]
-* {: #post-67 .post-67 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: learn some Unix
-  {: .title}
-  
+*  [ #### A2CLOUD: learn some Unix
+
+
    ][83]
-* {: #post-158 .post-158 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: “insert” a disk image
-  {: .title}
-  
+*  [ #### A2CLOUD: “insert” a disk image
+
+
    ][85]
-* {: #post-471 .post-471 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: connect with other people
-  {: .title}
-  
+*  [ #### A2CLOUD: connect with other people
+
+
    ][87]
-* {: #post-110 .post-110 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: browse &#038; download
-  {: .title}
-  
+*  [ #### A2CLOUD: browse &#038; download
+
+
    ][93]
-* {: #post-539 .post-539 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: use disk images
-  {: .title}
-  
+*  [ #### A2CLOUD: use disk images
+
+
    ][99]
-* {: #post-164 .post-164 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: expand archives
-  {: .title}
-  
+*  [ #### A2CLOUD: expand archives
+
+
    ][101]
-* {: #post-199 .post-199 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: transfer files
-  {: .title}
-  
+*  [ #### A2CLOUD: transfer files
+
+
    ][104]
-* {: #post-207 .post-207 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: increase serial port speed
-  {: .title}
-  
+*  [ #### A2CLOUD: increase serial port speed
+
+
    ][75]
-* {: #post-483 .post-483 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: emulate an Apple II
-  {: .title}
-  
+*  [ #### A2CLOUD: emulate an Apple II
+
+
    ][109]
-* {: #post-474 .post-474 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: Apple II Pi
-  {: .title}
-  
+*  [ #### A2CLOUD: Apple II Pi
+
+
    ][42]
-* {: #post-597 .post-597 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: release history and notes
-  {: .title}
-  
+*  [ #### A2CLOUD: release history and notes
+
+
    ][13]
-* {: #post-655 .post-655 .post .type-post .status-publish .format-standard .hentry .category-a2cloud .category-a2cloud-newest-first .category-apple-ii .category-raspberry-pi} [ #### A2CLOUD: other stuff
-  {: .title}
-  
+*  [ #### A2CLOUD: other stuff
+
+
    ][121]
-{: .dpe-flexible-posts}
+
 
 <!-- .dpe-flexible-posts -->
 
