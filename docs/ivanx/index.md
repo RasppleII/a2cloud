@@ -1,32 +1,13 @@
-<body class="archive category category-a2cloud category-3 custom-background custom-font-enabled single-author" markdown="1">
-<div id="page" class="hfeed site" markdown="1">
-<header id="masthead" class="site-header" role="banner" markdown="1">
-<hgroup markdown="1">
-# [A2CLOUD][1]{: rel="home"}
-{: .site-title}
-
+# [A2CLOUD][1]
 ## This is not a blog. This is a user guide.
-{: .site-description}
 
-</hgroup>
-<nav id="site-navigation" class="main-navigation" role="navigation" markdown="1">
 ### Menu
-{: .menu-toggle}
 
-[Skip to content](#content "Skip to content"){: .assistive-text}
-<div class="menu-a2cloud-3-container" markdown="1">
-* {: #menu-item-217 .menu-item .menu-item-type-taxonomy .menu-item-object-category .current-menu-item .menu-item-217} [A2CLOUD home][2]
-* {: #menu-item-261 .menu-item .menu-item-type-custom .menu-item-object-custom .menu-item-261} [Apple II Extravaganza][3]
-* {: #menu-item-262 .menu-item .menu-item-type-custom .menu-item-object-custom .menu-item-262} [Raspberry Pi Party][4]
-* {: #menu-item-372 .menu-item .menu-item-type-custom .menu-item-object-custom .menu-item-372} [love and hate mail: ivan@ivanx.com](mailto:ivan@ivanx.com)
-{: #menu-a2cloud-3 .nav-menu}
+* [A2CLOUD home][2]
+* [Apple II Extravaganza][3]
+* [Raspberry Pi Party][4]
+* [love and hate mail: ivan@ivanx.com](mailto:ivan@ivanx.com)
 
-</div>
-</nav>
-<!-- #site-navigation -->
-
-</header>
-<!-- #masthead -->
 
 <div id="main" class="wrapper" markdown="1">
 <section id="primary" class="site-content" markdown="1">
