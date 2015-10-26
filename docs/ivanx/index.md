@@ -132,8 +132,7 @@ FTDI may also work; I just haven’t tried them.)</small>
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T02:11:22+00:00">July 14,
 2013</time>
 
@@ -160,8 +159,7 @@ underline;">Starting Fresh</span>
 
 <span style="line-height: 1.714285714; font-size: 1rem;">If you have
 never used your Pi, you will need to prepare your SD card. Download
-</span>[Raspple II][46]{: style="line-height: 1.714285714; font-size:
-1rem;" target="new"}<span style="line-height: 1.714285714; font-size:
+</span>[Raspple II][46] <span style="line-height: 1.714285714; font-size:
 1rem;"> (a distribution of the Raspbian operating system with Apple II
 goodies preinstalled), and expand the .zip file. Copy all of its files
 to a 4 GB or larger SD card (8 GB or larger recommended). Then put the
@@ -174,8 +172,7 @@ lamp on the Raspberry Pi board stops flickering.
 <span style="line-height: 1.714285714; font-size: 1rem;">(If you are
 starting over with the same SD card, or want to ensure the card is
 formatted correctly, you can use the official </span>[SD
-Formatter][47]{: style="line-height: 1.714285714; font-size: 1rem;"
-target="new"}<span style="line-height: 1.714285714; font-size:
+Formatter][47] <span style="line-height: 1.714285714; font-size:
 1rem;"> utility — carefully! — before copying the files.)</span>
 
  
@@ -194,8 +191,7 @@ patient, as it takes a little while to install.
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T11:47:20+00:00">July 14,
 2013</time>
 
@@ -250,8 +246,7 @@ If that doesn’t work, try updating A2CLOUD by typing `a2cloud-setup`. If
 it still doesn’t work, or you don’t want to install Bonjour Print
 Services for Windows, you will need to find your Pi’s IP address and use
 that instead. If you have a Mac, you can use [Pi Finder][51] to help
-with this; if you have Windows, you can use [Advanced IP Scanner][52]{:
-target="new"}.
+with this; if you have Windows, you can use [Advanced IP Scanner][52].
 
 <span style="line-height: 1.714285714; font-size: 1rem;">The username is
 “pi” and the password is “apple2″ (or instead “raspberry” if you
@@ -302,8 +297,7 @@ rather than asking your router for it) via the method discussed
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T11:53:57+00:00">July 14,
 2013</time>
 
@@ -360,8 +354,7 @@ access for your Apple II!
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T12:00:01+00:00">July 14,
 2013</time>
 
@@ -466,8 +459,7 @@ figure out which one is the lowest and which one is the highest.
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T12:02:57+00:00">July 14,
 2013</time>
 
@@ -547,8 +539,7 @@ USB-to-serial adapter on the lower USB port.
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T12:03:20+00:00">July 14,
 2013</time>
 
@@ -613,8 +604,7 @@ I’ll explain in a later post.
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T12:04:51+00:00">July 14,
 2013</time>
 
@@ -743,8 +733,7 @@ relevant discussion thread][79].
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T19:58:40+00:00">July 14,
 2013</time>
 
@@ -821,8 +810,7 @@ using `pscp` in [PuTTY][50]. The shared volume is at
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T23:00:30+00:00">July 14,
 2013</time>
 
@@ -923,8 +911,7 @@ which should be included here, please mention them in the comments.
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-15T02:24:12+00:00">July 15,
 2013</time>
 
@@ -987,8 +974,7 @@ called Virtual.po or Virtual2.po, respectively.)</small>
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T01:03:57+00:00">August 11,
 2013</time>
 
@@ -1072,8 +1058,7 @@ started, and look for help on Linux forums if you need it.
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T02:00:19+00:00">August 11,
 2013</time>
 
@@ -1160,8 +1145,7 @@ http://appleii.ivanx.com/slammer/files/SLAMMER111P.DSK`
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T07:42:26+00:00">August 11,
 2013</time>
 
@@ -1248,8 +1232,7 @@ path.
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T08:00:28+00:00">August 11,
 2013</time>
 
@@ -1320,13 +1303,11 @@ For example:
 transferring the archive, as I’ll explain in the next post. It’s slower
 that way, though.)
 
-For other (and older) Apple II formats: `sciibin filename`{:
-style="line-height: 1.714285714;"}<span style="line-height: 1.714285714;
+For other (and older) Apple II formats: `sciibin filename`<span style="line-height: 1.714285714;
 font-size: 1rem;"> will decode a BinSCII file (.BSC, .BSQ); note that
 .BSQ files produce ShrinkIt archives when decoded, so use </span>`nulib2
 -x`<span style="line-height:
-1.714285714; font-size: 1rem;"> or </span>`shk2image`{:
-style="line-height: 1.714285714;"}<span style="line-height: 1.714285714;
+1.714285714; font-size: 1rem;"> or </span>`shk2image`<span style="line-height: 1.714285714;
 font-size: 1rem;"> on the result. `nulib2 -x filename` will extract
 files from a Binary II (.BNY, .BQY) archive, and will automatically
 uncompress any Squeezed (.QQ) files within the archive;
@@ -1340,8 +1321,7 @@ monitor input.
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T14:42:26+00:00">August 11,
 2013</time>
 
@@ -1463,8 +1443,7 @@ modern formats. If you want it to give that a shot, use `-e` instead of
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T22:55:17+00:00">August 11,
 2013</time>
 
@@ -1535,8 +1514,7 @@ then rename the appropriate globals file to PT3.GLOBALS.
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T23:34:43+00:00">August 11,
 2013</time>
 
@@ -1589,8 +1567,7 @@ Raspbian desktop, type `startx` or use [remote desktop software][38].) Usage i
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-11-29T01:26:34+00:00">November 29,
 2013</time>
 
@@ -1649,8 +1626,7 @@ For more info on how to use it, check out [Dave’s web site][10] and the [Ulti
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-11-29T06:05:17+00:00">November 29,
 2013</time>
 
@@ -1779,8 +1755,7 @@ enhancements. To update, type `a2cloud-update`.
   emulation programs
 * <span style="line-height: 1.714285714; font-size: 1rem;">Support for
   “PC ANSI” colored text and graphics characters , for use with
-  Spectrum’s ANSI online display, via new </span>`term`{:
-  style="line-height: 1.714285714;"}<span style="line-height:
+  Spectrum’s ANSI online display, via new </span>`term`<span style="line-height:
   1.714285714; font-size: 1rem;"> command</span>
 * <span style="line-height: 1.714285714; font-size: 1rem;">Added
   </span>`sciibin`<span
@@ -1851,8 +1826,7 @@ enhancements. To update, type `a2cloud-update`.
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-12-28T20:07:02+00:00">December 28,
 2013</time>
 
@@ -1888,8 +1862,7 @@ it, or just go to [http://ivanx.com/a2cloud][123].
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
-(newest first)][14], [Apple II][15]{:
-rel="category tag"}, [Raspberry Pi][16] on [<time
+(newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2014-01-26T15:10:58+00:00">January 26,
 2014</time>
 
