@@ -39,7 +39,6 @@ This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14], [Apple
 II][15], [Raspberry Pi][16] on July 14, 2013 by [ivanx][17]
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: what you need][18]
 
 
@@ -47,7 +46,6 @@ II][15], [Raspberry Pi][16] on July 14, 2013 by [ivanx][17]
 [<span class="leave-reply">Leave a reply</span>][19]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 To use A2CLOUD, you need various things. Here’s a video to show you what
@@ -139,7 +137,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: prepare your Pi][44]
 
 
@@ -147,7 +144,6 @@ vcard">[ivanx][17]</span></span>.
 [<span class="leave-reply">Leave a reply</span>][45]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 <span style="font-size: 1rem; line-height: 1.714285714; text-decoration:
@@ -196,7 +192,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: go headless (optional)][38]
 
 
@@ -204,7 +199,6 @@ vcard">[ivanx][17]</span></span>.
 [<span class="leave-reply">Leave a reply</span>][48]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 For basic A2CLOUD use, I recommend going headless with your Raspberry Pi
@@ -300,7 +294,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: install the software][56]
 
 
@@ -308,7 +301,6 @@ vcard">[ivanx][17]</span></span>.
 [<span class="leave-reply">Leave a reply</span>][57]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 If you used the [Raspple II][12] installation method,
@@ -355,7 +347,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: attach your cables][58]
 
 
@@ -363,7 +354,6 @@ vcard">[ivanx][17]</span></span>.
 [2 Replies][59]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 Figure out which of the following scenarios applies to you, and attach
@@ -458,7 +448,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: make your boot disk][60]
 
 
@@ -466,7 +455,6 @@ vcard">[ivanx][17]</span></span>.
 [1 Reply][61]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 You’re almost ready to use virtual drives, courtesy of David Schmidt’s
@@ -536,7 +524,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: use virtual drives!][67]
 
 
@@ -544,7 +531,6 @@ vcard">[ivanx][17]</span></span>.
 [3 Replies][68]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 Ok, almost there. Fire up your A2CLOUD floppy, and at the welcome
@@ -599,7 +585,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: log in from your Apple II][71]
 
 
@@ -607,7 +592,6 @@ vcard">[ivanx][17]</span></span>.
 [2 Replies][72]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 If you’re happy enough controlling your Pi with a screen or keyboard
@@ -726,7 +710,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: make a floppy or image][80]
 
 
@@ -734,7 +717,6 @@ vcard">[ivanx][17]</span></span>.
 [<span class="leave-reply">Leave a reply</span>][81]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 If you have [A2SERVER][82] installed — which you do
@@ -801,7 +783,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: learn some Unix][83]
 
 
@@ -809,7 +790,6 @@ vcard">[ivanx][17]</span></span>.
 [<span class="leave-reply">Leave a reply</span>][84]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 Once you’re logged into your Raspberry Pi, you can download disk images
@@ -900,7 +880,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: “insert” a disk image][85]
 
 
@@ -908,7 +887,6 @@ vcard">[ivanx][17]</span></span>.
 [<span class="leave-reply">Leave a reply</span>][86]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 To make things easy, A2CLOUD has commands to “insert” disk image files
@@ -961,7 +939,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: connect with other people][87]
 
 
@@ -969,7 +946,6 @@ vcard">[ivanx][17]</span></span>.
 [<span class="leave-reply">Leave a reply</span>][88]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 Once you’ve logged into your Pi — that could be from your Apple II using
@@ -1043,7 +1019,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: browse &#038; download][93]
 
 
@@ -1051,7 +1026,6 @@ vcard">[ivanx][17]</span></span>.
 [<span class="leave-reply">Leave a reply</span>][94]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 If you want to get new Apple II software, there are a few ways to go
@@ -1128,7 +1102,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: use disk images][99]
 
 
@@ -1136,7 +1109,6 @@ vcard">[ivanx][17]</span></span>.
 [<span class="leave-reply">Leave a reply</span>][100]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 Once you’ve [downloaded stuff to your P][93]i, or [copied stuff on to it
@@ -1213,7 +1185,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: expand archives][101]
 
 
@@ -1221,7 +1192,6 @@ vcard">[ivanx][17]</span></span>.
 [<span class="leave-reply">Leave a reply</span>][102]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 If you have an archive file, on your Pi, you’ll need to expand it.
@@ -1300,7 +1270,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: transfer files][104]
 
 
@@ -1308,7 +1277,6 @@ vcard">[ivanx][17]</span></span>.
 [<span class="leave-reply">Leave a reply</span>][105]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 If you’ve got files on your Pi that aren’t inside one of your viritual
@@ -1420,7 +1388,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: increase serial port speed][75]
 
 
@@ -1428,7 +1395,6 @@ vcard">[ivanx][17]</span></span>.
 [<span class="leave-reply">Leave a reply</span>][107]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 I chose the default speed of 4800 baud for Pi as a lowest common
@@ -1489,7 +1455,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: emulate an Apple II][109]
 
 
@@ -1497,7 +1462,6 @@ vcard">[ivanx][17]</span></span>.
 [<span class="leave-reply">Leave a reply</span>][110]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 Though the purpose of A2CLOUD is primarily to extend the functionality
@@ -1540,7 +1504,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: Apple II Pi][42]
 
 
@@ -1548,7 +1511,6 @@ vcard">[ivanx][17]</span></span>.
 [<span class="leave-reply">Leave a reply</span>][115]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 David Schmenk has created [Apple II Pi][10], which
@@ -1597,7 +1559,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: release history and notes][13]
 
 
@@ -1605,7 +1566,6 @@ vcard">[ivanx][17]</span></span>.
 [<span class="leave-reply">Leave a reply</span>][119]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 A2CLOUD is sorta always in a state of development with tiny tweaks
@@ -1795,7 +1755,6 @@ vcard">[ivanx][17]</span></span>.
 </footer>
 
 
-<header class="entry-header" markdown="1">
 #  [A2CLOUD: other stuff][121]
 
 
@@ -1803,7 +1762,6 @@ vcard">[ivanx][17]</span></span>.
 [4 Replies][122]
 </div>
 
-</header>
 
 <div class="entry-content" markdown="1">
 This is a post for new techniques or features that aren’t fully ready,
