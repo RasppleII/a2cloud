@@ -48,10 +48,8 @@ II][15], [Raspberry Pi][16] on July 14, 2013 by [ivanx][17]
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][19]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 To use A2CLOUD, you need various things. Here’s a video to show you what
@@ -73,8 +71,7 @@ Places to purchase are linked:
 * any Raspberry Pi, B/B+ models recommended ([buy direct from
   distributor][21], or at Amazon: [Pi 2 model
   B][22], [Pi 1 model B+][23], [Pi
-  1 model B][24], [Pi 1 model A+][25]{:
-  target="_blank"})
+  1 model B][24], [Pi 1 model A+][25])
 * a [4 GB or larger SD card][26] ([8 GB or
   larger][27] recommended)
 * a [good power supply][28] with a micro-USB plug
@@ -92,8 +89,7 @@ Places to purchase are linked:
 If you want simultaneous virtual drives and internet access from your
 Apple II:
 
-* another [null modem Apple II serial cable][31]{:
-  target="_blank"} (or: [roll your own][32])
+* another [null modem Apple II serial cable][31] (or: [roll your own][32])
 * another [USB-to-serial adapter][33]
 * another [Super Serial Card][34], if you have an
   Apple IIe (see note below)
@@ -105,21 +101,18 @@ items:</span>
 
 * an [SD card reader][35] to prepare the SD card, if
   your computer doesn’t have one
-* a [USB keyboard][36] and possibly [mouse][37]{:
-  target="_blank"} (or: you can [control the Pi from another
+* a [USB keyboard][36] and possibly [mouse][37] (or: you can [control the Pi from another
   computer][38])
 * a [*powered* USB hub][39] (if you don’t have a free
   port for a USB-to-serial adapter)
 * an [Apple II Pi card][40], or another [Super Serial
-  Card][34] with a [Raspberry Pi Console cable][41]{:
-  target="_blank"}, if you want to use [Apple II Pi][42]
+  Card][34] with a [Raspberry Pi Console cable][41], if you want to use [Apple II Pi][42]
 
  
 
 If you have a straight-through serial cable rather than a null modem
 serial cable, and you are using a IIgs or IIc (no Super Serial Card),
-you can use a [DE-9 (aka DB-9) male-to-female null modem adapter][43]{:
-target="_blank"}.
+you can use a [DE-9 (aka DB-9) male-to-female null modem adapter][43].
 
 If you have a Super Serial Card, its jumper block needs to point towards
 “Modem” if you have a null modem cable, or “Terminal” if you have a
@@ -136,7 +129,6 @@ Prolific PL2303 chipset. Other models based on other chipsets such as
 FTDI may also work; I just haven’t tried them.)</small>
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -148,10 +140,8 @@ class="entry-date" datetime="2013-07-14T02:11:22+00:00">July 14,
 ][18]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-21" class="post-21 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -161,10 +151,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][45]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 <span style="font-size: 1rem; line-height: 1.714285714; text-decoration:
@@ -203,7 +191,6 @@ If you want all the features, answer “Y” to the questions. Then be
 patient, as it takes a little while to install.
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -215,10 +202,8 @@ class="entry-date" datetime="2013-07-14T11:47:20+00:00">July 14,
 ][44]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-285" class="post-285 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -228,10 +213,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][48]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 For basic A2CLOUD use, I recommend going headless with your Raspberry Pi
@@ -316,7 +299,6 @@ rather than asking your router for it) via the method discussed
  
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -328,10 +310,8 @@ class="entry-date" datetime="2013-07-14T11:53:57+00:00">July 14,
 ][38]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-273" class="post-273 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -341,10 +321,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][57]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 If you used the [Raspple II][12] installation method,
@@ -379,7 +357,6 @@ You’ve now got your Raspberry Pi providing virtual drives and internet
 access for your Apple II!
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -391,10 +368,8 @@ class="entry-date" datetime="2013-07-14T12:00:01+00:00">July 14,
 ][56]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-334" class="post-334 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -404,10 +379,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [2 Replies][59]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 Figure out which of the following scenarios applies to you, and attach
@@ -490,7 +463,6 @@ can then move the adapter to a different port and repeat until you
 figure out which one is the lowest and which one is the highest.
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -502,10 +474,8 @@ class="entry-date" datetime="2013-07-14T12:02:57+00:00">July 14,
 ][58]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-33" class="post-33 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -515,10 +485,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [1 Reply][61]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 You’re almost ready to use virtual drives, courtesy of David Schmidt’s
@@ -576,7 +544,6 @@ get it going again, or reboot, or disconnect and then reconnect the
 USB-to-serial adapter on the lower USB port.
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -588,10 +555,8 @@ class="entry-date" datetime="2013-07-14T12:03:20+00:00">July 14,
 ][60]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-306" class="post-306 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -601,10 +566,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [3 Replies][68]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 Ok, almost there. Fire up your A2CLOUD floppy, and at the welcome
@@ -614,9 +577,7 @@ screen, type V. (If you are at an Applesoft prompt, you can instead type
 Once you’ve done this, you can access your blank virtual disk on slot 2
 drive 1, and the 800K version of the A2CLOUD disk on slot 2 drive 2.
 Check it out by typing `CAT,S2,D2`. After specifying the slot and drive,
-they will stick for subsequent [ProDOS commands][69]{:
-target="_blank"} (that’s a quick list; here’s a [full manual][70]{:
-target="_blank"}). You will no longer have access to slot 6. To regain
+they will stick for subsequent [ProDOS commands][69] (that’s a quick list; here’s a [full manual][70]). You will no longer have access to slot 6. To regain
 access to slot 6, do a full reset of your Apple II and boot any ProDOS
 disk as usual.
 
@@ -649,7 +610,6 @@ You can also change the virtual drives to use different images, which
 I’ll explain in a later post.
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -661,10 +621,8 @@ class="entry-date" datetime="2013-07-14T12:04:51+00:00">July 14,
 ][67]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-56" class="post-56 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -674,10 +632,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [2 Replies][72]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 If you’re happy enough controlling your Pi with a screen or keyboard
@@ -686,8 +642,7 @@ really need to read any of this post. But it’s *more fun* to log into it
 from your Apple II. You try it.
 
 To do that, you’ll need terminal communications software which supports
-VT-100 emulation. The A2CLOUD installer provides both [ProTERM][73]{:
-target="_blank"} and Z-Link for IIc, IIgs, and enhanced IIe; GS/OS users
+VT-100 emulation. The A2CLOUD installer provides both [ProTERM][73] and Z-Link for IIc, IIgs, and enhanced IIe; GS/OS users
 can also download and use [Spectrum][74] for color
 and graphic text. Apple II Plus and unenhanced IIe users have some
 options too.
@@ -741,8 +696,7 @@ community.)
 underline;">Spectrum</span>
 
 [Spectrum][74], for the Apple IIgs, is not provided
-on the A2CLOUD disk, [but is freely available for download][77]{:
-target="_blank"}. From the Settings menu, choose Port and select the
+on the A2CLOUD disk, [but is freely available for download][77]. From the Settings menu, choose Port and select the
 printer port at 4800 baud. Then in the Settings menu, choose Online
 Display and select VT-100 (monochrome text), or ANSI (color and graphic
 text, though slower). Then from the Show menu, choose Online Display. If
@@ -786,7 +740,6 @@ UltraTerm) for 80 column support. I haven’t tried them, but [here’s the
 relevant discussion thread][79].
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -798,10 +751,8 @@ class="entry-date" datetime="2013-07-14T19:58:40+00:00">July 14,
 ][71]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-550" class="post-550 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -811,10 +762,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][81]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 If you have [A2SERVER][82] installed — which you do
@@ -869,7 +818,6 @@ using `pscp` in [PuTTY][50]. The shared volume is at
 /media/A2SHARED/ADTDISKS.
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -881,10 +829,8 @@ class="entry-date" datetime="2013-07-14T23:00:30+00:00">July 14,
 ][80]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-67" class="post-67 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -894,10 +840,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][84]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 Once you’re logged into your Raspberry Pi, you can download disk images
@@ -976,7 +920,6 @@ which should be included here, please mention them in the comments.
  
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -988,10 +931,8 @@ class="entry-date" datetime="2013-07-15T02:24:12+00:00">July 15,
 ][83]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-158" class="post-158 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -1001,10 +942,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][86]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 To make things easy, A2CLOUD has commands to “insert” disk image files
@@ -1045,7 +984,6 @@ imageFileName. The symlinks are in /usr/local/adtpro/disks, and are
 called Virtual.po or Virtual2.po, respectively.)</small>
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -1057,10 +995,8 @@ class="entry-date" datetime="2013-08-11T01:03:57+00:00">August 11,
 ][85]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-471" class="post-471 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -1070,10 +1006,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][88]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 Once you’ve logged into your Pi — that could be from your Apple II using
@@ -1096,8 +1030,7 @@ is type `a2chat`. It will launch an IRC program called Irssi and connect
 you directly to the #a2c.chat channel. (If you want to connect to other
 channels, instead type `irssi`.) Type `/quit` when you’re done. You
 might want to check out more detailed instructions for [IRC
-generally][89] or [Irssi specifically][90]{:
-target="_blank"}.
+generally][89] or [Irssi specifically][90].
 
  
 
@@ -1136,7 +1069,6 @@ moment. If you want to give it a go, [see this comment][92] to get
 started, and look for help on Linux forums if you need it.
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -1148,10 +1080,8 @@ class="entry-date" datetime="2013-08-11T02:00:19+00:00">August 11,
 ][87]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-110" class="post-110 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -1161,10 +1091,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][94]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 If you want to get new Apple II software, there are a few ways to go
@@ -1229,7 +1157,6 @@ http://appleii.ivanx.com/slammer/files/SLAMMER111P.DSK`
  
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -1241,10 +1168,8 @@ class="entry-date" datetime="2013-08-11T07:42:26+00:00">August 11,
 ][93]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-539" class="post-539 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -1254,10 +1179,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][100]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 Once you’ve [downloaded stuff to your P][93]i, or [copied stuff on to it
@@ -1322,7 +1245,6 @@ assigned to virtual drives 1 and 2, rather than typing out the full
 path.
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -1334,10 +1256,8 @@ class="entry-date" datetime="2013-08-11T08:00:28+00:00">August 11,
 ][99]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-164" class="post-164 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -1347,10 +1267,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][102]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 If you have an archive file, on your Pi, you’ll need to expand it.
@@ -1419,7 +1337,6 @@ filename > outfilename` will decode an EXEC file made by Executioner;
 monitor input.
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -1431,10 +1348,8 @@ class="entry-date" datetime="2013-08-11T14:42:26+00:00">August 11,
 ][101]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-199" class="post-199 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -1444,10 +1359,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][105]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 If you’ve got files on your Pi that aren’t inside one of your viritual
@@ -1547,7 +1460,6 @@ modern formats. If you want it to give that a shot, use `-e` instead of
 `-g` above.
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -1559,10 +1471,8 @@ class="entry-date" datetime="2013-08-11T22:55:17+00:00">August 11,
 ][104]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-207" class="post-207 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -1572,10 +1482,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][107]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 I chose the default speed of 4800 baud for Pi as a lowest common
@@ -1602,8 +1510,8 @@ on logout, use:
 To see the current speed, just type `baud` by itself.
 
 You’ll only be able to use 38400 or 57600 on a IIgs (and not with
-Z-Link), but Hugh Hood has come up with [clever ProTERM macros][108]{:
-target="_blank"} that enable 115200 baud on any Apple II, and A2CLOUD
+Z-Link), but Hugh Hood has come up with [clever ProTERM macros][108]
+that enable 115200 baud on any Apple II, and A2CLOUD
 provides them with ProTERM. If you use 115200 baud, you’ll likely drop
 some characters, especially on an 8-bit Apple II. One strategy you might
 want to try is to use a slower speed normally, but then “upshift” to
@@ -1624,7 +1532,6 @@ then rename the appropriate globals file to PT3.GLOBALS.
  
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -1636,10 +1543,8 @@ class="entry-date" datetime="2013-08-11T23:34:43+00:00">August 11,
 ][75]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-483" class="post-483 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -1649,10 +1554,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][110]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 Though the purpose of A2CLOUD is primarily to extend the functionality
@@ -1673,19 +1576,16 @@ GSport on the Raspbian desktop. Press F4 for the configuration screen,
 and alt-F4 to exit. Usage instructions are on the [GSport home
 page.][111]
 
-For a emulated Apple IIe, type `linapple` to run the [LinApple][112]{:
-target="_blank"} emulator. It has some nifty features like built-in
+For a emulated Apple IIe, type `linapple` to run the [LinApple][112]
+emulator. It has some nifty features like built-in
 software downloading and a built-in help screen. More information is
 [here][112].
 
 You can also use GSport’s ancestor, [KEGS][113], by
 choosing it from the menu of the Raspbian desktop. (To start the
-Raspbian desktop, type `startx` or use [remote desktop software][38]{:
-target="_blank"}.) Usage instructions are [here][114]{:
-target="_blank"}.
+Raspbian desktop, type `startx` or use [remote desktop software][38].) Usage instructions are [here][114].
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -1697,10 +1597,8 @@ class="entry-date" datetime="2013-11-29T01:26:34+00:00">November 29,
 ][109]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-474" class="post-474 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -1710,10 +1608,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][115]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 David Schmenk has created [Apple II Pi][10], which
@@ -1725,11 +1621,8 @@ mouse, joystick, and drives to control your Raspberry Pi, primarily so
 you can use the GSport emulator, giving you a virtual souped up Apple
 II. To get benefit from this, you’ll need a screen attached to your Pi.
 
-To use Apple II Pi, you’ll need the [Apple II Pi card][116]{:
-target="_blank"}, or a [Raspberry Pi console cable][41]{:
-target="_blank"} attached to a Super Serial Card (even in a IIgs) or a
-IIc/IIc+ serial port, via [the appropriate serial cable ][31]{:
-target="_blank"}and possibly a [DE-9 (aka DB-9) male-to-male null modem
+To use Apple II Pi, you’ll need the [Apple II Pi card][116], or a [Raspberry Pi console cable][41] attached to a Super Serial Card (even in a IIgs) or a
+IIc/IIc+ serial port, via [the appropriate serial cable ][31]and possibly a [DE-9 (aka DB-9) male-to-male null modem
 adapter][117]. The software is already installed by
 Raspple II or A2CLOUD (if it doesn’t seem to work, try updating A2CLOUD
 by typing `a2cloud-update`).
@@ -1750,12 +1643,9 @@ keyboard) to quit. When you do, your Pi will fully shut down.
 
 Apple II Pi has many more sophisticated abilities, such being able to
 develop 6502 code on the Raspberry Pi and execute it on the Apple II.
-For more info on how to use it, check out [Dave’s web site][10]{:
-target="_blank"} and the [Ultimate Apple 2 forums][118]{:
-target="_blank"}.
+For more info on how to use it, check out [Dave’s web site][10] and the [Ultimate Apple 2 forums][118].
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -1767,10 +1657,8 @@ class="entry-date" datetime="2013-11-29T06:05:17+00:00">November 29,
 ][42]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-597" class="post-597 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -1780,10 +1668,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [<span class="leave-reply">Leave a reply</span>][119]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 A2CLOUD is sorta always in a state of development with tiny tweaks
@@ -1920,8 +1806,7 @@ enhancements. To update, type `a2cloud-update`.
 * if A2SERVER is installed, shares the ADTPro disks folder as ADTDISKS
   on the network
 * responds to name “raspberrypi.local” as alternative to IP address to
-  Mac OS X (and Windows with [Bonjour Print Services][49]{:
-  target="_blank"} installed) computers on network
+  Mac OS X (and Windows with [Bonjour Print Services][49] installed) computers on network
 
 <span style="text-decoration: underline;"><span style="line-height:
 1.714285714; font-size: 1rem;">v1.5.2, Dec 22 2013</span></span>
@@ -1963,7 +1848,6 @@ enhancements. To update, type `a2cloud-update`.
   Pi; introduced at KansasFest 2013
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -1975,10 +1859,8 @@ class="entry-date" datetime="2013-12-28T20:07:02+00:00">December 28,
 ][13]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 <article id="post-655" class="post-655 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
@@ -1988,10 +1870,8 @@ vcard">[ivanx][17]</span></span>.
 <div class="comments-link">
 [4 Replies][122]
 </div>
-<!-- .comments-link -->
 
 </header>
-<!-- .entry-header -->
 
 <div class="entry-content" markdown="1">
 This is a post for new techniques or features that aren’t fully ready,
@@ -2005,7 +1885,6 @@ it, or just go to [http://ivanx.com/a2cloud][123].
  
 
 </div>
-<!-- .entry-content -->
 
 <footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
@@ -2017,16 +1896,12 @@ class="entry-date" datetime="2014-01-26T15:10:58+00:00">January 26,
 ][121]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
 </footer>
-<!-- .entry-meta -->
 
 </article>
-<!-- #post -->
 
 </div>
-<!-- #content -->
 
 </section>
-<!-- #primary -->
 
 <div id="secondary" class="widget-area" role="complementary">
 <aside id="dpe_fp_widget-2" class="widget widget_dpe_fp_widget" markdown="1">
@@ -2123,26 +1998,20 @@ vcard">[ivanx][17]</span></span>.
    ][121]
 
 
-<!-- .dpe-flexible-posts -->
 
 </aside>
 </div>
-<!-- #secondary -->
 
 </div>
-<!-- #main .wrapper -->
 
 <footer id="colophon" role="contentinfo" markdown="1">
 <div class="site-info">
 [Proudly powered by WordPress][124]
 </div>
-<!-- .site-info -->
 
 </footer>
-<!-- #colophon -->
 
 </div>
-<!-- #page -->
 
 </body>
 
