@@ -39,8 +39,6 @@ This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14], [Apple
 II][15], [Raspberry Pi][16] on July 14, 2013 by [ivanx][17]
 
 
-
-<article id="post-14" class="post-14 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: what you need][18]
 
@@ -140,9 +138,7 @@ class="entry-date" datetime="2013-07-14T02:11:22+00:00">July 14,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-21" class="post-21 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: prepare your Pi][44]
 
@@ -199,9 +195,7 @@ class="entry-date" datetime="2013-07-14T11:47:20+00:00">July 14,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-285" class="post-285 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: go headless (optional)][38]
 
@@ -305,9 +299,7 @@ class="entry-date" datetime="2013-07-14T11:53:57+00:00">July 14,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-273" class="post-273 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: install the software][56]
 
@@ -362,9 +354,7 @@ class="entry-date" datetime="2013-07-14T12:00:01+00:00">July 14,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-334" class="post-334 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: attach your cables][58]
 
@@ -467,9 +457,7 @@ class="entry-date" datetime="2013-07-14T12:02:57+00:00">July 14,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-33" class="post-33 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: make your boot disk][60]
 
@@ -547,9 +535,7 @@ class="entry-date" datetime="2013-07-14T12:03:20+00:00">July 14,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-306" class="post-306 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: use virtual drives!][67]
 
@@ -612,9 +598,7 @@ class="entry-date" datetime="2013-07-14T12:04:51+00:00">July 14,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-56" class="post-56 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: log in from your Apple II][71]
 
@@ -741,9 +725,7 @@ class="entry-date" datetime="2013-07-14T19:58:40+00:00">July 14,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-550" class="post-550 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: make a floppy or image][80]
 
@@ -818,9 +800,7 @@ class="entry-date" datetime="2013-07-14T23:00:30+00:00">July 14,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-67" class="post-67 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: learn some Unix][83]
 
@@ -919,9 +899,7 @@ class="entry-date" datetime="2013-07-15T02:24:12+00:00">July 15,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-158" class="post-158 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: “insert” a disk image][85]
 
@@ -982,9 +960,7 @@ class="entry-date" datetime="2013-08-11T01:03:57+00:00">August 11,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-471" class="post-471 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: connect with other people][87]
 
@@ -1066,9 +1042,7 @@ class="entry-date" datetime="2013-08-11T02:00:19+00:00">August 11,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-110" class="post-110 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: browse &#038; download][93]
 
@@ -1153,9 +1127,7 @@ class="entry-date" datetime="2013-08-11T07:42:26+00:00">August 11,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-539" class="post-539 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: use disk images][99]
 
@@ -1240,9 +1212,7 @@ class="entry-date" datetime="2013-08-11T08:00:28+00:00">August 11,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-164" class="post-164 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: expand archives][101]
 
@@ -1329,9 +1299,7 @@ class="entry-date" datetime="2013-08-11T14:42:26+00:00">August 11,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-199" class="post-199 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: transfer files][104]
 
@@ -1451,9 +1419,7 @@ class="entry-date" datetime="2013-08-11T22:55:17+00:00">August 11,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-207" class="post-207 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: increase serial port speed][75]
 
@@ -1522,9 +1488,7 @@ class="entry-date" datetime="2013-08-11T23:34:43+00:00">August 11,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-483" class="post-483 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: emulate an Apple II][109]
 
@@ -1575,9 +1539,7 @@ class="entry-date" datetime="2013-11-29T01:26:34+00:00">November 29,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-474" class="post-474 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: Apple II Pi][42]
 
@@ -1634,9 +1596,7 @@ class="entry-date" datetime="2013-11-29T06:05:17+00:00">November 29,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-597" class="post-597 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: release history and notes][13]
 
@@ -1834,9 +1794,7 @@ class="entry-date" datetime="2013-12-28T20:07:02+00:00">December 28,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
-<article id="post-655" class="post-655 post type-post status-publish format-standard hentry category-a2cloud category-a2cloud-newest-first category-apple-ii category-raspberry-pi" markdown="1">
 <header class="entry-header" markdown="1">
 #  [A2CLOUD: other stuff][121]
 
@@ -1870,7 +1828,6 @@ class="entry-date" datetime="2014-01-26T15:10:58+00:00">January 26,
 vcard">[ivanx][17]</span></span>.
 </footer>
 
-</article>
 
 </div>
 
