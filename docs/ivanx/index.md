@@ -30,7 +30,7 @@ installed, type `a2cloud-update` to update, or start over with the [Raspple
 II][12] easy installation method (or upgrade Raspple II with `a2cloud-update
 os`). The complete version history is [here][13].*
 
-[![A2CLOUD setup part 1: intro and demo][v_img01]][video01]
+[![YouTube: A2CLOUD setup part 1: intro and demo][v_img01]][video01]
 
 [v_img01]: http://img.youtube.com/vi/kYkOxe4mjHg/0.jpg
 [video01]: http://www.youtube.com/watch?v=kYkOxe4mjHg
@@ -59,8 +59,11 @@ goes where, followed by your shopping list. (Don’t pay much attention to
 2:00 through 6:00, as it’s now much simpler to set up A2CLOUD than when
 I made the video.)
 
-<iframe src="//www.youtube.com/embed/saIdvQNgm3c" width="420"
-height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+
+[![YouTube: A2CLOUD setup part 2: configure your Raspberry Pi][v_img02]][video02]
+
+[v_img02]: http://img.youtube.com/vi/saIdvQNgm3c/0.jpg
+[video02]: http://www.youtube.com/watch?v=saIdvQNgm3c
 
 Places to purchase are linked:
 
@@ -519,9 +522,8 @@ vcard">[ivanx][17]</span></span>.
 
 <div class="entry-content" markdown="1">
 You’re almost ready to use virtual drives, courtesy of David Schmidt’s
-[VSDRIVE][62], which is included with [ADTPro][63]{:
-target="_blank"}. You can also use ADTPro itself to transfer disk images
-to actual disks, and vice versa.
+[VSDRIVE][62], which is included with [ADTPro][63]. You can also use ADTPro
+itself to transfer disk images to actual disks, and vice versa.
 
 To access the virtual drives, you need to boot from the A2CLOUD disk. To
 get that, you need ADTPro to transfer it to an Apple II floppy. If
@@ -538,8 +540,10 @@ it.
 
  
 
-<iframe src="//www.youtube.com/embed/iOKIQNF8sZY" width="420"
-height="315" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+[![YouTube: A2CLOUD setup part 3: making your boot floppy][v_img03]][video03]
+
+[v_img03]: http://img.youtube.com/vi/iOKIQNF8sZY/0.jpg
+[video03]: http://www.youtube.com/watch?v=iOKIQNF8sZY
 
 First, turn on your Apple II and press ctrl-RESET before DOS or ProDOS
 can load. Next, if you have a screen, keyboard, and mouse attached to
