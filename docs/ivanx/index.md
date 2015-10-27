@@ -9,7 +9,7 @@ convert the page to Markdown format.
 * [love and hate mail: ivan@ivanx.com](mailto:ivan@ivanx.com)
 
 
-### Table of Contents
+## Table of Contents
 
 * [A2CLOUD: intro][2]
 * [A2CLOUD: what you need][3]
@@ -149,7 +149,7 @@ This entry was posted on July 14, 2013 by [ivanx][29].
 
 # A2CLOUD: prepare your Pi
 
-## Starting Fresh
+### Starting Fresh
 
 If you have never used your Pi, you will need to prepare your SD card.
 Download [Raspple II][28] (a distribution of the Raspbian operating system
@@ -164,7 +164,7 @@ Pi board stops flickering.
 formatted correctly, you can use the official [SD Formatter][51]  utility —
 carefully! — before copying the files.)  
 
-## If you’re already up and running, or want to customize the installation
+### If you’re already up and running, or want to customize the installation
 
 You can also install A2CLOUD from the Raspbian command line. Type:
 
@@ -194,7 +194,7 @@ With that said, you may want a screen and keyboard attached if you want to use
 you’re not ready to go headless, you can skip the rest of this post.
 
 
-## Log in to the Pi’s command line:
+### Log in to the Pi’s command line:
 
 If you’re gonna go headless, then you’ll need to take a few steps so that you
 can control your Pi from another computer, which could be an Apple II, as I’ll
@@ -219,7 +219,7 @@ arrive at the Linux prompt.
 
 <a id="xrdp" />
 
-## Remotely Access the Raspbian desktop
+### Remotely Access the Raspbian desktop
 
 You can access the Raspbian graphical desktop by using remote desktop
 software. Use the Remote Desktop Connection application included with
@@ -229,7 +229,7 @@ prefer to use a VNC client, [configure tightvncserver][link054]. You could also
 RDP or VNC clients for other platforms, like iOS and Android.)
 
 
-## Get a consistent IP Address
+### Get a consistent IP Address
 
 If “raspberrypi.local” doesn’t work for you for some reason, and you don’t
 want to have to use Pi Finder or Advanced IP Scanner every time you want to
@@ -314,7 +314,7 @@ If you have an Apple IIe, then “printer port” or “modem port” means a Su
 Serial Card in slot 1 or 2, respectively.
 
 
-## You have one USB-to-serial adapter, and want to use it for virtual drives
+### You have one USB-to-serial adapter, and want to use it for virtual drives
 
 You can use:
 
@@ -329,7 +329,7 @@ You can use:
 Connect the adapter to a serial cable attached to to your Apple II modem port.
 
 
-## You have one USB-to-serial adapter, and want to use it for internet
+### You have one USB-to-serial adapter, and want to use it for internet
 
 You can use:
 
@@ -345,12 +345,12 @@ Connect the adapter to a serial cable attached to to your Apple II printer
 port.
 
 
-## You have two USB-to-serial adapters
+### You have two USB-to-serial adapters
 
 Do both of the above.
 
 
-## How to figure out the lowest or highest numbered port on your USB hub
+### How to figure out the lowest or highest numbered port on your USB hub
 
 You can attach two USB-to-serial adapters to a USB hub attached to either USB
 port on the Pi. A2CLOUD tells them apart based on their being attached to a
@@ -509,7 +509,7 @@ type ctrl-A followed by a question mark. A well-written, easy-to-follow guide
 on how to get the most out of Screen is [here][link076].
 
  
-## ProTERM
+### ProTERM
 
 ProTERM is a robust and recommended terminal program, but it does not fit on
 the 140K A2CLOUD disk, and it needs to stay in the drive (or virtual drive)
@@ -527,7 +527,7 @@ the community.)
  
 <a id="spectrum" />
 
-## Spectrum
+### Spectrum
 
 [Spectrum][link074], for the Apple IIgs, is not provided on the A2CLOUD disk,
 [but is freely available for download][link077]. From the Settings menu, choose
@@ -541,7 +541,7 @@ type Apple-W to “close” the display. (Thanks to Ewen Wannop for making
 Spectrum free to the community.)
 
 
-## Z-Link
+### Z-Link
 
 Z-Link is provided on both the 5.25″ and 3.5″ versions of the A2CLOUD disk.
 While not quite as capable as ProTERM, it is able to fit on a 5.25″ disk and
@@ -562,7 +562,7 @@ your A2CLOUD floppy to A2CLOUD.DISK, then copy /A2CLOUD.DISK/Z.LINK.CONFIG to
 
 <a id="unenhanced" />
 
-## Apple II Plus and unenhanced IIe
+### Apple II Plus and unenhanced IIe
 
 If you have an Apple II Plus or unehnanced IIe, there have been reports
 of success with using [Kermit 3.87][link078], or DCOM 3.3,
@@ -765,7 +765,7 @@ down solidApple when pressing the arrow keys* when you’re using these
 programs.
 
 
-## IRC (Internet Relay Chat)
+### IRC (Internet Relay Chat)
 
 If you want to chat live with other Apple II people, all you need to do is
 type `a2chat`. It will launch an IRC program called Irssi and connect you
@@ -775,7 +775,7 @@ out more detailed instructions for [IRC generally][link089] or
 [Irssi specifically][link090].
 
 
-## Usenet newsgroups (discussion boards)
+### Usenet newsgroups (discussion boards)
 
 To access the Apple II discussion boards on Usenet (often referred to as
 comp.sys.apple2.\*), type `a2news` and it will start the Tin newsreader.  You
@@ -787,7 +787,7 @@ typing `a2news -s your.server.address`.)
 
 <a id="ttytter" />
 
-## Twitter
+### Twitter
 
 You can indeed tweet from your Apple II, if you can believe it. Type `ttytter`
 and follow the instructions. For initial setup, you’ll need to sign in to your
@@ -798,7 +798,7 @@ starting it by typing `ttytter -readline` for enhanced input, though it is
 beta and may have problems.
 
 
-## Email
+### Email
 
 There are email programs you can use, but they can be challenging to set up,
 so they have not formally been made a part of A2CLOUD for the moment. If you
@@ -899,7 +899,7 @@ knows how to access the format (e.g. System Utilities can copy files from DOS
 3.3 and Pascal disks).
 
 
-## Some commands for working with Apple II disk images:
+### Some commands for working with Apple II disk images:
 
 `mkpo -b totalBlocks newImageFileName PRODOS.VOL.NAME` will make a new disk
 image that has the capacity specified in `totalBlocks`. (A block is 512 bytes,
@@ -993,7 +993,7 @@ If you’ve got files on your Pi that aren’t inside one of your viritual disks
 and you want to transfer them to your Apple II, you’ve got a few options.
 
 
-## Archive files:
+### Archive files:
 
 If it’s an archive file, you can (and perhaps should) expand it directly on
 the Pi, as explained in [A2CLOUD: working with archives and disk images][17].
@@ -1001,7 +1001,7 @@ Otherwise, use one of the cool moves below, and then expand it with ShrinkIt
 or the appropriate program on the Apple II.
 
  
-## Copy a file into a disk image
+### Copy a file into a disk image
 
 `acmd -c fileToBeCopied imageFileName`
 
@@ -1030,7 +1030,7 @@ sure it’s ProDOS-compatible, and any existing file of the same name within the
 image is first deleted.)
 
 
-## Transfer a file from your Pi to your Apple II
+### Transfer a file from your Pi to your Apple II
 
 You can transfer a file to be saved on a local or virtual disk by using the
 YMODEM protocol. To send one or more files with YMODEM, type:
@@ -1053,7 +1053,7 @@ direct-attached (rather than dial-up) situation, and I haven’t had as much
 success with it as I have had with YMODEM.
 
 
-## Transfer a file from your Apple II to your Pi
+### Transfer a file from your Apple II to your Pi
 
 You can also go in the other direction — from your Apple II to the Pi.
 Type `rb` (for YMODEM) then tell ProTERM or Z-Link to send YMODEM. (If you
@@ -1208,14 +1208,14 @@ features per se, and those changes and other small details are (somewhat)
 documented at the end of [the script itself][link120]. But here are the noteworthy
 enhancements. To update, type `a2cloud-update`.
 
-## v1.8.1, May 5, 2015
+### v1.8.1, May 5, 2015
 
 * ADTPro 2.0.1
 
 * Apple II Pi client 1.5
 
 
-## v1.8.0, March 17, 2015
+### v1.8.0, March 17, 2015
 
 * compatible with every Raspberry Pi, including Raspberry Pi 2 Model B
 
@@ -1234,14 +1234,14 @@ enhancements. To update, type `a2cloud-update`.
   script
 
 
-## v1.7.2, February 7, 2015
+### v1.7.2, February 7, 2015
 
 * supports Raspberry Pi Model A and A+ (and Pi 2 Model B)
 
 * resolves issues with Raspbian 2015-01-31 (kernel 3.18)
 
 
-## v1.7.1, August 11, 2014
+### v1.7.1, August 11, 2014
 
 * A2CLOUD is no longer “beta” on non-Raspberry Pi computers
 
@@ -1253,12 +1253,12 @@ enhancements. To update, type `a2cloud-update`.
 * unbit/unexec/bsq archive tools are installed
 
 
-## v1.7.0, August 2, 2014
+### v1.7.0, August 2, 2014
 
 * a2cloud-setup installs Java 8 if not already installed
 
 
-## v1.6.9, July 24, 2014 (KansasFest)
+### v1.6.9, July 24, 2014 (KansasFest)
 
 * ADTPro 2.0.0 (quicker and more reliable transfer; selectable filenames from
   list)
@@ -1267,14 +1267,14 @@ enhancements. To update, type `a2cloud-update`.
   Ethernet port)
 
 
-## v1.6.8, Apr 7, 2014
+### v1.6.8, Apr 7, 2014
 
 * ADTPro 1.3.0
 
 * TTYtter installs properly on non-Pi systems
 
 
-## v1.6.7, Feb 19, 2014
+### v1.6.7, Feb 19, 2014
 
 * A2CLOUD boot floppy contains A2PI client version 1.4
 
@@ -1287,7 +1287,7 @@ enhancements. To update, type `a2cloud-update`.
 * bug fixes for `cppo`, `shk2image`, and some launcher scripts``
 
 
-## v1.6.6, Feb 17, 2014
+### v1.6.6, Feb 17, 2014
 
 * [beta support for Debian and Ubuntu Linux on non-Pi machines][fixme25]
 
@@ -1303,13 +1303,13 @@ enhancements. To update, type `a2cloud-update`.
 * a2cloud-setup -y bypasses all prompts
 
 
-## v1.6.5, Feb 5, 2014
+### v1.6.5, Feb 5, 2014
 
 * can use `term mono` and `term color` instead of `term vt100` and `term
   pcansi`
 
 
-## v1.6.4, Jan 31, 2014
+### v1.6.4, Jan 31, 2014
 
 * support for `screen` command to allow switching between multiple terminals
   on Apple II
@@ -1318,7 +1318,7 @@ enhancements. To update, type `a2cloud-update`.
   want to
 
 
-## v1.6.3, Jan 23, 2014
+### v1.6.3, Jan 23, 2014
 
 * Set TTYtter to always use -ssl mode, which is required by Twitter after
   14-Jan-14.
@@ -1333,7 +1333,7 @@ enhancements. To update, type `a2cloud-update`.
 * Added `appleiipi-update` command
 
 
-## v1.6.2, Jan 19, 2014
+### v1.6.2, Jan 19, 2014
 
 * Improved display of non-ASCII characters in Apple II terminal emulation
   programs
@@ -1346,14 +1346,14 @@ enhancements. To update, type `a2cloud-update`.
   school
 
 
-## v1.6.1, Jan 14, 2014
+### v1.6.1, Jan 14, 2014
 
 * Added `telnet` and `ttytter` (Twitter client)
 
 * fix for network boot failure when set up under v1.6
 
 
-## v1.6, Dec 31, 2013
+### v1.6, Dec 31, 2013
 
 * ADTPro/VSDRIVE 1.2.9 (much faster virtual drives read performance, for the
   price of a short delay on the `vsd1`/`vsd2` commands and a need to type
@@ -1368,7 +1368,7 @@ enhancements. To update, type `a2cloud-update`.
   network
 
 
-## v1.5.2, Dec 22 2013
+### v1.5.2, Dec 22 2013
 
 * added `dos2pro` command
 
@@ -1377,7 +1377,7 @@ enhancements. To update, type `a2cloud-update`.
 * speedier install by downloading A2CLOUD disk images instead of building them
 
 
-## v1.5, Dec 1 2013
+### v1.5, Dec 1 2013
 
 * Adds IRC and newsreader clients (Irssi and Tin) and, with shortcuts for
   Apple II community (`a2chat` and `a2news` commands)
@@ -1389,7 +1389,7 @@ enhancements. To update, type `a2cloud-update`.
 * easy installation via [Raspple II][28]
 
 
-## v1.2.3, Nov 2013
+### v1.2.3, Nov 2013
 
 * A2PI client version 1.3 added to A2CLOUD disk
 
@@ -1404,12 +1404,12 @@ enhancements. To update, type `a2cloud-update`.
 * adds DSK2FILE image utility to A2CLOUD disk
 
 
-## v1.0, Sep 2 2013
+### v1.0, Sep 2 2013
 
 * first proper release with full documentation, bug fixes, and demo video
 
 
-## beta, Jul 27, 2013
+### beta, Jul 27, 2013
 
 * internet access and virtual drives for any Apple II via a Raspberry Pi;
   introduced at KansasFest 2013
