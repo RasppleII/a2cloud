@@ -120,7 +120,6 @@ FTDI may also work; I just haven’t tried them.)</small>
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T02:11:22+00:00">July 14,
@@ -128,7 +127,6 @@ class="entry-date" datetime="2013-07-14T02:11:22+00:00">July 14,
 
 ][18]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: prepare your Pi][44]
@@ -169,7 +167,6 @@ patient, as it takes a little while to install.
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T11:47:20+00:00">July 14,
@@ -177,7 +174,6 @@ class="entry-date" datetime="2013-07-14T11:47:20+00:00">July 14,
 
 ][44]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: go headless (optional)][38]
@@ -265,7 +261,6 @@ rather than asking your router for it) via the method discussed
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T11:53:57+00:00">July 14,
@@ -273,7 +268,6 @@ class="entry-date" datetime="2013-07-14T11:53:57+00:00">July 14,
 
 ][38]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: install the software][56]
@@ -312,7 +306,6 @@ access for your Apple II!
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T12:00:01+00:00">July 14,
@@ -320,7 +313,6 @@ class="entry-date" datetime="2013-07-14T12:00:01+00:00">July 14,
 
 ][56]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: attach your cables][58]
@@ -407,7 +399,6 @@ figure out which one is the lowest and which one is the highest.
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T12:02:57+00:00">July 14,
@@ -415,7 +406,6 @@ class="entry-date" datetime="2013-07-14T12:02:57+00:00">July 14,
 
 ][58]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: make your boot disk][60]
@@ -477,7 +467,6 @@ USB-to-serial adapter on the lower USB port.
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T12:03:20+00:00">July 14,
@@ -485,7 +474,6 @@ class="entry-date" datetime="2013-07-14T12:03:20+00:00">July 14,
 
 ][60]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: use virtual drives!][67]
@@ -532,7 +520,6 @@ I’ll explain in a later post.
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T12:04:51+00:00">July 14,
@@ -540,7 +527,6 @@ class="entry-date" datetime="2013-07-14T12:04:51+00:00">July 14,
 
 ][67]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: log in from your Apple II][71]
@@ -651,7 +637,6 @@ relevant discussion thread][79].
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T19:58:40+00:00">July 14,
@@ -659,7 +644,6 @@ class="entry-date" datetime="2013-07-14T19:58:40+00:00">July 14,
 
 ][71]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: make a floppy or image][80]
@@ -718,7 +702,6 @@ using `pscp` in [PuTTY][50]. The shared volume is at
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-14T23:00:30+00:00">July 14,
@@ -726,7 +709,6 @@ class="entry-date" datetime="2013-07-14T23:00:30+00:00">July 14,
 
 ][80]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: learn some Unix][83]
@@ -809,7 +791,6 @@ which should be included here, please mention them in the comments.
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-07-15T02:24:12+00:00">July 15,
@@ -817,7 +798,6 @@ class="entry-date" datetime="2013-07-15T02:24:12+00:00">July 15,
 
 ][83]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: “insert” a disk image][85]
@@ -862,7 +842,6 @@ called Virtual.po or Virtual2.po, respectively.)</small>
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T01:03:57+00:00">August 11,
@@ -870,7 +849,6 @@ class="entry-date" datetime="2013-08-11T01:03:57+00:00">August 11,
 
 ][85]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: connect with other people][87]
@@ -936,7 +914,6 @@ started, and look for help on Linux forums if you need it.
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T02:00:19+00:00">August 11,
@@ -944,7 +921,6 @@ class="entry-date" datetime="2013-08-11T02:00:19+00:00">August 11,
 
 ][87]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: browse &#038; download][93]
@@ -1013,7 +989,6 @@ http://appleii.ivanx.com/slammer/files/SLAMMER111P.DSK`
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T07:42:26+00:00">August 11,
@@ -1021,7 +996,6 @@ class="entry-date" datetime="2013-08-11T07:42:26+00:00">August 11,
 
 ][93]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: use disk images][99]
@@ -1090,7 +1064,6 @@ path.
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T08:00:28+00:00">August 11,
@@ -1098,7 +1071,6 @@ class="entry-date" datetime="2013-08-11T08:00:28+00:00">August 11,
 
 ][99]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: expand archives][101]
@@ -1169,7 +1141,6 @@ monitor input.
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T14:42:26+00:00">August 11,
@@ -1177,7 +1148,6 @@ class="entry-date" datetime="2013-08-11T14:42:26+00:00">August 11,
 
 ][101]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: transfer files][104]
@@ -1281,7 +1251,6 @@ modern formats. If you want it to give that a shot, use `-e` instead of
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T22:55:17+00:00">August 11,
@@ -1289,7 +1258,6 @@ class="entry-date" datetime="2013-08-11T22:55:17+00:00">August 11,
 
 ][104]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: increase serial port speed][75]
@@ -1342,7 +1310,6 @@ then rename the appropriate globals file to PT3.GLOBALS.
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-08-11T23:34:43+00:00">August 11,
@@ -1350,7 +1317,6 @@ class="entry-date" datetime="2013-08-11T23:34:43+00:00">August 11,
 
 ][75]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: emulate an Apple II][109]
@@ -1385,7 +1351,6 @@ Raspbian desktop, type `startx` or use [remote desktop software][38].) Usage i
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-11-29T01:26:34+00:00">November 29,
@@ -1393,7 +1358,6 @@ class="entry-date" datetime="2013-11-29T01:26:34+00:00">November 29,
 
 ][109]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: Apple II Pi][42]
@@ -1434,7 +1398,6 @@ For more info on how to use it, check out [Dave’s web site][10] and the [Ulti
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-11-29T06:05:17+00:00">November 29,
@@ -1442,7 +1405,6 @@ class="entry-date" datetime="2013-11-29T06:05:17+00:00">November 29,
 
 ][42]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: release history and notes][13]
@@ -1624,7 +1586,6 @@ enhancements. To update, type `a2cloud-update`.
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2013-12-28T20:07:02+00:00">December 28,
@@ -1632,7 +1593,6 @@ class="entry-date" datetime="2013-12-28T20:07:02+00:00">December 28,
 
 ][13]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 #  [A2CLOUD: other stuff][121]
@@ -1650,7 +1610,6 @@ it, or just go to [http://ivanx.com/a2cloud][123].
 
 </div>
 
-<footer class="entry-meta">
 This entry was posted in [A2CLOUD][2], [A2CLOUD
 (newest first)][14], [Apple II][15], [Raspberry Pi][16] on [<time
 class="entry-date" datetime="2014-01-26T15:10:58+00:00">January 26,
@@ -1658,12 +1617,10 @@ class="entry-date" datetime="2014-01-26T15:10:58+00:00">January 26,
 
 ][121]<span class="by-author"> by <span class="author
 vcard">[ivanx][17]</span></span>.
-</footer>
 
 
 </div>
 
-</section>
 
 <div id="secondary" class="widget-area" role="complementary">
 <aside id="dpe_fp_widget-2" class="widget widget_dpe_fp_widget" markdown="1">
@@ -1766,12 +1723,10 @@ vcard">[ivanx][17]</span></span>.
 
 </div>
 
-<footer id="colophon" role="contentinfo" markdown="1">
 <div class="site-info">
 [Proudly powered by WordPress][124]
 </div>
 
-</footer>
 
 </div>
 
