@@ -41,12 +41,6 @@ II][15], [Raspberry Pi][16] on July 14, 2013 by [ivanx][17]
 
 #  [A2CLOUD: what you need][18]
 
-
-<div class="comments-link">
-[<span class="leave-reply">Leave a reply</span>][19]
-</div>
-
-
 <div class="entry-content" markdown="1">
 To use A2CLOUD, you need various things. Here’s a video to show you what
 goes where, followed by your shopping list. (Don’t pay much attention to
@@ -139,12 +133,6 @@ vcard">[ivanx][17]</span></span>.
 
 #  [A2CLOUD: prepare your Pi][44]
 
-
-<div class="comments-link">
-[<span class="leave-reply">Leave a reply</span>][45]
-</div>
-
-
 <div class="entry-content" markdown="1">
 <span style="font-size: 1rem; line-height: 1.714285714; text-decoration:
 underline;">Starting Fresh</span>
@@ -193,12 +181,6 @@ vcard">[ivanx][17]</span></span>.
 
 
 #  [A2CLOUD: go headless (optional)][38]
-
-
-<div class="comments-link">
-[<span class="leave-reply">Leave a reply</span>][48]
-</div>
-
 
 <div class="entry-content" markdown="1">
 For basic A2CLOUD use, I recommend going headless with your Raspberry Pi
@@ -296,12 +278,6 @@ vcard">[ivanx][17]</span></span>.
 
 #  [A2CLOUD: install the software][56]
 
-
-<div class="comments-link">
-[<span class="leave-reply">Leave a reply</span>][57]
-</div>
-
-
 <div class="entry-content" markdown="1">
 If you used the [Raspple II][12] installation method,
 you’ve already installed the A2CLOUD software, and can skip the rest of
@@ -348,12 +324,6 @@ vcard">[ivanx][17]</span></span>.
 
 
 #  [A2CLOUD: attach your cables][58]
-
-
-<div class="comments-link">
-[2 Replies][59]
-</div>
-
 
 <div class="entry-content" markdown="1">
 Figure out which of the following scenarios applies to you, and attach
@@ -450,12 +420,6 @@ vcard">[ivanx][17]</span></span>.
 
 #  [A2CLOUD: make your boot disk][60]
 
-
-<div class="comments-link">
-[1 Reply][61]
-</div>
-
-
 <div class="entry-content" markdown="1">
 You’re almost ready to use virtual drives, courtesy of David Schmidt’s
 [VSDRIVE][62], which is included with [ADTPro][63]. You can also use ADTPro
@@ -526,12 +490,6 @@ vcard">[ivanx][17]</span></span>.
 
 #  [A2CLOUD: use virtual drives!][67]
 
-
-<div class="comments-link">
-[3 Replies][68]
-</div>
-
-
 <div class="entry-content" markdown="1">
 Ok, almost there. Fire up your A2CLOUD floppy, and at the welcome
 screen, type V. (If you are at an Applesoft prompt, you can instead type
@@ -586,12 +544,6 @@ vcard">[ivanx][17]</span></span>.
 
 
 #  [A2CLOUD: log in from your Apple II][71]
-
-
-<div class="comments-link">
-[2 Replies][72]
-</div>
-
 
 <div class="entry-content" markdown="1">
 If you’re happy enough controlling your Pi with a screen or keyboard
@@ -712,12 +664,6 @@ vcard">[ivanx][17]</span></span>.
 
 #  [A2CLOUD: make a floppy or image][80]
 
-
-<div class="comments-link">
-[<span class="leave-reply">Leave a reply</span>][81]
-</div>
-
-
 <div class="entry-content" markdown="1">
 If you have [A2SERVER][82] installed — which you do
 if you installed A2CLOUD with [Raspple II][12] — it’s
@@ -784,12 +730,6 @@ vcard">[ivanx][17]</span></span>.
 
 
 #  [A2CLOUD: learn some Unix][83]
-
-
-<div class="comments-link">
-[<span class="leave-reply">Leave a reply</span>][84]
-</div>
-
 
 <div class="entry-content" markdown="1">
 Once you’re logged into your Raspberry Pi, you can download disk images
@@ -882,12 +822,6 @@ vcard">[ivanx][17]</span></span>.
 
 #  [A2CLOUD: “insert” a disk image][85]
 
-
-<div class="comments-link">
-[<span class="leave-reply">Leave a reply</span>][86]
-</div>
-
-
 <div class="entry-content" markdown="1">
 To make things easy, A2CLOUD has commands to “insert” disk image files
 into the virtual drives:
@@ -940,12 +874,6 @@ vcard">[ivanx][17]</span></span>.
 
 
 #  [A2CLOUD: connect with other people][87]
-
-
-<div class="comments-link">
-[<span class="leave-reply">Leave a reply</span>][88]
-</div>
-
 
 <div class="entry-content" markdown="1">
 Once you’ve logged into your Pi — that could be from your Apple II using
@@ -1020,12 +948,6 @@ vcard">[ivanx][17]</span></span>.
 
 
 #  [A2CLOUD: browse &#038; download][93]
-
-
-<div class="comments-link">
-[<span class="leave-reply">Leave a reply</span>][94]
-</div>
-
 
 <div class="entry-content" markdown="1">
 If you want to get new Apple II software, there are a few ways to go
@@ -1104,12 +1026,6 @@ vcard">[ivanx][17]</span></span>.
 
 #  [A2CLOUD: use disk images][99]
 
-
-<div class="comments-link">
-[<span class="leave-reply">Leave a reply</span>][100]
-</div>
-
-
 <div class="entry-content" markdown="1">
 Once you’ve [downloaded stuff to your P][93]i, or [copied stuff on to it
 from another computer on your network][80], you can [immediately use
@@ -1186,12 +1102,6 @@ vcard">[ivanx][17]</span></span>.
 
 
 #  [A2CLOUD: expand archives][101]
-
-
-<div class="comments-link">
-[<span class="leave-reply">Leave a reply</span>][102]
-</div>
-
 
 <div class="entry-content" markdown="1">
 If you have an archive file, on your Pi, you’ll need to expand it.
@@ -1271,12 +1181,6 @@ vcard">[ivanx][17]</span></span>.
 
 
 #  [A2CLOUD: transfer files][104]
-
-
-<div class="comments-link">
-[<span class="leave-reply">Leave a reply</span>][105]
-</div>
-
 
 <div class="entry-content" markdown="1">
 If you’ve got files on your Pi that aren’t inside one of your viritual
@@ -1390,12 +1294,6 @@ vcard">[ivanx][17]</span></span>.
 
 #  [A2CLOUD: increase serial port speed][75]
 
-
-<div class="comments-link">
-[<span class="leave-reply">Leave a reply</span>][107]
-</div>
-
-
 <div class="entry-content" markdown="1">
 I chose the default speed of 4800 baud for Pi as a lowest common
 denominator that should work in almost any situation, even a IIc using
@@ -1457,12 +1355,6 @@ vcard">[ivanx][17]</span></span>.
 
 #  [A2CLOUD: emulate an Apple II][109]
 
-
-<div class="comments-link">
-[<span class="leave-reply">Leave a reply</span>][110]
-</div>
-
-
 <div class="entry-content" markdown="1">
 Though the purpose of A2CLOUD is primarily to extend the functionality
 of your actual Apple II, there are also emulators provided in case you
@@ -1505,12 +1397,6 @@ vcard">[ivanx][17]</span></span>.
 
 
 #  [A2CLOUD: Apple II Pi][42]
-
-
-<div class="comments-link">
-[<span class="leave-reply">Leave a reply</span>][115]
-</div>
-
 
 <div class="entry-content" markdown="1">
 David Schmenk has created [Apple II Pi][10], which
@@ -1560,12 +1446,6 @@ vcard">[ivanx][17]</span></span>.
 
 
 #  [A2CLOUD: release history and notes][13]
-
-
-<div class="comments-link">
-[<span class="leave-reply">Leave a reply</span>][119]
-</div>
-
 
 <div class="entry-content" markdown="1">
 A2CLOUD is sorta always in a state of development with tiny tweaks
@@ -1756,12 +1636,6 @@ vcard">[ivanx][17]</span></span>.
 
 
 #  [A2CLOUD: other stuff][121]
-
-
-<div class="comments-link">
-[4 Replies][122]
-</div>
-
 
 <div class="entry-content" markdown="1">
 This is a post for new techniques or features that aren’t fully ready,
