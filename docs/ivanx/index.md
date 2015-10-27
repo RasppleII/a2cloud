@@ -36,8 +36,7 @@ os`). The complete version history is [here][13].*
 [v_img01]: http://img.youtube.com/vi/kYkOxe4mjHg/0.jpg
 [video01]: http://www.youtube.com/watch?v=kYkOxe4mjHg
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14], [Apple
-II][15], [Raspberry Pi][16] on July 14, 2013 by [ivanx][17]
+This entry was posted on July 14, 2013 by [ivanx][17]
 
 
 
@@ -120,8 +119,7 @@ model linked above, are those based on the Prolific PL2303 chipset. Other
 models based on other chipsets such as FTDI may also work; I just haven’t
 tried them.)
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [July 14, 2013][18] by [ivanx][17].
+This entry was posted on [July 14, 2013][18] by [ivanx][17].
 
 
 
@@ -154,8 +152,7 @@ If you want all the features, answer “Y” to the questions. Then be patient, 
 it takes a little while to install.
 
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [July 14, 2013][44] by [ivanx][17].
+This entry was posted on [July 14, 2013][44] by [ivanx][17].
 
 
 
@@ -229,8 +226,7 @@ configure your Pi to have a static IP address (which is permanently set,
 rather than asking your router for it) via the method discussed [here][55].
 
  
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [July 14, 2013][38] by [ivanx][17].
+This entry was posted on [July 14, 2013][38] by [ivanx][17].
 
 
 
@@ -266,8 +262,7 @@ You’ve now got your Raspberry Pi providing virtual drives and internet access
 for your Apple II!
 
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [July 14, 2013][56] by [ivanx][17].
+This entry was posted on [July 14, 2013][56] by [ivanx][17].
 
 
 
@@ -346,8 +341,7 @@ different port and repeat until you figure out which one is the lowest and
 which one is the highest.
 
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [July 14, 2013][58] by [ivanx][17].
+This entry was posted on [July 14, 2013][58] by [ivanx][17].
 
 
 
@@ -403,8 +397,7 @@ reboot, or disconnect and then reconnect the USB-to-serial adapter on the
 lower USB port.
 
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [July 14, 2013][60] by [ivanx][17].
+This entry was posted on [July 14, 2013][60] by [ivanx][17].
 
 
 
@@ -450,8 +443,7 @@ You can also change the virtual drives to use different images, which I’ll
 explain in a later post.
 
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [July 14, 2013][67] by [ivanx][17].
+This entry was posted on [July 14, 2013][67] by [ivanx][17].
 
 
 
@@ -553,8 +545,7 @@ UltraTerm) for 80 column support. I haven’t tried them, but [here’s the
 relevant discussion thread][79].
 
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [July 14, 2013][71] by [ivanx][17].
+This entry was posted on [July 14, 2013][71] by [ivanx][17].
 
 
 
@@ -609,8 +600,7 @@ Windows computers can also do so in the command window by using `pscp`
 in [PuTTY][50]. The shared volume is at /media/A2SHARED/ADTDISKS.
 
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [July 14, 2013][80] by [ivanx][17].
+This entry was posted on [July 14, 2013][80] by [ivanx][17].
 
 
 
@@ -687,8 +677,7 @@ for every purpose imaginable. If you think there are others which should be
 included here, please mention them in the comments.
 
  
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [July 15, 2013][83] by [ivanx][17].
+This entry was posted on [July 15, 2013][83] by [ivanx][17].
 
 
 
@@ -733,8 +722,7 @@ The symlinks are in /usr/local/adtpro/disks, and are called Virtual.po or
 Virtual2.po, respectively.)
 
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [August 11, 2013][85] by [ivanx][17].
+This entry was posted on [August 11, 2013][85] by [ivanx][17].
 
 
 
@@ -791,8 +779,7 @@ want to give it a go, [see this comment][92] to get started, and look for help
 on Linux forums if you need it.
 
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [August 11, 2013][87] by [ivanx][17].
+This entry was posted on [August 11, 2013][87] by [ivanx][17].
 
 
 
@@ -848,8 +835,7 @@ in a single command, e.g: `wget
 http://appleii.ivanx.com/slammer/files/SLAMMER111P.DSK`
 
  
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [August 11, 2013][93] by [ivanx][17].
+This entry was posted on [August 11, 2013][93] by [ivanx][17].
 
 
 
@@ -909,8 +895,7 @@ alternative, but it’s even slower. It does preserve dates, however.)
 assigned to virtual drives 1 and 2, rather than typing out the full path.
 
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [August 11, 2013][99] by [ivanx][17].
+This entry was posted on [August 11, 2013][99] by [ivanx][17].
 
 
 
@@ -971,8 +956,7 @@ outfilename` will decode an EXEC file made by Executioner; `unexec filename >
 outfilename` will decode an EXEC file containing monitor input.
 
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [August 11, 2013][101] by [ivanx][17].
+This entry was posted on [August 11, 2013][101] by [ivanx][17].
 
 
 
@@ -1064,8 +1048,7 @@ it prefers to say) from various Apple II file formats into modern formats. If
 you want it to give that a shot, use `-e` instead of `-g` above.
 
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [August 11, 2013][104] by [ivanx][17].
+This entry was posted on [August 11, 2013][104] by [ivanx][17].
 
 
 
@@ -1114,8 +1097,7 @@ rename PT3.GLOBALS, and then rename the appropriate globals file to
 PT3.GLOBALS.
 
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [August 11, 2013][75] by [ivanx][17].
+This entry was posted on [August 11, 2013][75] by [ivanx][17].
 
 
 
@@ -1147,8 +1129,7 @@ of the Raspbian desktop. (To start the Raspbian desktop, type `startx` or use
 [remote desktop software][38].) Usage instructions are [here][114].
 
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [November 29, 2013][109] by [ivanx][17].
+This entry was posted on [November 29, 2013][109] by [ivanx][17].
 
 
 
@@ -1189,8 +1170,7 @@ on how to use it, check out [Dave’s web site][10] and the [Ultimate Apple 2
 forums][118].
 
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [November 29, 2013][42] by [ivanx][17].
+This entry was posted on [November 29, 2013][42] by [ivanx][17].
 
 
 
@@ -1409,8 +1389,7 @@ _beta, Jul 27, 2013_
   introduced at KansasFest 2013
 
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [December 28, 2013][13] by [ivanx][17].
+This entry was posted on [December 28, 2013][13] by [ivanx][17].
 
 
 # [A2CLOUD: other stuff][121]
@@ -1424,8 +1403,7 @@ guide backwards. Click “A2CLOUD” in the menu header above to fix it, or just
 go to [http://ivanx.com/a2cloud][123].
 
 
-This entry was posted in [A2CLOUD][2], [A2CLOUD (newest first)][14],
-[Apple II][15], [Raspberry Pi][16] on [January 26, 2014][121] by [ivanx][17].
+This entry was posted on [January 26, 2014][121] by [ivanx][17].
 
 
 ### A2CLOUD Table of Contents
