@@ -111,11 +111,11 @@ positions described here.)
 
  
 
-<small>(A note about the USB-to-serial adapter: there are lots of
+(A note about the USB-to-serial adapter: there are lots of
 different brands and models of these. The only ones I have ever tested,
 including the TRENDnet model linked above, are those based on the
 Prolific PL2303 chipset. Other models based on other chipsets such as
-FTDI may also work; I just haven’t tried them.)</small>
+FTDI may also work; I just haven’t tried them.)
 
 </div>
 
@@ -635,11 +635,11 @@ window, or under “Network” from the “Go” menu of the Finder. On Windows
 it should appear under Network. On Mac OS 7 through 9, open Chooser from
 the Apple menu and click on AppleShare.
 
-<small>(If you can’t browse to the server on your network, try typing
+(If you can’t browse to the server on your network, try typing
 `a2server-setup` to update it, and if that doesn’t work, type `showip`
 to get your Pi’s IP address. On Mac OS X, enter the IP address under
 “Connect To Server…” from the Go menu of the Finder; on Windows, type
-the IP address following \\\\ in an Explorer window.)</small>
+the IP address following \\\\ in an Explorer window.)
 
 Open the ADTDISKS shared volume and copy any disk images you want to
 make into disks in there.
@@ -791,10 +791,10 @@ You can always put the A2CLOUD disk image back in virtual drive 2 with:
 
 `vsd2 $A2CLOUD`
 
-<small>(The `vsd1` and `vsd2` commands create a symbolic link, which is
+(The `vsd1` and `vsd2` commands create a symbolic link, which is
 like a Windows shortcut or Mac alias, to whatever file you specify as
 imageFileName. The symlinks are in /usr/local/adtpro/disks, and are
-called Virtual.po or Virtual2.po, respectively.)</small>
+called Virtual.po or Virtual2.po, respectively.)
 
 </div>
 
