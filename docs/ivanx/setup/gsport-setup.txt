@@ -1,0 +1,573 @@
+#!/bin/bash
+
+readcharHex () {
+# read one character from file & convert to corresponding hex value
+# arg1: filename
+# arg2: (optional) offset (# of bytes to skip before reading)
+#  out: two-digit hex value from 00-FF
+# exit: 8=extraneous arg, 11=missing arg1,
+#       21=invalid arg1, 22=invalid arg2
+    [[ $1 ]] || return 11
+    [[ $3 ]] && return 8
+    [[ -f $1 ]] || return 21
+    [[ $2 ]] && { [[ ( $(printf %d "$2" 2> /dev/null) == $2 ) \
+     && ( $2 -ge 0 ) ]] || return 22; }
+    # args are valid
+    charX="$(dd if="$1" bs=1 skip=$(($2)) \
+     count=1 2> /dev/null; echo -n X)"
+    [[ ${#charX} -gt 1 ]] || { echo -n "00"; return 0; }
+    printf %02X $(echo -n "${charX:0:1}" | od -t u1 | \
+     head -1 | sed 's/[0\ ]*//' | tr -d ' \n') | tr [A-Z] [a-z]
+}
+
+readchars () {
+# read one or more characters from a file
+# arg1: filename
+# arg2: (optional) offset (# of bytes to skip before reading)
+# arg3: (optional) # of chars to read (default is until end of file)
+#  out: sequence of characters
+# exit: 8=extraneous arg, 11=missing arg1,
+#       21=invalid arg1, 22=invalid arg2, 23=invalid arg3
+    [[ $1 ]] || return 11
+    [[ $4 ]] && return 8
+    [[ -f $1 ]] || return 21
+    [[ $2 ]] && { [[ ( $(printf %d "$2" 2> /dev/null) == $2 ) \
+     && ( $2 -ge 0 ) ]] || return 22; }
+    [[ $3 ]] && { [[ ( $(printf %d "$3" 2> /dev/null) == $3 ) \
+     && ( $3 -ge 0 ) ]] || return 23; }
+    # args are valid
+    dd if="$1" bs=1 skip=$(($2)) $([[ $3 ]] && echo -n "count=$3") \
+     2> /dev/null
+}
+
+writecharsHex () {
+# write corresponding characters of hex values into file
+# arg1: filename
+# arg2: offset (# of bytes to skip before writing)
+# arg3: string of two-digit hexadecimal numbers from 00-FF, period delimited (not checked!)
+#  out: nothing
+# exit: 8=extraneous arg, 11=missing arg1, 12=missing arg2,
+#       13=missing arg3, 22=invalid arg2, 23=invalid arg3
+    [[ $1 ]] || return 11; [[ $2 ]] || return 12; [[ $3 ]] || return 13
+    [[ $4 ]] && return 8
+    [[ ( $(printf %d "$2" 2> /dev/null) == $2 ) \
+    && ( $2 -ge 0 ) ]] || return 22
+    p=0
+    offset=$2
+    len=${#3}
+    while (( p < len )); do
+        outByte=${3:$p:2}
+        [[ $(printf %02X "0x$outByte" 2> /dev/null) == \
+        $(echo -n "$outByte" | tr [a-z] [A-Z]) ]] || return 23
+        # args are valid
+        echo -n -e "\x$outByte" | \
+        dd of="$1" bs=1 seek=$offset conv=notrunc 2> /dev/null
+        (( p += 3 ))
+        (( offset++ ))
+    done
+}
+
+
+### start
+
+[[ -f /usr/bin/raspi-config ]] && isRpi=1 || isRpi=
+
+emulatorName="GSport"
+emulatorStart="gsport"
+emulatorSetup="gsport-setup"
+romFileName="ROM"
+configFileName="config.txt"
+
+imagesDir="/usr/local/share/gsdisks"
+gsosHD="gsoshd.hdv"
+gsosHDvolName="GSOS.HD"
+tempDir="/tmp/gs"
+
+rom=ROM3
+slot6=
+autoAnswerYes=
+noDisks=
+gisk=
+installDisks=
+kegs=
+
+{ acmd &> /dev/null || [[ $? -ne 127 ]]; } && acmdOK=1 || acmdOK=
+
+
+while { [[ $1 ]] || (( (0 + $gisk + $noDisks + $installDisks + 0) > 1 )); }; do
+    arg=$(tr -d '-' <<< ${1,,})
+    if [[ $arg == "6" ]]; then
+        slot6=1
+        shift
+    elif [[ $arg == "rom1" ]]; then
+        rom=ROM1
+        shift
+    elif [[ $arg == "rom3" ]]; then
+        rom=ROM3
+        shift
+    elif [[ $arg == "n" ]]; then
+        noDisks=1
+        shift
+    elif [[ $arg == "g" ]]; then
+        gisk=1
+        shift
+    elif [[ $arg == "i" ]]; then
+        installDisks=1
+        shift
+    elif [[ $arg == "y" ]]; then
+        autoAnswerYes=1
+        shift
+    elif [[ $arg == "k" ]]; then
+        kegs=1
+        shift
+    else
+        echo "Usage: $emulatorSetup [rom1|rom3] [-6] [-y [-g|-i|-n]]"
+        echo "rom1: use GS ROM 01"
+        echo "rom3: use GS ROM 03"
+        echo "-k: set up KEGS (rather than GSport)"
+        echo "-6: put blank disks in slot 6"
+        echo "-y: auto-answer yes (no prompting)"
+        echo "-i: use GS/OS and Spectrum installer disk images (use with -y)"
+        echo "-g: use GSport Internet Starter Kit disk image (use with -y)"
+        echo "-n: don't provide any disk images (use with -y)"
+        exit 1
+    fi
+done
+
+if [[ $kegs ]]; then
+    emulatorName="KEGS"
+    emulatorStart="kegs"
+    emulatorSetup="kegs-setup"
+    romFileName="rom.kegs"
+    configFileName="config.kegs"
+fi
+
+echo
+if [[ ! -f /usr/local/lib/$romFileName ]]; then
+    echo "$emulatorName needs to be set up. This may take several minutes."
+    if [[ ! $autoAnswerYes ]]; then
+        echo -n "Do you want to set up $emulatorName now? ";
+        read
+        if [[ ${REPLY:0:1} != "Y" && ${REPLY:0:1} != "y" ]]; then
+            exit 1
+        fi
+    fi
+    echo "Ok, let's go!"
+    echo
+fi
+
+if [[ ! $autoAnswerYes ]]; then
+    noDisks=
+    gisk=
+    while true; do
+        option1=0
+        option2=0
+        echo
+        echo "Do you want to:"
+        echo
+        if [[ $acmdOK ]]; then
+            [[ $kegs ]] && andSpectrum= || andSpectrum="and Spectrum "
+            echo "1) install GS/OS ${andSpectrum}from the installer disk images"
+            option1=1
+        fi
+        if [[ ! $kegs ]]; then
+            echo "2) use the premade GSport Internet Starter Kit hard drive image"
+            option2=2
+        fi
+        echo "3) prepare $emulatorName for use but don't provide any disk images"
+        echo "4) do nothing and quit"
+        echo
+        echo -n "Your choice: "
+        read
+        noDisks=
+        if [[ ${REPLY} == "4" ]]; then
+            [[ $0 == "-bash" ]] && return 1 || exit 1
+        elif [[ ${REPLY} == "3" ]]; then
+            noDisks=1; break
+        elif [[ ${REPLY} == $option2 ]]; then
+            gisk=1; break
+        elif [[ ${REPLY} == $option1 ]]; then
+            gisk=; break
+        fi
+    done
+fi
+
+sudo mkdir -p "$imagesDir"
+sudo chmod ugo+rw "$imagesDir"
+mkdir -p "$tempDir"
+cd "$tempDir"
+
+echo "Updating package lists..."
+sudo apt-get -y update > /dev/null
+
+if [[ ! -f /usr/local/bin/unar ]]; then
+    echo "Installing The Unarchiver..."
+    sudo apt-get -y install libgnustep-base1.22
+    sudo apt-get -y clean
+    wget -qO- appleii.ivanx.com/a2cloud/setup/unar.tgz | sudo tar Pzx
+fi
+
+if [[ ! -f /usr/local/bin/mkpo ]]; then
+    echo "Installing mkpo..."
+    sudo wget -qO /usr/local/bin/mkpo appleii.ivanx.com/a2cloud/setup/mkpo.txt
+    sudo chmod ugo+x /usr/local/bin/mkpo
+fi
+
+if [[ ! -f /usr/local/bin/nulib2 ]]; then
+    echo "Installing nulib2..."
+    wget -qO- appleii.ivanx.com/a2cloud/setup/nulib2.tgz | sudo tar Pzx
+fi
+
+if [[ ! -f $imagesDir/ROM1 ]]; then
+    echo "Getting GS ROM 01..."
+    wget -qO ROM1.zip http://web.archive.org/web/20130216031247/http://www.whatisthe2gs.apple2.org.za/files/rom1.zip
+    unzip ROM1.zip &> /dev/null
+    mv APPLE2GS.ROM $imagesDir/ROM1
+    chmod ugo-w $imagesDir/ROM1
+fi
+
+if [[ ! -f $imagesDir/ROM3 ]]; then
+    echo "Getting GS ROM 3..."
+    wget -qO ROM3.zip http://web.archive.org/web/20130216031247/http://www.whatisthe2gs.apple2.org.za/files/rom3.zip
+    unzip ROM3.zip &> /dev/null
+    mv APPLE2GS.ROM2 $imagesDir/ROM3
+    chmod ugo-w $imagesDir/ROM3
+fi
+
+if [[ ! -f /usr/local/lib/$romFileName || $arg ]]; then
+    echo "Setting $emulatorName to use $rom..."
+    echo "  (to change, use '$emulatorSetup rom1' or '$emulatorSetup rom3')"
+    sudo rm /usr/local/lib/$romFileName &> /dev/null
+    sudo ln -s $imagesDir/$rom /usr/local/lib/$romFileName &> /dev/null
+    sudo ln -s $romFileName /usr/local/lib/ROM &> /dev/null
+fi
+
+if [[ $slot6 ]]; then
+    echo "Putting blank disks in slot 6..."
+    sudo sed -i 's@^s6d1.*$@s6d1 = $imagesDir/slot6drive1.po@' /usr/local/lib/$configFileName       
+    sudo sed -i 's@^s6d2.*$@s6d2 = $imagesDir/slot6drive2.po@' /usr/local/lib/$configFileName
+    if [[ ! -f $imagesDir/slot6drive1.po || ! -f $imagesDir/slot6drive2.po ]]; then
+        wget -qO- ivanx.com/a2cloud/files/slot6.tgz | sudo tar Pzx 2> /dev/null
+    fi
+fi
+
+if [[ ! $kegs ]]; then
+    # set AppleTalk to turbo (works more reliably than Normal)
+    echo "Setting AppleTalk to turbo..."
+    if ! grep -q 'g_appletalk_turbo' /usr/local/lib/$configFileName; then
+        if grep -q 'bram1\[00\]' /usr/local/lib/$configFileName; then
+            sudo sed -i 's/^\(bram1\[00\]\)/g_appletalk_turbo = 1\n\n\1/' /usr/local/lib/$configFileName
+        else
+            echo -e '\ng_appletalk_turbo = 1' | sudo tee -a /usr/local/lib/$configFileName > /dev/null
+        fi
+    fi
+    sudo sed -i 's/g_appletalk_turbo = 0/g_appletalk_turbo = 1/' /usr/local/lib/$configFileName
+
+    # enable Uthernet
+    echo "Enabling Uthernet card emulation..."
+    if ! grep -q 'g_ethernet[^_]' /usr/local/lib/$configFileName; then
+        if grep -q 'bram1\[00\]' /usr/local/lib/$configFileName; then
+            sudo sed -i 's/^\(bram1\[00\]\)/g_ethernet = 1\n\n\1/' /usr/local/lib/$configFileName
+        else
+            echo -e '\ng_ethernet = 1' | sudo tee -a /usr/local/lib/$configFileName > /dev/null
+        fi
+    fi
+    sudo sed -i 's/g_ethernet = 0/g_ethernet = 1/' /usr/local/lib/$configFileName
+    
+    # GISK
+    if [[ $gisk ]]; then
+        echo "Getting GSport Internet Starter Kit..."
+        wget -O /tmp/GSport_Internet_Starter_Kit.zip http://sourceforge.net/projects/gsport/files/Emulator%20Software%20Images/GSport_Internet_Starter_Kit.zip
+        unzip -d /tmp /tmp/GSport_Internet_Starter_Kit.zip "GSport Internet Starter Kit/GSport Internet Starter Kit.2mg"
+        sudo mv "/tmp/GSport Internet Starter Kit/GSport Internet Starter Kit.2mg" $imagesDir
+        rm -r /tmp/GSport*
+        if [[ $(grep ^s7d1 /usr/local/lib/$configFileName) ]]; then
+            sudo sed -i "s:^s7d1.*$:s7d1 = $imagesDir/GSport Internet Starter Kit.2mg:" /usr/local/lib/$configFileName
+        else
+            echo "s7d1 = $imagesDir/GSport Internet Starter Kit.2mg" | tee -a /usr/local/lib/$configFileName > /dev/null
+        fi
+        noDisks=1
+    fi
+    if [[ $noDisks ]]; then
+        echo
+        echo
+        echo "Setup complete. You can now start $emulatorName."
+        echo
+        if [[ ! $autoAnswerYes ]]; then
+            echo -n "Press return to continue..."
+            read
+        fi
+        exit 0
+    fi
+fi
+
+# non-GISK; get installer disks
+if [[ ! -f $imagesDir/INSTALL.HDV ]] \
+|| [[ ! -f $imagesDir/SYSTEM.DISK.HDV ]] \
+|| [[ ! -f $imagesDir/SYSTEMTOOLS1.HDV ]] \
+|| [[ ! -f $imagesDir/SYSTEMTOOLS2.HDV ]] \
+|| [[ ! -f $imagesDir/FONTS.HDV ]] \
+|| [[ ! -f $imagesDir/SYNTHLAB.HDV ]] \
+|| [[ ! -f $imagesDir/"$gsosHD" ]] \
+|| [[ ! $kegs && ! -f $imagesDir/spectrum.hdv ]]; then
+
+#     if [[ ! $autoAnswerYes ]]; then
+#         echo
+#         echo -n "Do you want to download the GS/OS installer disks"
+#         if [[ ! -f $imagesDir/"$gsosHD" ]]; then
+#             echo -n -e "\nand create a hard disk image file"
+#         fi
+#         if [[ ! $kegs && -f /usr/local/bin/acmd && ! -f $imagesDir/spectrum.hdv ]]; then
+#             echo -n -e "\nand download Spectrum communications software"
+#         fi
+#         echo -n "? "
+#         read
+#     fi
+
+    REPLY="y"
+    if [[ $autoAnswerYes || ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]]; then
+
+        echo        
+        activeDisk=0
+        for diskname in Install System.Disk SystemTools1 SystemTools2 Fonts synthLAB; do
+            (( activeDisk++ ))
+            outfile="$imagesDir/$(tr [:lower:] [:upper:] <<< $diskname).HDV"
+            if [[ ! -f "$outfile" ]]; then
+                echo "Getting GS/OS disk ${activeDisk} of 6: $diskname"
+                wget -qO "Disk_${activeDisk}_of_7-$diskname.sea.bin" "http://archive.org/download/download.info.apple.com.2012.11/download.info.apple.com.2012.11.zip/download.info.apple.com%2FApple_Support_Area%2FApple_Software_Updates%2FEnglish-North_American%2FApple_II%2FApple_IIGS_System_6.0.1%2FDisk_${activeDisk}_of_7-$diskname.sea.bin"
+                unar -k skip "Disk_${activeDisk}_of_7-$diskname.sea.bin" &> /dev/null
+                truncate -s 819284 "Disk ${activeDisk} of 7-${diskname}.sea"
+                dd if="Disk ${activeDisk} of 7-${diskname}.sea" of=${outfile} bs=84 skip=1 &> /dev/null
+                chmod ugo-w "$outfile"
+                if [[ $activeDisk -eq 1 ]]; then
+                    if [[ $(grep ^s5d1 /usr/local/lib/$configFileName) ]]; then
+                        sudo sed -i "s:^s5d1.*$:s5d1 = $imagesDir/INSTALL.HDV:" /usr/local/lib/$configFileName
+                    else
+                        echo "s5d1 = $imagesDir/INSTALL.HDV" | tee -a /usr/local/lib/$configFileName > /dev/null
+                    fi
+                else
+                    if [[ $(grep ^s7d$activeDisk /usr/local/lib/$configFileName) ]]; then
+                        sudo sed -i "s:^s7d$activeDisk.*$:s7d$activeDisk = $outfile:" /usr/local/lib/$configFileName
+                    else
+                        echo "s7d$activeDisk = $outfile" | tee -a /usr/local/lib/$configFileName > /dev/null
+                    fi
+                fi
+            else
+                echo "GS/OS disk ${activeDisk} of 6: $diskname has already been downloaded."
+            fi
+        done
+        rm *.sea* &> /dev/null
+        
+        if [[ ! -f $imagesDir/"$gsosHD" ]]; then
+            echo "Creating 32 MB blank image at $imagesDir/$gsosHD..."
+            if [[ -f /usr/local/bin/acmd ]]; then
+                # if acmd exists, make a ProDOS disk with GS-ShrinkIt and Teach
+
+                if [[ ! -f /usr/local/adtpro/lib/AppleCommander/AppleCommander-1.3.5.13id-ac.jar ]]; then
+                    echo "Installing AppleCommander-1.3.5.13id..."
+                    sudo mkdir -p /usr/local/adtpro/lib/AppleCommander
+                    wget -qO /usr/local/adtpro/lib/AppleCommander/AppleCommander-1.3.5.13id-ac.jar http://downloads.sourceforge.net/project/applecommander/AppleCommander%20-%20Interim/testcase/AppleCommander-1.3.5.13id-ac.jar
+                    rm /usr/local/adtpro/lib/AppleCommander/AppleCommander-ac.jar &> /dev/null
+                    ln -s AppleCommander-1.3.5.13id-ac.jar /usr/local/adtpro/lib/AppleCommander/AppleCommander-ac.jar
+                fi
+
+                echo "Copying ProDOS..."
+                acmd -g "$imagesDir/INSTALL.HDV" PRODOS "PRODOS#ff0000"
+                #writecharsHex "PRODOS#ff0000" 0 "4C.00.C5.00"
+                wget -qO- ivanx.com/a2cloud/files/${emulatorName}SPLASH.SYS | dd of="PRODOS#ff0000" conv=notrunc &> /dev/null
+                echo "Copying Teach..."
+                cppo -e $imagesDir/SYSTEMTOOLS2.HDV /SYSTEMTOOLS2/TEACH . &> /dev/null
+                echo "Downloading GS-ShrinkIt..."
+                wget -qO- http://web.archive.org/web/20131031160750/http://nulib.com/library/gshk11.sea | nulib2 -x -e - GSHK &> /dev/null
+                nulib2 -a -e $gsosHD.shk "PRODOS#"* "GSHK#"* "TEACH#"* &> /dev/null
+                acmd -convert $gsosHD.shk $imagesDir/"$gsosHD" 65535
+                rm "PRODOS#"* "GSHK#"* "TEACH#"* $gsosHD.shk  &> /dev/null
+                
+                acmd -n $imagesDir/"$gsosHD" $gsosHDvolName
+                dd bs=512 count=1 conv=notrunc if="$imagesDir/INSTALL.HDV" of="$imagesDir/$gsosHD" 2> /dev/null
+                sudo chmod ugo+rw $imagesDir/"$gsosHD"
+                #acmd -p "$imagesDir/$gsosHD" PRODOS SYS < $tempDir/PRODOS
+                #rm $tempDir/PRODOS
+            fi
+            if [[ $(grep ^s7d1 /usr/local/lib/$configFileName) ]]; then
+                sudo sed -i "s:^s7d1.*$:s7d1 = $imagesDir/$gsosHD:" /usr/local/lib/$configFileName
+            else
+                echo "s7d1 = $imagesDir/$gsosHD" | tee -a /usr/local/lib/$configFileName > /dev/null
+            fi
+        fi
+        
+        if [[ $(grep ^g_limit_speed /usr/local/lib/$configFileName) ]]; then
+            sudo sed -i "s:^g_limit_speed.*$:g_limit_speed = 0:" /usr/local/lib/$configFileName
+        else
+            echo "g_limit_speed = 0" | tee -a /usr/local/lib/$configFileName > /dev/null
+        fi
+
+        if [[ -f /usr/local/bin/acmd && ! $(acmd -ls $imagesDir/$gsosHD | grep 'GSHK') ]]; then
+            echo
+            echo "Downloading GS-ShrinkIt..."
+            wget -qO- http://web.archive.org/web/20131031160750/http://nulib.com/library/gshk11.sea | acmd -p $imagesDir/$gsosHD GS.SHRINKIT.SEA S16
+        fi
+        
+        
+        # Spectrum starts here
+ 
+        if [[ ! $kegs ]]; then
+ 
+            mkdir -p /tmp/spectrum
+            cd /tmp/spectrum
+            
+            imageName="/tmp/spectrum/spectrum.dmg"
+            hfsName="/tmp/spectrum/spectrumH.dmg"
+            ullName="/tmp/spectrum/uthernet.bxy"
+            
+            if [[ ! -f /usr/bin/hcopy || ! -f /usr/bin/macsave ]]; then
+                echo "Installing HFS utilities..."
+                sudo apt-get -y install hfsutils macutils &> /dev/null
+            else
+                echo "HFS utilities are already installed."
+            fi
+            
+            if [[ ! -f /usr/local/adtpro/lib/AppleCommander/AppleCommander-1.3.5.13id-ac.jar ]]; then
+                echo "Installing AppleCommander..."
+                sudo mkdir -p /usr/local/adtpro/lib/AppleCommander
+                wget -qO /usr/local/adtpro/lib/AppleCommander/AppleCommander-1.3.5.13id-ac.jar http://downloads.sourceforge.net/project/applecommander/AppleCommander%20-%20Interim/testcase/AppleCommander-1.3.5.13id-ac.jar
+                rm /usr/local/adtpro/lib/AppleCommander/AppleCommander-ac.jar &> /dev/null
+                ln -s AppleCommander-1.3.5.13id-ac.jar /usr/local/adtpro/lib/AppleCommander/AppleCommander-ac.jar
+            fi
+            
+            if [[ ! -f "$imageName" ]]; then
+                echo "Downloading Spectrum Deluxe..."
+                wget -qO spectrum.dmg http://www.wannop.info/speccie/software/spectrum_2.5.3_deluxe.dmg
+            else
+                echo "Spectrum Deluxe has already been downloaded."
+            fi
+            
+            mkdir -p mnt
+            mkdir -p extract
+            mkdir -p shkstage
+            cp "$imageName" "$hfsName"
+            sudo mount -r -t hfs "$imageName" mnt
+            hmount "$hfsName"
+            
+            IFS=''
+            cd /tmp/spectrum/mnt
+            find Spectrum.2.5.3 -type d | while read thisDirPath; do
+                mkdir -p /tmp/spectrum/shkstage/"$thisDirPath"
+                hcd
+                IFS='/'
+                for thisDir in $thisDirPath; do
+                    hcd $thisDir
+                done
+                echo "  Copying: $(hpwd)"
+                IFS=''
+                cd /tmp/spectrum/extract
+                hls -1 | while read thisFile; do
+                    hcopy -m "$thisFile" - 2> /dev/null | macsave -f 2> /dev/null
+                    if [[ -f "$thisFile".info ]]; then
+                        if [[ $(readcharHex "$thisFile".info 65) == "70" ]]; then
+                            fileType=$(readcharHex "$thisFile".info 66)
+                            auxType=$(readcharHex "$thisFile".info 67)$(readcharHex "$thisFile".info 68)
+                        else
+                            auxType="0000"
+                            fMac=$(readchars "$thisFile".info 65 4)
+                            if [[ "$fMac" == "PS16" ]]; then
+                                fileType="b3";
+                            elif [[ "$fMac" == "PSYS" ]]; then
+                                fileType="ff";
+                            elif [[ "$fMac" == "BINA" ]]; then
+                                fileType="00";
+                            elif [[ "$fMac" == "TEXT" ]]; then
+                                fileType="04";
+                            elif [[ "$fMac" == "MIDI" ]]; then
+                                fileType="D7";
+                            elif [[ "$fMac" == "AIFF" || "$fMac" == "AIFC" ]]; then
+                                fileType="D8";
+                            elif [[ "$fMac" == "dImg" ]]; then
+                                fileType="E0";
+                            else
+                                echo "WARNING: unknown file type '$fMac' found for file $thisFile"
+                            fi
+                        fi
+                        [[ -f "$thisFile".rsrc ]] && mv "$thisFile".rsrc /tmp/spectrum/shkstage/"$thisDirPath"/"${thisFile}#${fileType}${auxType}r"
+                        [[ -f "$thisFile".data ]] && mv "$thisFile".data /tmp/spectrum/shkstage/"$thisDirPath"/"${thisFile}#${fileType}${auxType}"
+                        rm "$thisFile".info 2> /dev/null
+                    fi
+                done
+                cd /tmp/spectrum/mnt
+            done
+            
+            cd /tmp/spectrum/shkstage/Spectrum*
+            humount
+            sudo umount /tmp/spectrum/mnt
+    
+            mkdir -p Marinetti/Uthernet
+            cp SAFE2.Archive/Link.Layers/"Uthernet#bc4083" Marinetti/Uthernet
+            echo -n "After installing Marinetti, put Uthernet in the TCPIP folder of your System folder, and restart GS/OS. Then open Control Panels, choose TCP/IP, and choose Setup Connection. Choose Uthernet for the link layer. Under Primary Domain Name Server, enter 8.8.8.8, then click Configure and select Slot 3 and DHCP. Then click Save." > Marinetti/Uthernet/"Uthernet.README#040000"
+    
+            echo "Making archive for conversion to disk image..."
+            rm /tmp/spectrum/spectrum.shk 2> /dev/null
+            nulib2 -a -r -0 -e /tmp/spectrum/spectrum.shk * &> /dev/null
+            echo "Converting archive to disk image..."
+            acmd -convert /tmp/spectrum/spectrum.shk $imagesDir/spectrum.hdv 20480
+            acmd -n $imagesDir/spectrum.hdv SPECTRUM.DELUXE
+            
+            if [[ $(grep ^s7d7 /usr/local/lib/$configFileName) ]]; then
+                sudo sed -i "s:^s7d7.*$:s7d7 = $imagesDir/spectrum.hdv:" /usr/local/lib/$configFileName
+            else
+                echo "s7d7 = $imagesDir/spectrum.hdv" | tee -a /usr/local/lib/$configFileName > /dev/null
+            fi
+    
+            cd /tmp
+            
+            rm -rf /tmp/spectrum/extract /tmp/spectrum/shkstage /tmp/spectrum/spectrum.shk /tmp/spectrum/mnt &> /dev/null
+        fi
+        # Spectrum ends here
+    fi
+fi
+
+cd
+rm -r "$tempDir"
+
+echo
+echo
+if [[ -f "$imagesDir/$gsosHD" ]]; then
+    echo
+    echo "You can now start $emulatorName."
+    echo "When the installer boots, you can click Easy Update or Customize"
+    echo "to install GS/OS, if you downloaded the installer disks aobve."
+else
+    # if no acmd, create unformatted disk
+    # requires that the disk first be formatted with Advanced Disk Utility
+    dd bs=512 count=65535 if=/dev/zero of=$imagesDir/"$gsosHD" 2> /dev/null
+    writecharsHex $imagesDir/"$gsosHD" 0 "00.4C.00.C5.00"
+    echo
+    echo "You can now start $emulatorName."
+    echo
+    echo "If you downloaded the installer disks above:"
+    echo "When the installer boots, quit it, change to the SystemTools1 disk,"
+    echo "run Advanced Disk Utility, click Disk until a hard drive icon appears"
+    echo "that says Uninitialized, and initialize it. Then quit Advanced Disk"
+    echo "Utility, change to the Install Disk, and run Installer. When it loads,"
+    echo "click Easy Update or Customize to install GS/OS."
+    echo
+fi
+echo "When it's done, reboot."
+echo "(Use Shut Down, ctrl-F12, or ctrl-solidapple-equals.)"
+if [[ -f "$imagesDir/spectrum.hdv" ]]; then
+    echo 
+    echo "Then on the Spectrum disk, optionally install:"
+    echo "Marinetti (plus update): TCP/IP driver for GS/OS"
+    echo "Uthernet: Ethernet driver for Marinetti"
+    echo "Spectrum: serial and telnet communications"
+    echo "SAFE: FTP client"
+    echo "SNAP: Usenet newsgroups (NNTP) client"
+    echo "SAM2: Email (POP) client"
+fi
+echo
+echo "After installing, press F4 and choose 'Disk Configuration' to"
+echo "eject all disks other than slot 7 drive 1."
+echo
+if [[ ! $autoAnswerYes ]]; then
+    echo -n "Press return to continue..."
+    read
+fi
