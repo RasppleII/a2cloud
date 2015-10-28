@@ -41,7 +41,7 @@ convert the page to Markdown format.
 Hello, and welcome to A2CLOUD! It provides any Apple II — even a IIc — with
 internet access, mass storage, and floppy disk transfer, via a [Raspberry
 Pi][24], a tiny silent $35 computer. You can also use A2CLOUD with other Linux
-computers or virtual machines; [click here][fixme25] for details.
+computers or virtual machines; [click here][25] for details.
 
 This web page is the user guide; just read the posts in order. The table of
 contents is over on the right. You might want to start with the intro video
@@ -216,8 +216,6 @@ The username is “pi” and the password is “apple2″ (or instead “raspber
 you installed a fresh copy of Raspbian, rather than Raspple II). You should
 arrive at the Linux prompt.
 
-
-<a id="xrdp" />
 
 ### Remotely Access the Raspbian desktop
 
@@ -497,7 +495,6 @@ Apple II, and do other stuff on the internet. More on how in a future post.
 (Once you’ve got one of the below terminal programs working, you may also want
 to try out a [faster serial port rate][19] than the default 4800 baud.)
 
-<a id="screen" />
 Once you get comfortable with logging in, you might want
 multiple terminal screens you can switch freely between. To do this,
 type `screen`. Then, whenever you need a new screen, type ctrl-A followed by
@@ -525,8 +522,6 @@ Online. (Thanks to Tony Diaz and Intrec Software for making ProTERM free to
 the community.)
 
  
-<a id="spectrum" />
-
 ### Spectrum
 
 [Spectrum][66], for the Apple IIgs, is not provided on the A2CLOUD disk,
@@ -559,8 +554,6 @@ type `-VSDRIVE.LOW` followed by `-FILER`. Once in Filer, rename the volume o
 your A2CLOUD floppy to A2CLOUD.DISK, then copy /A2CLOUD.DISK/Z.LINK.CONFIG to
 /A2CLOUD/Z.LINK.CONFIG.
 
-
-<a id="unenhanced" />
 
 ### Apple II Plus and unenhanced IIe
 
@@ -790,8 +783,6 @@ you have a preferred NNTP server you would like to use, you can set it by
 typing `a2news -s your.server.address`.)
 
 
-<a id="ttytter" />
-
 ### Twitter
 
 You can indeed tweet from your Apple II, if you can believe it. Type `ttytter`
@@ -807,7 +798,7 @@ beta and may have problems.
 
 There are email programs you can use, but they can be challenging to set up,
 so they have not formally been made a part of A2CLOUD for the moment. If you
-want to give it a go, [see this comment][fixme74] to get started, and look for help
+want to give it a go, [see this comment][74] to get started, and look for help
 on Linux forums if you need it.
 
 
@@ -842,7 +833,7 @@ programs.
 `lynx`\: a text-only web browser which can access simply laid out sites.
 Examples: `lynx ivanx.com`, or a download site, like `lynx
 mirrors.apple2.org.za`. ProTERM and Spectrum work better for lynx than Z-Link
-does. (You can also try out [alternative text-only web browsers][fixme77].)
+does. (You can also try out [alternative text-only web browsers][77].)
 
 `links`\: another text-only web browser you might, or might not, prefer to
 Lynx. If you see only a black screen when you start it, press the ESC key to
@@ -1294,7 +1285,7 @@ enhancements. To update, type `a2cloud-update`.
 
 ### v1.6.6, Feb 17, 2014
 
-* [beta support for Debian and Ubuntu Linux on non-Pi machines][fixme25]
+* [beta support for Debian and Ubuntu Linux on non-Pi machines][25]
 
 * ttytter support for color and avoiding non-ASCII characters when running
   under Screen
@@ -1438,8 +1429,6 @@ Ivan's comments are included below, and obviously the order of posts is fixed
 in this Markdown file.  -Joseph
 -->
 
-## 4 thoughts on “A2CLOUD: other stuff”
-
 ### ivanx, January 26, 2014 at 4:03 pm
 
 [Alistair Ross][88], who suggested the TTYtter client for Twitter that is now
@@ -1539,13 +1528,12 @@ This entry was posted on January 26, 2014 by [ivanx][29].
 [22]: #a2cloud-release-history-and-notes
 [23]: #a2cloud-other-stuff
 [24]: http://www.raspberrypi.org "Raspberry Pi"
-[fixme25]: http://appleii.ivanx.com/prnumber6/open-thread/#comment-9 "A2CLOUD on non-Pi computers"
+[25]: #ivanx-february-17-2014-at-943-pm "A2CLOUD on non-Pi computers"
 [26]: http://appleii.ivanx.com/a2server/ "A2SERVER"
 [27]: http://schmenk.is-a-geek.com/wordpress/ "Apple II Pi"
 [28]: http://appleii.ivanx.com/rasppleii/ "Raspple II"
-[29]: http://appleii.ivanx.com/prnumber6/author/ivanx/ "View all posts by ivanx"
-<!-- FIXME: use mailto:ivan@ivanx.com instead? -->
-[30]: #unenhanced "A2CLOUD: log in from your Apple II"
+[29]: mailto:ivan@ivanx.com "Contact Ivan Drucker"
+[30]: #apple-ii-plus-and-unenhanced-iie "A2CLOUD: log in from your Apple II"
 [31]: http://www.raspberrypi.org/products/ "Raspberry Pi purchase"
 [32]: http://www.amazon.com/s/ref=nb_sb_ss_i_0_4?url=search-alias%3Daps&amp;field-keywords=raspberry+pi+2&amp;sprefix=rasp%2Caps%2C173 "Raspberry Pi 2 Model B search - Amazon"
 [33]: http://www.amazon.com/gp/product/B00LPESRUK/ref=as_li_tl?ie=UTF8&amp;camp=1789&amp;creative=390957&amp;creativeASIN=B00LPESRUK&amp;linkCode=as2&amp;tag=ivane-20&amp;linkId=B7F2LQNXIWGYCNYQ "Raspberry Pi 1 model B+ - Amazon"
@@ -1590,10 +1578,10 @@ This entry was posted on January 26, 2014 by [ivanx][29].
 [71]: http://www.irchelp.org/ "IRC Help"
 [72]: http://www.irssi.org/documentation/ "Irssi Documentation"
 [73]: http://www.floodgap.com/software/ttytter/ "TTYtter"
-[fixme74]: http://appleii.ivanx.com/prnumber6/open-thread/#comment-1 "email on A2CLOUD"
+[74]: #ivanx-january-26-2014-at-403-pm "email on A2CLOUD"
 [75]: http://elinux.org/RPi_Chromium "Chromium (Google Chrome for Raspberry Pi)"
 [76]: http://elinux.org/RPi_IceWeasel "Iceweasel (Firefox for Raspbian)"
-[fixme77]: http://appleii.ivanx.com/prnumber6/open-thread/#comment-2
+[77]: #ivanx-january-26-2014-at-944-pm
 [78]: http://unarchiver.c3.cx/formats "The Unarchiver supported formats"
 [79]: https://groups.google.com/forum/#!searchin/comp.sys.apple2/115200$20hugh "Hugh Hood's 115200 baud ProTERM macros"
 [80]: http://gsport.sourceforge.net/ "GSport"
