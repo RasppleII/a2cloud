@@ -1,0 +1,59 @@
+#!/bin/bash
+
+defaultNNTP="news.aioe.org"
+defaultGroups="comp.emulators.apple2:\ncomp.sys.apple2:\ncomp.sys.apple2.comm:\ncomp.sys.apple2.marketplace:\ncomp.sys.apple2.programmer:\ncomp.sys.apple2.usergroups:"
+
+if [[ ! $(dpkg -l tin 2> /dev/null | grep '^ii') ]]; then
+    echo "Installing Tin newsreader..."
+    sudo apt-get -y update
+    sudo apt-get -y install tin &> /dev/null
+    sudo apt-get -y clean
+fi        
+
+if [[ $1 == "-h" || $1 == "--help" ]]; then
+    echo "Usage: a2news [-s nntpServerAddress] [-m postingEmailAddress] [otherTinOptions]"
+    echo "  note: for full options, instead use 'tin'"
+    exit 1
+fi
+
+while [[ $1 == "-s" || $1 == "-m" ]]; do    
+    if [[ $1 == "-s" && $2 ]]; then
+        nntpServer=$2
+        shift
+        shift
+    fi
+    
+    if [[ $1 == "-m" && $2 ]]; then
+        emailAddress=$2
+        shift
+        shift
+    fi
+done
+
+mkdir -p ~/.tin
+
+if [[ ! -f ~/.newsrc ]]; then
+    IFS=''; echo -e "$defaultGroups" > ~/.newsrc
+fi
+
+if [[ $nntpServer || ! -f ~/.tin/nntp.server ]]; then
+    [[ ! $nntpServer ]] && nntpServer="$defaultNNTP"
+    echo "$nntpServer" > ~/.tin/nntp.server
+else
+    nntpServer=$(cat ~/.tin/nntp.server)
+fi
+
+if [[ $emailAddress || ! -f ~/.tin/tinrc ]]; then
+    while [[ ! $emailAddress || ! $(grep "@" <<< $emailAddress) || ! $(grep "\." <<< $emailAddress) ]]; do
+        echo -n "Enter the email address you want to post as: "
+        read
+        emailAddress=$REPLY
+    done
+    if [[ -f ~/.tin/tinrc ]]; then
+        sed -i "s/^mail_address=.*$/mail_address=$emailAddress/" ~/.tin/tinrc
+    else
+        echo "mail_address=$emailAddress" > ~/.tin/tinrc
+    fi
+fi
+
+NNTPSERVER=$nntpServer tin -r "$@"
