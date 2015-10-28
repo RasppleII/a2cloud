@@ -1428,13 +1428,87 @@ If this is at the top of a bunch of posts below, you’re reading the A2CLOUD
 guide backwards. Click “A2CLOUD” in the menu header above to fix it, or just
 go to [http://ivanx.com/a2cloud][1].
 
+<!--
+Ivan's comments are included below, and obviously the order of posts is fixed
+in this Markdown file.  -Joseph
+-->
+
+## 4 thoughts on “A2CLOUD: other stuff”
+
+### ivanx, January 26, 2014 at 4:03 pm
+
+[Alistair Ross][88], who suggested the TTYtter client for Twitter that is now
+in A2CLOUD, has introduced me to the Mutt email client. Mutt requires a
+hand-built .muttrc file to put in account information, but Alistair has
+developed a wizard that will create one for Gmail and other IMAP servers. I
+have more familiarity with Alpine (a clone of my first email client from the
+early 90’s, Pine), and may include one, or the other, or both, or neither, in
+a future A2CLOUD release.
+
+To install Mutt or Alpine, type: 
+`sudo apt-get install mutt` (or `alpine`) 
+also, get [Alistair’s Mutt configuration wizard][89]
+
+
+### ivanx, January 26, 2014 at 9:44 pm
+
+[Alistair Ross][88] also suggested the Links web browser. It has a cleaner
+layout than Lynx does, devoting more screen space to web content (especially
+valuable on the Apple II’s 80×24 display). You get nothing but a blank screen
+on startup, but press ESC to get a menu bar, and from there it’s
+self-explanatory. On a IIgs with Spectrum’s ANSI online display, you need to
+enable its color support from the Settings menu. There’s also a derivative
+called “Elinks” which at first glance seems to have more accurate color
+support (select “16 colors” from its setup menu). Alistair also suggested w3m,
+which I haven’t tried. You can get any of these with: 
+`sudo apt-get install links` (or `elinks`, or `w3m`)
+
+
+### ivanx, January 26, 2014 at 10:08 pm
+
+In [this comp.sys.apple2 thread][90] I discuss various techniques for copying
+contents of Apple II floppy images to another disk. In this case, it’s a hard
+disk image file used by a CFFA 3000 card, but it could be any kind of “hard
+disk”, including a Focus or MicroDrive card, or one provided by VSDRIVE such
+as the default 4 MB disk in S2,D1.
+
+
+### ivanx, February 17, 2014 at 9:43 pm
+
+A2CLOUD can be installed on Debian or Ubuntu Linux (and possibly derivatives).
+It has been tried on the 32-bit versions of Debian 7 and Ubuntu Server 13.10.
+To install, type: 
+```
+wget ivanx.com/a2cloud/setup; source setup
+```
+
+You can also install it into the [A2SERVER][91] virtual machine with the same
+command, or start fresh with the premade [A2SERVER+A2CLOUD][91] virtual
+machine. To use a USB-to-serial adapter with the VM, click the USB icon in the
+bottom of the window, and select the adapter. If you have two, repeat. If you
+want it to be automatically recognized, you can add it under
+Settings->Ports->USB.
+
+One particular difference compared with running A2CLOUD on a Pi is
+that there is no assignment of USB-to-serial adapters to specific physical USB
+ports. Instead, the “upper” USB port is always the adapter that appears first
+to the system (aka `/dev/ttyUSB0` or `/dev/ttyUSBupper`), and is used for
+shell login. The “lower” USB port is always the adapter that appears second to
+the system (aka `/dev/ttyUSB1` or `/dev/ttyUSBlower`), and is used for ADTPro
+and virtual drives.
+
+If they are both present at system startup, or connected to a hub which is
+then attached to the system, there’s no way of knowing which the system will
+see first. If things don’t work, either swap the cables on the Apple II side,
+or unplug both adapters and reattach one at a time, starting with the one
+connected to the Apple II printer port.
+
+Apple II Pi is not offered as an installation option on non-Pi computers,
+though if you’re dedicated, you can compile it yourself [here][92].
+
 
 This entry was posted on January 26, 2014 by [ivanx][29].
 
-<!--
-FIXME: http://appleii.ivanx.com/prnumber6/open-thread contains the comments,
-they need to be included here.
--->
 
 [1]: http://appleii.ivanx.com/a2cloud/ "A2CLOUD"
 [2]: #a2cloud-intro
@@ -1525,3 +1599,8 @@ they need to be included here.
 [85]: http://www.amazon.com/s/?_encoding=UTF8&amp;camp=1789&amp;creative=390957&amp;field-keywords=db9%20male%20null%20modem%20adapter%20-usb%20-female&amp;linkCode=ur2&amp;rh=n%3A172282%2Ck%3Adb9%20male%20null%20modem%20adapter%20-usb%20-female&amp;tag=ivane-20&amp;url=search-alias%3Delectronics "DE-9 male-to-male null modem adapter"
 [86]: https://www.ultimateapple2.com/forums/ "Ultimate Apple 2 forums"
 [87]: http://appleii.ivanx.com/a2cloud/setup/setup.txt "A2CLOUD setup script"
+[88]: http://twitter.com/AJRossNZ
+[89]: http://pastebin.com/Mawvd2pZ
+[90]: https://groups.google.com/forum/#!msg/comp.sys.apple2/VGvddYfn_wk/eFrQ-u3qBkUJ
+[91]: http://appleii.ivanx.com/a2server/a2server_virtualbox.html
+[92]: https://github.com/dschmenk/apple2pi "Apple II Pi source code"
