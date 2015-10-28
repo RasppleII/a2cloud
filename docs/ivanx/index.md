@@ -602,7 +602,12 @@ and click on AppleShare.
 `a2server-setup` to update it, and if that doesn’t work, type `showip` to get
 your Pi’s IP address. On Mac OS X, enter the IP address under “Connect To
 Server…” from the Go menu of the Finder; on Windows, type the IP address
-following \\\\ in an Explorer window.)
+following two blackslash characters (\\) in an Explorer window.)
+
+<!--
+Content edit: Make sure both Markdown source and HTML target renderings of how
+to specify a backslash-delimited UNC path are understandable.  -Joseph
+-->
 
 Open the ADTDISKS shared volume and copy any disk images you want to make into
 disks in there.
@@ -1017,10 +1022,10 @@ form:
 `acmd -p imageFileName APPLE2.FILENAME fileType auxType < fileToBeCopied`
 
 `fileType` should be a three-letter name (e.g. TXT), or a numeric type (e.g.
-255 or \\$E0). `auxType` is also needed for file types that require it (e.g.
-BIN), and can be either decimal, or hexadecimal if preceded with \\$. You can
-use \\$2000 for `auxType` if you’re not sure. If you want the file to go into
-a ProDOS subdirectory, you can specify the path as part of `APPLE2.FILENAME`
+255 or $E0). `auxType` is also needed for file types that require it (e.g.
+BIN), and can be either decimal, or hexadecimal if preceded with $. You can
+use $2000 for `auxType` if you’re not sure. If you want the file to go into a
+ProDOS subdirectory, you can specify the path as part of `APPLE2.FILENAME`
 (but do not include the volume name); any subdirectories that don’t already
 exist will be created.
 
