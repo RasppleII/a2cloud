@@ -1,0 +1,46 @@
+if [[ $1 == "-d" ]]; then
+    shift
+    setgetty=1
+else
+    setgetty=
+fi
+
+if [[ $1 == "-f" ]]; then
+    shift
+    force=1
+else
+    force=
+fi
+
+if [[ ! $1 || $1 == "--help" || $1 == "-h" ]]; then
+    echo 'Usage: term [-d] mono|color|none|<terminalName>';
+    echo '  -d sets default emulation for all serial port shells (takes effect on logout)'
+    echo '  omitting -d makes change temporary and immediate'
+    echo '  -f forces change even if not running on serial port (e.g. within "screen")'
+    echo '  Terminal emulation: mono->VT-100, color->PC-ANSI/ANSI-BBS, none->no emulation'
+else
+    if [[ $(tr [:upper:] [:lower:] <<< $1) == "mono" ]]; then
+        term="vt100"
+    elif [[ $(tr [:upper:] [:lower:] <<< $1) == "color" ]]; then
+        term="pcansi"
+    elif [[ $(tr [:upper:] [:lower:] <<< $1) == "none" ]]; then    
+        term="dumb"
+    else
+        term="$1"
+    fi
+    if [[ $setgetty ]]; then
+        sudo sed -i "s/\(ttyAMA0 .*\) .*$/\1 $term/" /etc/inittab;
+        sudo sed -i "s/\(ttyUSB.* .*\) .*$/\1 $term/g" /etc/inittab;
+        sudo init q;
+        sudo pkill -f "/sbin/getty"
+    else
+        if [[ $force || $(tty | grep tty) ]]; then
+            TERM="$term"
+        else
+            echo 1>&2 "Not running on serial port. No action taken. Use -f to set anyway."
+        fi
+    fi
+fi
+
+echo -e "$(tty) current emulation: $(tput bold)$TERM$(tput sgr0)"
+echo -e "default serial port emulation at login: $(tput bold)$(grep ttyUSB /etc/inittab | sed 's/^.*ttyUSB[^ ]* .* \(.*\)$/\1/')$(tput sgr0)"
