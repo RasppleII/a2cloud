@@ -1,4 +1,5 @@
-#!/bin/bash
+#! /bin/bash
+# vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
 
 # follows gzip syntax -- acts in place if filename provided, outputs to
 #   stdout with -c, accepts stdin and outputs to stdout if filename is - or absent

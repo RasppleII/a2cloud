@@ -1,4 +1,5 @@
-#!/bin/bash
+#! /bin/bash
+# vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
 
 origDir="$PWD"
 [[ ! -n $1 || ! -n $2 ]] && { echo "Usage: shk2image archiveFileName imageFileName [PRODOS.DIR.NAME]"; exit 1; };

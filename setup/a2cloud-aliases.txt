@@ -1,3 +1,6 @@
+#! /bin/bash
+# vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
+
 # A2CLOUD aliases:
 
 alias a2cloud-setup='wget -qO /tmp/a2cloud-setup ivanx.com/a2cloud/setup/; source /tmp/a2cloud-setup'

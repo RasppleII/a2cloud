@@ -1,4 +1,5 @@
-#!/bin/bash
+#! /bin/bash
+# vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
 
 if [[ ! $DISPLAY ]]; then
     echo "Please run KEGS in an X Window."

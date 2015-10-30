@@ -1,4 +1,5 @@
-#!/bin/bash
+#! /bin/bash
+# vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
 
 # don't do anything if ADTPro is already running
 if [[ $(ps aux | grep [A]DTPro) ]]; then

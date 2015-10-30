@@ -1,4 +1,5 @@
-#!/bin/bash
+#! /bin/bash
+# vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
 
 if [[ ! $(dpkg -l irssi 2> /dev/null | grep '^ii') ]]; then
     echo "Installing irssi..."

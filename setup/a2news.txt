@@ -1,4 +1,5 @@
-#!/bin/bash
+#! /bin/bash
+# vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
 
 defaultNNTP="news.aioe.org"
 defaultGroups="comp.emulators.apple2:\ncomp.sys.apple2:\ncomp.sys.apple2.comm:\ncomp.sys.apple2.marketplace:\ncomp.sys.apple2.programmer:\ncomp.sys.apple2.usergroups:"

@@ -1,4 +1,5 @@
-#!/bin/bash
+#! /bin/bash
+# vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
 
 if [[ ( $(grep USB <<< $myTTY) || $(grep AMA <<< $myTTY) || $SSH_CLIENT || $REMOTEHOST ) && ! $DISPLAY ]]; then
     echo "Please run LinApple on the console, or in an X Window."

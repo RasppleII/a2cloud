@@ -1,3 +1,6 @@
+#! /bin/bash
+# vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
+
 source /usr/local/etc/a2cloud-aliases
 
 if [[ -f /usr/local/java/bin/java ]]; then

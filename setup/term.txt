@@ -1,3 +1,6 @@
+#! /bin/bash
+# vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
+
 if [[ $1 == "-d" ]]; then
     shift
     setgetty=1
