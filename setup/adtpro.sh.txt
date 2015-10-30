@@ -99,16 +99,16 @@ fi
 
 # For OSX, use this:
 if [ "$OS" = "Darwin" ]; then
-  if [ "$OS_ARCH" = "powerpc" ]; then
-    export RXTXLIB=lib/rxtx/rxtx-2.1-7-bins-r2/Mac_OS_X
-  else
-    export RXTXLIB=lib/rxtx/rxtx-2.2pre2-local/mac-10.5
-  fi
+    if [ "$OS_ARCH" = "powerpc" ]; then
+        export RXTXLIB=lib/rxtx/rxtx-2.1-7-bins-r2/Mac_OS_X
+    else
+        export RXTXLIB=lib/rxtx/rxtx-2.2pre2-local/mac-10.5
+    fi
 fi
 
 # For Solaris, use this:
 if [ "$OS" = "SunOS" ]; then
-  export RXTXLIB=lib/rxtx/rxtx-2.2pre2-local/sparc-sun-solaris2.10-32
+    export RXTXLIB=lib/rxtx/rxtx-2.2pre2-local/sparc-sun-solaris2.10-32
 fi
 
 # Set up the library location.
@@ -116,18 +116,18 @@ export TWEAK1="-Djava.library.path="
 export TWEAK=$TWEAK1$ADTPRO_HOME/$RXTXLIB
 
 if [[ $headless ]]; then
-  if [[ ! $1 || ! -f /usr/bin/xvfb-run ]]; then
-    if [[ ! -f /usr/bin/xvfb-run ]]; then
-      echo "Headless operation requires xvfb."
-      usageExit
+    if [[ ! $1 || ! -f /usr/bin/xvfb-run ]]; then
+        if [[ ! -f /usr/bin/xvfb-run ]]; then
+            echo "Headless operation requires xvfb."
+            usageExit
+        else
+            echo "Headless operation requires a communication mode (e.g. serial)."
+            usageExit
+        fi
+        exit 1
     else
-      echo "Headless operation requires a communication mode (e.g. serial)."
-      usageExit
+        HEADLESS="xvfb-run --auto-servernum "
     fi
-    exit 1
-  else
-    HEADLESS="xvfb-run --auto-servernum "
-  fi
 fi
 
 if [[ $serialPortName && $(ps aux | grep "/sbin/getty.*$serialPortName") ]]; then

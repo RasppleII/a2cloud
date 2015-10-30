@@ -45,11 +45,11 @@ done
 noobs=
 readarray -t partitions < <(sudo fdisk -l | grep '^/dev')
 if [[ \
-  ${partitions[0]:0:14} == "/dev/mmcblk0p1" && ${partitions[0]:57:2} == " e" &&
-  ${partitions[1]:0:14} == "/dev/mmcblk0p2" && ${partitions[1]:57:2} == "85" &&
-  ${partitions[2]:0:14} == "/dev/mmcblk0p3" && ${partitions[2]:57:2} == "83" &&
-  ${partitions[3]:0:14} == "/dev/mmcblk0p5" && ${partitions[3]:57:2} == " c" &&
-  ${partitions[4]:0:14} == "/dev/mmcblk0p6" && ${partitions[4]:57:2} == "83" ]]; then
+    ${partitions[0]:0:14} == "/dev/mmcblk0p1" && ${partitions[0]:57:2} == " e" &&
+    ${partitions[1]:0:14} == "/dev/mmcblk0p2" && ${partitions[1]:57:2} == "85" &&
+    ${partitions[2]:0:14} == "/dev/mmcblk0p3" && ${partitions[2]:57:2} == "83" &&
+    ${partitions[3]:0:14} == "/dev/mmcblk0p5" && ${partitions[3]:57:2} == " c" &&
+    ${partitions[4]:0:14} == "/dev/mmcblk0p6" && ${partitions[4]:57:2} == "83" ]]; then
     noobs=" and the NOOBS install manager"
 fi
 

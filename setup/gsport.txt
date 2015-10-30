@@ -52,6 +52,7 @@ else
             if [[ $REPLY == "ok" || $REPLY == "ok" || $REPLY == "Ok" ]]; then
                 sudo touch /usr/local/etc/gsportconsolewarningoff
             fi
+            # FIXME: Should this block just be deleted at this point?
 #             echo "If you wish to run GSport in the console window, the mouse will not work"
 #             echo "unless you uninstall VirtualBox Guest Additions. If you don't want to do"
 #             echo "this, you can instead run GSport in an X window (e.g. by typing 'startx')."
