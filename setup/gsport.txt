@@ -1,0 +1,122 @@
+#!/bin/bash
+
+if [[ ( $(grep USB <<< $myTTY) || $(grep AMA <<< $myTTY) || $SSH_CLIENT || $REMOTEHOST ) && ! $DISPLAY ]]; then
+    echo "Please run GSport on the console, or in an X Window."
+else
+
+    if [[ -f /usr/local/lib/ROM ]]; then
+        if [[ ! $(grep snd-pcm-oss /etc/modules) ]]; then
+            echo "Configuring GSport sound..."
+            echo "snd-pcm-oss" | sudo tee -a /etc/modules > /dev/null
+            [[ ! $(lsmod | grep snd_pcm_oss) ]] && sudo modprobe snd-pcm-oss
+        fi
+        
+        if [[ ! $(dpkg -l xfonts-base 2> /dev/null | grep '^ii') ]]; then
+            echo "Configuring GSport fonts..."
+            sudo apt-get -y update
+            touch /tmp/updated
+            sudo apt-get -y install xfonts-base &> /dev/null
+            sudo apt-get -y clean
+        fi        
+
+        if [[ ! $(dpkg -l libpcap0.8-dev 2> /dev/null | grep '^ii') ]]; then
+            echo "Configuring GSport networking..."
+            [[ ! -f /tmp/updated ]] && sudo apt-get -y update
+            sudo apt-get -y install libpcap0.8-dev &> /dev/null
+            sudo apt-get -y clean
+        fi
+        
+        rm /tmp/updated &> /dev/null
+    else
+        gsport-setup
+        [[ $? -ne 0 ]] && exit 1
+    fi
+    
+    displayOK=
+    if [[ $DISPLAY ]]; then # X Window
+        displayOK=1
+    else # console/framebuffer
+        if [[ ! -f /usr/local/etc/gsportconsolewarningoff ]] && { dpkg -l | grep -q -i virtualbox; }; then
+            echo
+            echo "If you have difficulties moving the mouse in GS/OS, choose"
+            echo "'Disable Mouse Integration' from the Machine menu. To free the mouse"
+            echo "from the virtual machine, press the Host key (shown in the lower right"
+            echo "corner of the virtual machine window)."
+            echo
+            echo "Press alt-F4 to exit GSport."
+            echo
+            echo "Press return to continue,"
+            echo -n "  or type 'OK' if you want to stop seeing this message: "
+            read
+            if [[ $REPLY == "ok" || $REPLY == "ok" || $REPLY == "Ok" ]]; then
+                sudo touch /usr/local/etc/gsportconsolewarningoff
+            fi
+#             echo "If you wish to run GSport in the console window, the mouse will not work"
+#             echo "unless you uninstall VirtualBox Guest Additions. If you don't want to do"
+#             echo "this, you can instead run GSport in an X window (e.g. by typing 'startx')."
+#             echo "If you're not sure, just uninstall it now. Nothing terrible will happen."
+#             echo
+#             echo -n "Do you want to uninstall VirtualBox Guest Additions now? "
+#             read
+#             if [[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]]; then
+#                 echo "Ok, on the case..."
+#                 sudo /etc/init.d/vboxadd-service stop 2> /dev/null
+#                 sudo /etc/init.d/virtualbox-guest-utils stop &> /dev/null
+#                 sudo rmmod vboxvideo 2> /dev/null
+#                 sudo rmmod vboxsf 2> /dev/null
+#                 sudo rmmod vboxguest 2> /dev/null
+#                 while { lsmod | grep -q vbox; }; do
+#                     sleep 1
+#                     sudo rmmod vboxvideo 2> /dev/null
+#                     sudo rmmod vboxsf 2> /dev/null
+#                     sudo rmmod vboxguest 2> /dev/null
+#                 done
+#                 if [ -f /opt/VBoxGuestAdditions*/uninstall.sh ]; then
+#                     sudo /opt/VBoxGuestAdditions*/uninstall.sh &> /dev/null
+#                     sudo rmdir /opt/VBoxGuestAdditions* 2> /dev/null
+#                 fi
+#                 if { dpkg -l 2> /dev/null | grep -q -i virtualbox; }; then
+#                     sudo apt-get -y purge $(dpkg -l 2> /dev/null | grep -i virtualbox | cut -f 3 -d ' ' | tr '\n' ' ') &> /dev/null
+#                 fi
+#                 touch /tmp/gsport-consolesetup
+#             fi
+        fi
+        
+        if [[ ! $(grep 'input' <<< $(groups) ) ]]; then
+            sudo groupadd input &> /dev/null
+            sudo usermod -a -G input $USER
+            echo 'SUBSYSTEM=="input", GROUP="input", MODE="0660"' | sudo tee /etc/udev/rules.d/99-input.rules > /dev/null
+            touch /tmp/gsport-consolesetup
+        fi
+
+        if [[ -c /dev/fb0 ]]; then
+            [[ ! -f /tmp/gsport-consolesetup ]] && displayOK=1
+        else
+            if [[ -f /etc/default/grub ]]; then
+                if [[ ! $(grep 'GRUB_GFXPAYLOAD_LINUX' /etc/default/grub) ]]; then
+                    echo "Preparing GSport for console use..."
+                    sudo sed -i 's/^\(GRUB_CMDLINE_LINUX=.*\)$/\1\nGRUB_GFXPAYLOAD_LINUX=640x480/' /etc/default/grub
+                    sudo update-grub &> /dev/null
+                    touch /tmp/gsport-consolesetup
+                fi
+            else
+                echo "No framebuffer available. Please run GSport in an X window."
+            fi
+        fi
+    fi
+    
+    if [[ ! $DISPLAY && -f /tmp/gsport-consolesetup ]]; then
+        echo "GSport will be ready for console use after you restart your system."
+        echo "You can restart now by typing 'system-restart'."
+    elif [[ $displayOK ]]; then
+        if [[ $(xdpyinfo 2> /dev/null) ]]; then
+            exec gsportx
+        else
+            exec gsportfb
+        fi
+    else
+        echo "GSport has a problem. Please try updating A2CLOUD by"
+        echo "typing 'a2cloud-setup'."
+    fi
+
+fi
