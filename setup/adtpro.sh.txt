@@ -54,7 +54,7 @@ if [ "$OS" = "Linux" ]; then
             if [[ ! -c /dev/$serialPortName ]]; then
                 echo "Serial port $serialPortName not found." 1>&2
                 usageExit
-            fi    
+            fi
         elif [[ -c /dev/ttyUSBlower ]]; then
             serialPortName=ttyUSBlower
         elif [[ $(ls -1 /dev/ttyUSBlower_hub* 2> /dev/null | wc -l) -gt 0 ]]; then
@@ -68,9 +68,9 @@ if [ "$OS" = "Linux" ]; then
             echo " any port on lower USB hub with no other adapters"
             echo " lowest port on USB hub on upper or lower USB port with multiple adapters"
             usageExit
-        fi        
+        fi
     fi
-    
+
     if [[ $(grep CommPort= /usr/local/adtpro/disks/ADTPro.properties) ]]; then
         if [[ $serialPortName ]]; then
             sed -i "s/^CommPort=.*$/CommPort=\/dev\/$serialPortName/" /usr/local/adtpro/disks/ADTPro.properties &> /dev/null
@@ -83,7 +83,7 @@ if [ "$OS" = "Linux" ]; then
     fi
 
     ADTPRO_EXTRA_JAVA_PARMS="-Dgnu.io.rxtx.SerialPorts=/dev/$serialPortName"
-    
+
     if [ -f /usr/bin/raspi-config ]; then
         export RXTXLIB=lib/rxtx/rxtx-2.2pre2-local/arm
     elif [ "$OS_ARCH" = "i686" ]; then

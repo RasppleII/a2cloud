@@ -26,7 +26,7 @@ else
         term="vt100"
     elif [[ $(tr [:upper:] [:lower:] <<< $1) == "color" ]]; then
         term="pcansi"
-    elif [[ $(tr [:upper:] [:lower:] <<< $1) == "none" ]]; then    
+    elif [[ $(tr [:upper:] [:lower:] <<< $1) == "none" ]]; then
         term="dumb"
     else
         term="$1"

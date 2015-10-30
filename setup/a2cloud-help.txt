@@ -21,7 +21,7 @@ showip : show the current ethernet IP address of the server
 showmac : show the MAC (Ethernet hardware) address of the server
 showip-wifi : show the current wifi IP address of the server
 showmac-wifi : show the MAC (wifi hardware) address of the server
-ifreset : reset all network interfaces (requires restart) 
+ifreset : reset all network interfaces (requires restart)
 
 adtpro-stop : stop the ADTPro service
 adtpro-start : start the ADTPro service
@@ -45,7 +45,7 @@ vsd2 : show or set the disk image assigned to virtual drive 2
 forfloppy : move the disk image to the ADTPro disk images folder
     (/usr/local/adtpro/disks) in preparation for transfer
 vsdsync : update ADTPro server with the current virtual drive images
-    
+
 nulib2 : create, extract, and work with NuFX (ShrinkIt) archive files
 sciibin : decode BinSCII file (they start with 'FiLeStArTfIlEsTaRt')
 unblu/usq/unbit/unexec : decode Binary II, Squeezed, Executioner,

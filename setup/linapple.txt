@@ -22,7 +22,7 @@ else
             echo 'SUBSYSTEM=="input", GROUP="input", MODE="0660"' | sudo tee /etc/udev/rules.d/99-input.rules > /dev/null
             touch /tmp/linapple-consolesetup
         fi
-        
+
         if [[ -c /dev/fb0 ]]; then
             [[ ! -f /tmp/linapple-consolesetup ]] && linappleOk=1
         else
@@ -38,7 +38,7 @@ else
             fi
         fi
     fi
-    
+
     if [[ ! $DISPLAY && -f /tmp/linapple-consolesetup ]]; then
         echo "LinApple will be ready for console use after you restart your system."
         echo "You can restart now by typing 'system-restart'."

@@ -3,8 +3,8 @@
 
 # ID-bashByter routines
 
-function binToDec () 
-{ 
+function binToDec ()
+{
     dec=0;
     bits=$1;
     while (( ${#bits} < 8 )); do
@@ -17,8 +17,8 @@ function binToDec ()
     echo -n $dec
 };
 
-function writecharDec () 
-{ 
+function writecharDec ()
+{
     [[ -n $1 ]] || return 11;
     [[ -n $2 ]] || return 12;
     [[ -n $3 ]] || return 13;
@@ -28,8 +28,8 @@ function writecharDec ()
     echo -n -e "\x$(printf %02X "$3")" | dd of="$1" bs=1 seek=$(($2)) conv=notrunc 2> /dev/null
 };
 
-function writecharsHex () 
-{ 
+function writecharsHex ()
+{
     [[ -n $1 ]] || return 11;
     [[ -n $2 ]] || return 12;
     [[ -n $3 ]] || return 13;
@@ -115,7 +115,7 @@ if [[ ! $totalBlocks && $(tr [:upper:] [:lower:] <<< "${1##*.}") == "dsk" ]]; th
         for s in 0 14 13 12 11 10 9 8 7 6 5 4 3 2 1 15; do
             dd bs=256 count=1 if="$1".tmp of="$1" skip=$(( $t*16 + $s )) seek=$(( $t*16 + ( $s==0||$s==15 ? $s : 15-$s ) )) 2> /dev/null;
         done;
-    done    
+    done
     rm "$1".tmp
 fi
 
@@ -146,7 +146,7 @@ if [[ ! $nulib2 && $totalBlocks ]]; then
         dd if=/dev/zero of="$1" bs=1 seek=3072 count=$(( (fsbExtraBlocks > 8) + 1 )) conv=notrunc 2> /dev/null;
         (( fsbExtraBlocks-- ));
     fi;
-    
+
     bits=$(( fsbExtraBlocks % 8 ));
     if (( bits > 0 )); then
         freeString="11111111";

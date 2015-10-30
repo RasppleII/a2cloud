@@ -94,7 +94,7 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" ) && $2
         [[ ! $3 ]] && outFile="${2##*/}"
         java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar $getArg "$imageArg" "$fileArg" $outFile 2> $acmdStdErr
     else # put file
-    
+
         # test ProDOS name legitimacy
         prodosPath=$(tr [:lower:] [:upper:] <<< $prodosArg )
         IFS_orig="$IFS"; IFS="/";
@@ -105,11 +105,11 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" ) && $2
             fi
         done
         IFS="$IFS_orig"
-        
-        # process filetype    
+
+        # process filetype
         [[ ${3:0:2} == "0x" ]] && ftArg="\$${3:2}" || ftArg="$3"
         auxType="$4"
-    
+
         # assume BIN/$2000 if filetype omitted
         if [[ ! $ftArg ]]; then
             ft="BIN"
@@ -130,7 +130,7 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" ) && $2
 
         # set auxtype to $0801 for Applesoft programs if not specified
         [[ $ft == "BAS" && ! $auxType ]] && auxType="\$0801"
-    
+
         # test for absence of stdin [[ -t 0 ]] and if absent use ProDOS name
         if [[ -t 0 ]]; then
             [[ ! -f $prodosArg ]] && { echoerr "$prodosArg not found."; exit 1; }
@@ -141,7 +141,7 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" ) && $2
             java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" $prodosPath $ft $auxType 2> $acmdStdErr
         fi
     fi
-    
+
 else
 
     imageArg="$2"

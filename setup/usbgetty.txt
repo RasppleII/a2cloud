@@ -26,7 +26,7 @@ if [[ $(grep -e '-scanttyUSB' <<< "$*") ]]; then
         # echo "scantty no devices eligible: sleeping"
         sleep 86399
     fi
-    
+
     # echo "result:$ttyUSB"
 elif [[ $(grep -o 'ttyUSB[^ ]*' <<< "$*") ]]; then
     # echo "device specified"

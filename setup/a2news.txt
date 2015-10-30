@@ -9,7 +9,7 @@ if [[ ! $(dpkg -l tin 2> /dev/null | grep '^ii') ]]; then
     sudo apt-get -y update
     sudo apt-get -y install tin &> /dev/null
     sudo apt-get -y clean
-fi        
+fi
 
 if [[ $1 == "-h" || $1 == "--help" ]]; then
     echo "Usage: a2news [-s nntpServerAddress] [-m postingEmailAddress] [otherTinOptions]"
@@ -17,13 +17,13 @@ if [[ $1 == "-h" || $1 == "--help" ]]; then
     exit 1
 fi
 
-while [[ $1 == "-s" || $1 == "-m" ]]; do    
+while [[ $1 == "-s" || $1 == "-m" ]]; do
     if [[ $1 == "-s" && $2 ]]; then
         nntpServer=$2
         shift
         shift
     fi
-    
+
     if [[ $1 == "-m" && $2 ]]; then
         emailAddress=$2
         shift

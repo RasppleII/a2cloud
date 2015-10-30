@@ -11,13 +11,13 @@ else
             echo "snd-pcm-oss" | sudo tee -a /etc/modules > /dev/null
             [[ ! $(lsmod | grep snd_pcm_oss) ]] && sudo modprobe snd-pcm-oss
         fi
-        
+
         if [[ ! $(dpkg -l xfonts-base 2> /dev/null | grep '^ii') ]]; then
             echo "Configuring KEGS fonts..."
             sudo apt-get -y update
             sudo apt-get -y install xfonts-base &> /dev/null
             sudo apt-get -y clean
-        fi        
+        fi
 
         exec xkegs
     else

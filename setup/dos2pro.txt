@@ -82,7 +82,7 @@ while read thisLine; do
     if [[ ${thisLine:0:2} == "* " || ${thisLine:0:2} == "  " ]]; then
         dosName=$(cut -c 5- <<< $thisLine | rev | sed 's/^[^ ]* [^ ]* [^ ]*  [^ ]* [^ ]* \(.*$\)/\1/' | rev)
         if [[ ! $fileName || "$fileName" == "$dosName" ]]; then
-        
+
             dosType=$(cut -c 3 <<< $thisLine)
             if [[ $dosType == "A" ]]; then
                 proType="BAS"
@@ -104,9 +104,9 @@ while read thisLine; do
                 echo "Error: Unknown DOS 3.3 file type."
                 exit 2
             fi
-            
+
             proName=$(sed 's/^[^A-Za-z]/A/' <<< $dosName | sed 's/[^A-Za-z0-9\.]/./g')
-            
+
             auxType=
             [[ $binAddr ]] && auxType="\$$binAddr"
             echo "Copying '$dosName' to '$proName'"

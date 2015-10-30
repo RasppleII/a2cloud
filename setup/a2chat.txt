@@ -6,7 +6,7 @@ if [[ ! $(dpkg -l irssi 2> /dev/null | grep '^ii') ]]; then
     supo apt-get -y update
     sudo apt-get -y install irssi &> /dev/null
     sudo apt-get -y clean
-fi        
+fi
 
 if [[ $1 == "-n" && $2 ]]; then
     nickname=$2
