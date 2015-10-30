@@ -1,0 +1,16 @@
+
+Welcome to A2CLOUD!
+Instructions and help: http://appleii.ivanx.com
+
+Type 'a2cloud-help' for a list of A2CLOUD commands.
+Type 'system-shutdown' to turn off your Raspberry Pi.
+
+Type 'raspi-config' to configure your Raspberry Pi.
+Type 'startx' to start the Raspbian desktop.
+
+Type 'lynx' or 'links' to browse the web and 'cftp' to log into FTP sites.
+Type 'a2chat' or 'a2news' to talk about Apple II stuff with others.
+Type 'ttytter' to tweet. Type 'term color' for a color terminal on a IIgs.
+
+Type 'gsport' or 'kegs' to use the GSport or KEGS Apple IIgs emulators.
+Type 'linapple' to use the LinApple Apple IIe emulator.
