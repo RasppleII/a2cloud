@@ -1,0 +1,24 @@
+#!/bin/bash
+
+origDir="$PWD"
+[[ ! -n $1 || ! -n $2 ]] && { echo "Usage: shk2image archiveFileName imageFileName [PRODOS.DIR.NAME]"; exit 1; };
+imageFileName="$2";
+prodosDir="$3";
+[[ ! -f "$1" ]] && { echo "Archive file '$1' was not found."; exit 1; };
+[[ ! -f "$imageFileName" ]] && mkpo "$imageFileName";
+[[ -n $prodosDir ]] && dirName="$prodosDir/" || dirName=;
+IFS="";
+[[ ${1:0:1} == "/" ]] && archiveFile="$1" || archiveFile="$origDir/$1"
+mkdir -p /tmp/shk2image_temp
+cd /tmp/shk2image_temp
+shkFiles=$(nulib2 -xse "$archiveFile" | tr "\r" "~" | cut -d "~" -f 2 | cut -c 18-);
+cd "$origDir"
+while read thisFile; do
+    fileName=${thisFile%%#*};
+    fileType=${thisFile##*#};
+    echo "extracting  $fileName...";
+    acmd -d "$imageFileName" $dirName$fileName &>/dev/null;
+    acmd -p "$imageFileName" $dirName$fileName \$${fileType:0:2} \$${fileType:2:4} < /tmp/shk2image_temp/"$thisFile"
+    rm /tmp/shk2image_temp/"$thisFile"
+done <<< $shkFiles
+rm -r /tmp/shk2image_temp
