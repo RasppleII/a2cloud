@@ -3,6 +3,12 @@
 version="182"
 adtProVersion="2.0.1"
 
+# Ensure URL we'll use ends in a /
+case "$A2CLOUD_SCRIPT_URL" in
+    */) scriptURL="$A2CLOUD_SCRIPT_URL" ;;
+    *) scriptURL="${A2CLOUD_SCRIPT_URL:-http://appleii.ivanx.com/a2cloud}/" ;;
+esac
+
 ## ID-bashbyter routines
 
 binToDec () {
@@ -147,7 +153,7 @@ done
 
 if [[ $updateRasppleII ]]; then
     echo "A2CLOUD: Updating Raspple II (takes up to an hour)..."
-    wget -qO /tmp/raspbian-update ivanx.com/a2cloud/setup/raspbian-update.txt
+    wget -qO /tmp/raspbian-update ${scriptURL}setup/raspbian-update.txt
     source /tmp/raspbian-update a2cloud a2server $autoAnswerYes $skipRepoUpdate
     [[ $0 == "-bash" ]] && return 0 || exit 0
 fi
@@ -342,26 +348,29 @@ echo "A2CLOUD: Adding udev trigger to /etc/rc.local..."
 grep udevadm /etc/rc.local > /dev/null || sudo sed -i 's/^exit 0$/[ -e \/dev\/ttyUSBupper ] \&\& ! [ -f \/tmp\/udev-ttyUSBupper-added ] \&\& udevadm trigger --action=change\n[ -e \/dev\/ttyUSBlower ] \&\& ! [ -f \/tmp\/udev-ttyUSBlower-added ] \&\& udevadm trigger --action=change\n\nexit 0/' /etc/rc.local
 
 echo "A2CLOUD: Setting up dopo command..."
-sudo wget -qO /usr/local/bin/dopo ivanx.com/a2cloud/setup/dopo.txt
+sudo wget -qO /usr/local/bin/dopo ${scriptURL}setup/dopo.txt
 sudo chmod ugo+x /usr/local/bin/dopo
 
 echo "A2CLOUD: Setting up cppo command..."
-sudo wget -qO /usr/local/bin/cppo ivanx.com/a2cloud/setup/cppo.txt
+sudo wget -qO /usr/local/bin/cppo ${scriptURL}setup/cppo.txt
 sudo chmod ugo+x /usr/local/bin/cppo
 
 echo "A2CLOUD: Setting up a2cloud-help..."
-sudo wget -qO /usr/local/etc/a2cloud-help.txt ivanx.com/a2cloud/setup/a2cloud-help.txt
+sudo wget -qO /usr/local/etc/a2cloud-help.txt ${scriptURL}setup/a2cloud-help.txt
 if [[ $isRpi ]]; then
     sudo sed -i 's/^gsport.*$/gsport : GSport Apple IIgs emulator (or log in with user "apple2user")/' /usr/local/etc/a2cloud-help.txt
 fi
 
+# FIXME: We have "three" MOTD files in the A2CLOUD tree but we only use
+# one.  The other two come from the Raspple II tree.  We should clean
+# this up at some point.
 echo "A2CLOUD: Setting up motd..."
 if [[ $(grep Raspple /etc/motd) ]]; then
-    wget -qO- ivanx.com/rasppleii/motd-rasppleii.txt | sudo tee /etc/motd > /dev/null    
+    wget -qO- http://appleii.ivanx.com/rasppleii/motd-rasppleii.txt | sudo tee /etc/motd > /dev/null
 elif [[ $(grep A2SERVER /etc/motd) ]]; then
-    wget -qO- ivanx.com/rasppleii/motd-vm.txt | sudo tee /etc/motd > /dev/null
+    wget -qO- http://appleii.ivanx.com/rasppleii/motd-vm.txt | sudo tee /etc/motd > /dev/null
 else
-    wget -qO- ivanx.com/a2cloud/setup/motd.txt | sudo tee /etc/motd > /dev/null
+    wget -qO- ${scriptURL}setup/motd.txt | sudo tee /etc/motd > /dev/null
 fi
 
 if { lspci 2> /dev/null | grep -q VirtualBox; }; then
@@ -373,12 +382,12 @@ if { lspci 2> /dev/null | grep -q VirtualBox; }; then
 fi
 
 echo "A2CLOUD: Setting up control commands and environment variables..."
-sudo wget -qO /usr/local/etc/a2cloud-aliases ivanx.com/a2cloud/setup/a2cloud-aliases.txt
+sudo wget -qO /usr/local/etc/a2cloud-aliases ${scriptURL}setup/a2cloud-aliases.txt
 echo "A2CLOUD: Setting up login script..."
 sudo sed -i "s/a2cloud-aliases/a2cloudrc/" /etc/bash.bashrc
 sudo sed -i '/ttyUSB/d' /etc/bash.bashrc
 [[ ! $(grep a2cloudrc /etc/bash.bashrc) ]] && echo "source /usr/local/etc/a2cloudrc" | sudo tee -a /etc/bash.bashrc > /dev/null
-sudo wget -qO /usr/local/etc/a2cloudrc ivanx.com/a2cloud/setup/a2cloudrc.txt
+sudo wget -qO /usr/local/etc/a2cloudrc ${scriptURL}setup/a2cloudrc.txt
 source /usr/local/etc/a2cloudrc
 
 echo "A2CLOUD: Saving installer version..."
@@ -587,7 +596,8 @@ if [[ $installADTPro ]]; then
             echo "A2CLOUD: /usr/local/adtpro/disks is already set up for Apple file sharing."
         fi
     
-        if { grep -q A2SHARED /etc/samba/smb.conf 2> /dev/null; }; then # SMB already enabled by A2SERVER
+        if { grep -q A2SHARED /etc/samba/smb.conf 2> /dev/null; }; then
+            # SMB already enabled by A2SERVER
             if { grep -q ADTDISKS /etc/samba/smb.conf 2>/dev/null; }; then
                 echo "A2CLOUD: /usr/local/adtpro/disks is already set up for Windows file sharing."
             else
@@ -606,23 +616,23 @@ if [[ $installADTPro ]]; then
     fi
 
     echo "A2CLOUD: Setting up adtpro-start command..."
-    sudo wget -qO /usr/local/bin/adtpro-start ivanx.com/a2cloud/setup/adtpro-start.txt
+    sudo wget -qO /usr/local/bin/adtpro-start ${scriptURL}setup/adtpro-start.txt
     sudo chmod ugo+x /usr/local/bin/adtpro-start
 
     echo "A2CLOUD: Setting up vsd1/vsd2 commands..."
-    sudo wget -qO /usr/local/bin/vsd ivanx.com/a2cloud/setup/vsd.txt
+    sudo wget -qO /usr/local/bin/vsd ${scriptURL}setup/vsd.txt
     sudo chmod ugo+x /usr/local/bin/vsd
 
     echo "A2CLOUD: Setting up acmd command..."
-    sudo wget -qO /usr/local/bin/acmd ivanx.com/a2cloud/setup/acmd.txt
+    sudo wget -qO /usr/local/bin/acmd ${scriptURL}setup/acmd.txt
     sudo chmod ugo+x /usr/local/bin/acmd
 
     echo "A2CLOUD: Setting up mkpo command..."
-    sudo wget -qO /usr/local/bin/mkpo ivanx.com/a2cloud/setup/mkpo.txt
+    sudo wget -qO /usr/local/bin/mkpo ${scriptURL}setup/mkpo.txt
     sudo chmod ugo+x /usr/local/bin/mkpo
 
     echo "A2CLOUD: Setting up dos2pro command..."
-    sudo wget -qO /usr/local/bin/dos2pro ivanx.com/a2cloud/setup/dos2pro.txt
+    sudo wget -qO /usr/local/bin/dos2pro ${scriptURL}setup/dos2pro.txt
     sudo chmod ugo+x /usr/local/bin/dos2pro
 
 fi
@@ -682,15 +692,15 @@ if [[ $setupSerialPortLogin ]]; then
     fi
     
     echo "A2CLOUD: Setting up baud command..."
-    sudo wget -qO /usr/local/bin/baud ivanx.com/a2cloud/setup/baud.txt
+    sudo wget -qO /usr/local/bin/baud ${scriptURL}setup/baud.txt
     sudo chmod ugo+x /usr/local/bin/baud
 
     echo "A2CLOUD: Setting up term command..."
-    sudo wget -qO /usr/local/bin/term ivanx.com/a2cloud/setup/term.txt
+    sudo wget -qO /usr/local/bin/term ${scriptURL}setup/term.txt
     sudo chmod ugo+x /usr/local/bin/term
 
     echo "A2CLOUD: Setting up usbgetty command..."
-    sudo wget -qO /usr/local/sbin/usbgetty ivanx.com/a2cloud/setup/usbgetty.txt
+    sudo wget -qO /usr/local/sbin/usbgetty ${scriptURL}setup/usbgetty.txt
     sudo chmod ugo+x /usr/local/sbin/usbgetty
     
     echo "A2CLOUD: Removing ttyUSB0 shell login..."
@@ -708,7 +718,7 @@ fi
 
 
 echo "A2CLOUD: Setting up USB port serial adapter handler..."
-sudo wget -qO /usr/local/sbin/ttyusbhandler ivanx.com/a2cloud/setup/ttyusbhandler.txt
+sudo wget -qO /usr/local/sbin/ttyusbhandler ${scriptURL}setup/ttyusbhandler.txt
 sudo chmod ugo+x /usr/local/sbin/ttyusbhandler
 
 if [[ ! -f /etc/udev/rules.d/50-usb.rules ]]; then
@@ -776,9 +786,9 @@ if [[ $installCommTools ]]; then
         cd /tmp/a2cloud-install
         if [[ $downloadBinaries ]]; then
             if [[ $isRpi ]]; then
-                wget -qO- ivanx.com/a2cloud/files/cftp-rpi.tgz | sudo tar Pzx
+                wget -qO- http://appleii.ivanx.com/a2cloud/files/cftp-rpi.tgz | sudo tar Pzx
             elif [[ $isDebian ]]; then
-                wget -qO- ivanx.com/a2cloud/files/cftp-debian7_x86.tgz | sudo tar Pzx
+                wget -qO- http://appleii.ivanx.com/a2cloud/files/cftp-debian7_x86.tgz | sudo tar Pzx
             fi
         fi
         if [[ ! -f /usr/local/bin/cftp ]]; then
@@ -817,7 +827,7 @@ if [[ $installCommTools ]]; then
         echo "A2CLOUD: links is already installed."
     fi
 
-    sudo wget -qO /usr/local/bin/a2news ivanx.com/a2cloud/setup/a2news.txt
+    sudo wget -qO /usr/local/bin/a2news ${scriptURL}setup/a2news.txt
     sudo chmod ugo+x /usr/local/bin/a2news
     if [[ ! -f /usr/bin/tin ]]; then
         echo "A2CLOUD: Installing a2news/tin..."
@@ -842,7 +852,7 @@ if [[ $installCommTools ]]; then
         sudo chmod 2750 /var/log/exim4
     fi
 
-    sudo wget -qO /usr/local/bin/a2chat ivanx.com/a2cloud/setup/a2chat.txt
+    sudo wget -qO /usr/local/bin/a2chat ${scriptURL}setup/a2chat.txt
     sudo chmod ugo+x /usr/local/bin/a2chat
     if [[ ! -f /usr/bin/irssi ]]; then
         echo "A2CLOUD: Installing a2chat/irssi..."
@@ -869,9 +879,9 @@ if [[ $installCommTools ]]; then
             echo "A2CLOUD: Installing TTYtter readline module..."
             if [[ $downloadBinaries && $perlVersion == "5.14.2" ]]; then
                 if [[ $isRpi ]]; then
-                    wget -qO- ivanx.com/a2cloud/files/ttytter_readline-rpi.tgz | sudo tar Pzx
+                    wget -qO- http://appleii.ivanx.com/a2cloud/files/ttytter_readline-rpi.tgz | sudo tar Pzx
                 elif [[ $isDebian ]]; then
-                    wget -qO- ivanx.com/a2cloud/files/ttytter_readline-debian7_x86.tgz | sudo tar Pzx
+                    wget -qO- http://appleii.ivanx.com/a2cloud/files/ttytter_readline-debian7_x86.tgz | sudo tar Pzx
                 fi
             fi
             if [[ ! -f "/usr/local/share/perl/$perlVersion/Term/ReadLine/TTYtter.pm" ]]; then
@@ -914,9 +924,6 @@ if [[ $installA2Pi ]]; then
         fi
         sudo apt-get -y --force-yes install a2pi        
         sudo apt-get -y clean
-        # wget -qO a2pi_armhf.deb schmenk.is-a-geek.com/tarfiles/a2pi_armhf.deb
-        # sudo dpkg -i a2pi_armhf.deb &> /dev/null
-        # rm a2pi_armhf.deb &> /dev/null
     else
         echo "A2CLOUD: Apple II Pi is already installed."
     fi
@@ -977,9 +984,9 @@ if [[ $installEmulators ]]; then
         cd /tmp/a2cloud-install
         if [[ $downloadBinaries ]]; then
             if [[ $isRpi ]]; then
-                wget -qO- ivanx.com/a2cloud/files/kegs-rpi.tgz | sudo tar Pzx 2> /dev/null
+                wget -qO- http://appleii.ivanx.com/a2cloud/files/kegs-rpi.tgz | sudo tar Pzx 2> /dev/null
             elif [[ $isDebian ]]; then
-                wget -qO- ivanx.com/a2cloud/files/kegs-debian7_x86.tgz | sudo tar Pzx
+                wget -qO- http://appleii.ivanx.com/a2cloud/files/kegs-debian7_x86.tgz | sudo tar Pzx
             fi
         fi
         if [[ ! -f /usr/local/bin/xkegs ]]; then
@@ -1012,7 +1019,7 @@ if [[ $installEmulators ]]; then
             sudo sed -i 's@^s6d1.*$@s6d1 = /usr/local/share/gsdisks/slot6drive1.po@' /usr/local/lib/config.kegs
             sudo sed -i 's@^s6d2.*$@s6d2 = /usr/local/share/gsdisks/slot6drive2.po@' /usr/local/lib/config.kegs
             if [[ ! -f /usr/local/share/gsdisks/slot6drive1.po || ! -f /usr/local/share/gsdisks/slot6drive2.po ]]; then
-                wget -qO- ivanx.com/a2cloud/files/slot6.tgz | sudo tar Pzx 2> /dev/null
+                wget -qO- http://appleii.ivanx.com/a2cloud/files/slot6.tgz | sudo tar Pzx 2> /dev/null
             fi
         fi
     else
@@ -1024,9 +1031,9 @@ if [[ $installEmulators ]]; then
     sudo chgrp kegs /usr/local/bin/xkegs
     sudo chmod u+s /usr/local/bin/xkegs
 
-    sudo wget -qO /usr/local/bin/kegs ivanx.com/a2cloud/setup/kegs.txt
+    sudo wget -qO /usr/local/bin/kegs ${scriptURL}setup/kegs.txt
     sudo chmod ugo+x /usr/local/bin/kegs
-    sudo wget -qO /usr/local/bin/kegs-setup ivanx.com/a2cloud/setup/kegs-setup-shell.txt
+    sudo wget -qO /usr/local/bin/kegs-setup ${scriptURL}setup/kegs-setup-shell.txt
     sudo chmod ugo+x /usr/local/bin/kegs-setup
 
     
@@ -1038,7 +1045,7 @@ if [[ $installEmulators ]]; then
             sudo apt-get -y install libpcap0.8-dev &> /dev/null
             sudo apt-get -y clean
             if [[ $isDebian ]]; then
-                wget -qO- ivanx.com/a2cloud/files/gsport-debian7_x86.tgz | sudo tar Pzx 2> /dev/null
+                wget -qO- http://appleii.ivanx.com/a2cloud/files/gsport-debian7_x86.tgz | sudo tar Pzx 2> /dev/null
             fi
         fi
         if [[ ! -f /usr/local/bin/gsport ]]; then
@@ -1048,7 +1055,7 @@ if [[ $installEmulators ]]; then
             sudo apt-get -y clean > /dev/null
             mkdir -p /tmp/a2cloud-install/gsport
             cd /tmp/a2cloud-install/gsport
-            wget -q -O gsport.tgz downloads.sourceforge.net/project/gsport/GSport-0.31/gsport_0.31.tar.gz
+            wget -q -O gsport.tgz http://downloads.sourceforge.net/project/gsport/GSport-0.31/gsport_0.31.tar.gz
             tar zxf gsport.tgz
             cd gsport*/src
             rm vars 2> /dev/null
@@ -1076,7 +1083,7 @@ if [[ $installEmulators ]]; then
             sudo sed -i 's@^s6d1.*$@s6d1 = /usr/local/share/gsdisks/slot6drive1.po@' /usr/local/lib/config.txt        
             sudo sed -i 's@^s6d2.*$@s6d2 = /usr/local/share/gsdisks/slot6drive2.po@' /usr/local/lib/config.txt
             if [[ ! -f /usr/local/share/gsdisks/slot6drive1.po || ! -f /usr/local/share/gsdisks/slot6drive2.po ]]; then
-                wget -qO- ivanx.com/a2cloud/files/slot6.tgz | sudo tar Pzx 2> /dev/null
+                wget -qO- http://appleii.ivanx.com/a2cloud/files/slot6.tgz | sudo tar Pzx 2> /dev/null
             fi
         fi
 
@@ -1111,9 +1118,9 @@ if [[ $installEmulators ]]; then
         sudo chgrp gsport /usr/local/bin/gsportx
         sudo chmod u+s /usr/local/bin/gsportx
 
-        sudo wget -qO /usr/local/bin/gsport ivanx.com/a2cloud/setup/gsport.txt
+        sudo wget -qO /usr/local/bin/gsport ${scriptURL}setup/gsport.txt
         sudo chmod ugo+x /usr/local/bin/gsport
-        sudo wget -qO /usr/local/bin/gsport-setup ivanx.com/a2cloud/setup/gsport-setup-shell.txt
+        sudo wget -qO /usr/local/bin/gsport-setup ${scriptURL}setup/gsport-setup-shell.txt
         sudo chmod ugo+x /usr/local/bin/gsport-setup
     fi
 
@@ -1124,9 +1131,9 @@ if [[ $installEmulators ]]; then
         cd /tmp/a2cloud-install
         if [[ $downloadBinaries ]]; then
             if [[ $isRpi ]]; then
-                wget -qO- ivanx.com/a2cloud/files/linapple-rpi.tgz | sudo tar Pzx
+                wget -qO- http://appleii.ivanx.com/a2cloud/files/linapple-rpi.tgz | sudo tar Pzx
             elif [[ $isDebian ]]; then
-                wget -qO- ivanx.com/a2cloud/files/linapple-debian7_x86.tgz | sudo tar Pzx
+                wget -qO- http://appleii.ivanx.com/a2cloud/files/linapple-debian7_x86.tgz | sudo tar Pzx
             fi
         fi
         if [[ ! -f /usr/local/linapple/linapple ]]; then
@@ -1136,7 +1143,7 @@ if [[ $installEmulators ]]; then
             rm -rf /tmp/a2cloud-install/linapple* &> /dev/null
             mkdir -p /tmp/a2cloud-install/linapple
             cd /tmp/a2cloud-install/linapple
-            wget -q -O linapple.tar.bz2 downloads.sourceforge.net/project/linapple/linapple/linapple-2a/linapple-src_2a.tar.bz2
+            wget -q -O linapple.tar.bz2 http://downloads.sourceforge.net/project/linapple/linapple/linapple-2a/linapple-src_2a.tar.bz2
             tar jxf linapple.tar.bz2
             cd linapple-src_2a/src
             # doesn't compile with gcc 4.7, so use older version
@@ -1154,7 +1161,7 @@ if [[ $installEmulators ]]; then
         echo "A2CLOUD: LinApple is already installed."
     fi
     echo "A2CLOUD: Updating LinApple launch file..."
-    sudo wget -qO /usr/local/bin/linapple ivanx.com/a2cloud/setup/linapple.txt
+    sudo wget -qO /usr/local/bin/linapple ${scriptURL}setup/linapple.txt
     sudo chmod ugo+x /usr/local/bin/linapple
 
 fi
@@ -1168,9 +1175,9 @@ if [[ $installArchiveTools ]]; then
         cd /tmp/a2cloud-install
         if [[ $downloadBinaries ]]; then
             if [[ $isRpi ]]; then
-                wget -qO- ivanx.com/a2cloud/files/nulib2-rpi.tgz | sudo tar Pzx
+                wget -qO- http://appleii.ivanx.com/a2cloud/files/nulib2-rpi.tgz | sudo tar Pzx
             elif [[ $isDebian ]]; then
-                wget -qO- ivanx.com/a2cloud/files/nulib2-debian7_x86.tgz | sudo tar Pzx
+                wget -qO- http://appleii.ivanx.com/a2cloud/files/nulib2-debian7_x86.tgz | sudo tar Pzx
             fi
         fi
         if [[ ! -f /usr/local/bin/nulib2 ]]; then
@@ -1215,7 +1222,7 @@ if [[ $installArchiveTools ]]; then
     fi
 
     echo "A2CLOUD: Setting up shk2image command..."
-    sudo wget -qO /usr/local/bin/shk2image ivanx.com/a2cloud/setup/shk2image.txt
+    sudo wget -qO /usr/local/bin/shk2image ${scriptURL}setup/shk2image.txt
     sudo chmod ugo+x /usr/local/bin/shk2image
 
     # download and install The Unarchiver, for expanding apple.com disk images
@@ -1228,9 +1235,9 @@ if [[ $installArchiveTools ]]; then
                 sudo apt-get -y install libgnustep-base1.22
                 sudo apt-get -y clean
                 if [[ $isRpi ]]; then
-                    wget -qO- ivanx.com/a2cloud/files/unar-rpi.tgz | sudo tar Pzx
+                    wget -qO- http://appleii.ivanx.com/a2cloud/files/unar-rpi.tgz | sudo tar Pzx
                 elif [[ $isDebian ]]; then
-                    wget -qO- ivanx.com/a2cloud/files/unar-debian7_x86.tgz | sudo tar Pzx
+                    wget -qO- http://appleii.ivanx.com/a2cloud/files/unar-debian7_x86.tgz | sudo tar Pzx
                 fi
             fi
         fi
@@ -1291,7 +1298,7 @@ if [[ -f /usr/bin/X ]]; then
         echo -e "[Desktop Entry]\nName=GSport\nComment=Apple IIgs Emulator\nExec=lxterminal -e /usr/local/bin/gsport\nIcon=/usr/local/share/gsport32.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/gsport.desktop > ~/Desktop/gsport.desktop
     fi
     if [[ ! -f /usr/local/share/gsport32.ico ]]; then
-        sudo wget -qO /usr/local/share/gsport32.ico ivanx.com/a2cloud/files/gsport32.ico
+        sudo wget -qO /usr/local/share/gsport32.ico http://appleii.ivanx.com/a2cloud/files/gsport32.ico
     fi        
     # KEGS:
     if [[ -f /usr/local/bin/kegs ]]; then
@@ -1299,7 +1306,7 @@ if [[ -f /usr/bin/X ]]; then
         [[ ! -f ~/Desktop/gsport.desktop ]] && cp /usr/local/share/applications/kegs.desktop ~/Desktop/kegs.desktop
     fi
     if [[ ! -f /usr/local/share/kegsicon.png ]]; then
-        sudo wget -qO /usr/local/share/kegsicon.png ivanx.com/a2cloud/files/kegsicon.png
+        sudo wget -qO /usr/local/share/kegsicon.png http://appleii.ivanx.com/a2cloud/files/kegsicon.png
     fi        
     # LinApple:
     if [[ -f /usr/local/bin/linapple ]]; then
@@ -1378,9 +1385,9 @@ if [[ $a2CloudDisk ]]; then
         sudo pkill -f [A]DTPro
         if [[ ! $buildA2CloudDisk ]]; then
             echo "A2CLOUD: Downloading 800K disk image..."
-            wget -qO $a2CloudDisk ivanx.com/a2cloud/files/A2CLOUD.PO
+            wget -qO $a2CloudDisk http://appleii.ivanx.com/a2cloud/files/A2CLOUD.PO
             echo "A2CLOUD: Downloading 140K disk image..."
-            wget -qO $a2CloudDisk140 ivanx.com/a2cloud/files/A2CLOUD.DSK
+            wget -qO $a2CloudDisk140 http://appleii.ivanx.com/a2cloud/files/A2CLOUD.DSK
         fi
 
         # build if we don't have a disk image
@@ -1404,7 +1411,7 @@ if [[ $a2CloudDisk ]]; then
             mv 'Disk 3 of 7-SystemTools1.sea' SystemTools1.dc42
             acmd -g SystemTools1.dc42 BASIC.SYSTEM - | acmd -p "$a2CloudDisk" BASIC.SYSTEM SYS
             # use our startup program
-            wget -qO- ivanx.com/a2cloud/files/STARTUP.BAS | acmd -p "$a2CloudDisk" STARTUP BAS
+            wget -qO- http://appleii.ivanx.com/a2cloud/files/STARTUP.BAS | acmd -p "$a2CloudDisk" STARTUP BAS
             
             # VEDRIVE
             echo "A2CLOUD: Copying VEDRIVE..."
@@ -1445,11 +1452,11 @@ if [[ $a2CloudDisk ]]; then
             done
             acmd -p "$a2CloudDisk" PT3.DIAL/PTD.SPACEBAR COM \$8002 < /tmp/a2cloud-install/pt31/PT3.DIAL/"PTD.SPACEBAR#598002"
             echo "A2CLOUD: Adding 115200 baud macros for ProTERM..."
-            wget -qO PT3.IIC.MACRO ivanx.com/a2cloud/files/PT3.IIC.MACRO.txt
+            wget -qO PT3.IIC.MACRO http://appleii.ivanx.com/a2cloud/files/PT3.IIC.MACRO.txt
             cat "PT3.GLOBAL#040000" | tr '\r' '\n' | sed ':a;N;$!ba;s/\n\*\nOPTION-f : Unused & available.\n\*/~~~/' | sed -e '/~~~/r PT3.IIC.MACRO' -e 's///' | tr '\n' '\r' | acmd -p "$a2CloudDisk" PT3.IIC.GLOBAL TXT
-            wget -qO PT3.IIE.MACRO ivanx.com/a2cloud/files/PT3.IIE.MACRO.txt
+            wget -qO PT3.IIE.MACRO http://appleii.ivanx.com/a2cloud/files/PT3.IIE.MACRO.txt
             cat "PT3.GLOBAL#040000" | tr '\r' '\n' | sed ':a;N;$!ba;s/\n\*\nOPTION-f : Unused & available.\n\*/~~~/' | sed -e '/~~~/r PT3.IIE.MACRO' -e 's///' | tr '\n' '\r' | acmd -p "$a2CloudDisk" PT3.IIE.GLOBAL TXT
-            wget -qO PT3.IIGS.MACRO ivanx.com/a2cloud/files/PT3.IIGS.MACRO.txt
+            wget -qO PT3.IIGS.MACRO http://appleii.ivanx.com/a2cloud/files/PT3.IIGS.MACRO.txt
             cat "PT3.GLOBAL#040000" | tr '\r' '\n' | sed ':a;N;$!ba;s/\n\*\nOPTION-h : Unused & available.\n\*\n\n\*\nOPTION-H : Unused & available.\n\*/~~~/' | sed -e '/~~~/r PT3.IIGS.MACRO' -e 's///' | tr '\n' '\r' | acmd -p "$a2CloudDisk" PT3.IIGS.GLOBAL TXT
             acmd -p "$a2CloudDisk" PROTERM SYS < /tmp/a2cloud-install/pt31/"PT3.SYSTEM#ff2000"
             cd /tmp/a2cloud-install
@@ -1465,7 +1472,7 @@ if [[ $a2CloudDisk ]]; then
             echo "A2CLOUD: Downloading and copying ShrinkIt..."
             cd /tmp/a2cloud-install
             wget -qO shrinkit.sdk http://web.archive.org/web/20131031160750/http://www.nulib.com/library/shrinkit.sdk
-            [[ ! -f shrinkit.sdk ]] && wget -qO shrinkit.sdk ivanx.com/a2cloud/files/shrinkit.sdk
+            [[ ! -f shrinkit.sdk ]] && wget -qO shrinkit.sdk http://appleii.ivanx.com/a2cloud/files/shrinkit.sdk
             nulib2 -xs shrinkit.sdk > /dev/null
             acmd -g /tmp/a2cloud-install/SHRINKIT SHRINKIT -        | acmd -p "$a2CloudDisk" SHRINKIT SYS    
             acmd -g /tmp/a2cloud-install/SHRINKIT SHRINKIT.SYSTEM - | acmd -p "$a2CloudDisk" SHRINKIT.SYS SYS    
@@ -1596,7 +1603,7 @@ if [[ $newImageName ]]; then
     vsd1 -f /usr/local/adtpro/disks/"$newImageName"
 fi
 
-echo "wget -qO /tmp/a2cloud-setup ivanx.com/a2cloud/setup; source /tmp/a2cloud-setup" | sudo tee /usr/local/bin/a2cloud-setup > /dev/null
+echo "wget -qO /tmp/a2cloud-setup http://appleii.ivanx.com/a2cloud/setup; source /tmp/a2cloud-setup" | sudo tee /usr/local/bin/a2cloud-setup > /dev/null
 sudo chmod ugo+x /usr/local/bin/a2cloud-setup
 
 if [[ ! $restartPrompt ]]; then
