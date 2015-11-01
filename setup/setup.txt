@@ -122,7 +122,6 @@ while [[ $1 ]]; do
         shift
         slot6=1
     elif [[ $1 == "-os" || $1 == "os" ]]; then
-    # elif [[ ${1,,} == "rasppleii" || ${1,,} == "raspple" || ${1,,} == "rasappleii" || ${1,,} == "rasapple" || ${1,,} == "raspple2" || ${1,,} == "rasapple2" || ${1,,} == "-rasppleii" || ${1,,} == "-raspple" || ${1,,} == "-rasappleii" || ${1,,} == "-rasapple" || ${1,,} == "-raspple2" || ${1,,} == "-rasapple2" ]]; then
         shift
         updateRasppleII=1
     elif [[ $1 == "-v" ]]; then
@@ -345,7 +344,6 @@ fi
 # general commands and configuration
 
 echo "A2CLOUD: Adding udev trigger to /etc/rc.local..."
-#grep udevadm /etc/rc.local > /dev/null || sudo sed -i 's/^exit 0$/[ -e \/dev\/ttyUSBupper ] \&\& $(ps aux | grep "sleep 86399" > \/dev\/null) \&\& udevadm trigger --action=change\n[ -e \/dev\/ttyUSBlower ] \&\& ! $(ps aux | grep [a]dtpro > \/dev\/null) \&\& udevadm trigger --action=change\n\nexit 0/' /etc/rc.local
 grep udevadm /etc/rc.local > /dev/null || sudo sed -i 's/^exit 0$/[ -e \/dev\/ttyUSBupper ] \&\& ! [ -f \/tmp\/udev-ttyUSBupper-added ] \&\& udevadm trigger --action=change\n[ -e \/dev\/ttyUSBlower ] \&\& ! [ -f \/tmp\/udev-ttyUSBlower-added ] \&\& udevadm trigger --action=change\n\nexit 0/' /etc/rc.local
 
 echo "A2CLOUD: Setting up dopo command..."
