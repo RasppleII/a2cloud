@@ -168,10 +168,9 @@ carefully! — before copying the files.)  
 
 You can also install A2CLOUD from the Raspbian command line. Type:
 
-~~~
+~~~ bash
 wget appleii.ivanx.com/a2cloud/setup; source setup
 ~~~
-{: .language-sh}
 
 If you want all the features, answer “Y” to the questions. Then be patient, as
 it takes a little while to install.
@@ -263,10 +262,9 @@ If you don’t have A2CLOUD installed yet — because, for example, you installe
 vanilla NOOBS or Raspbian, rather than Raspple II — log in to your Pi, and at
 the Linux prompt type:
 
-~~~
+~~~ bash
 wget ivanx.com/a2cloud/setup; source setup
 ~~~
-{: .language-sh}
 
 A2CLOUD is confirmed to work on Debian 7 (“Wheezy”), all releases of Raspbian,
 and possibly earlier versions of both. It is believed to work on other Debian
@@ -450,7 +448,6 @@ can, after booting, type:
 ~~~
 -VSDRIVE.LOW
 ~~~
-{: .language-sh}
 
 However, this version of the driver for the virtual disks is easily
 overwritten by other software, especially if you exit BASIC.SYSTEM.  However,
@@ -740,10 +737,9 @@ explain in a later post.
 
 You can always put the A2CLOUD disk image back in virtual drive 2 with:
 
-~~~
+~~~ bash
 vsd2 $A2CLOUD
 ~~~
-{: .language-sh}
 
 (The `vsd1` and `vsd2` commands create a symbolic link, which is like a
 Windows shortcut or Mac alias, to whatever file you specify as imageFileName.
@@ -1477,10 +1473,9 @@ A2CLOUD can be installed on Debian or Ubuntu Linux (and possibly derivatives).
 It has been tried on the 32-bit versions of Debian 7 and Ubuntu Server 13.10.
 To install, type: 
 
-~~~
+~~~ bash
 wget ivanx.com/a2cloud/setup; source setup
 ~~~
-{: .language-sh}
 
 You can also install it into the [A2SERVER][91] virtual machine with the same
 command, or start fresh with the premade [A2SERVER+A2CLOUD][91] virtual
