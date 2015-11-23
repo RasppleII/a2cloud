@@ -636,8 +636,8 @@ if [[ $installADTPro ]]; then
 
 fi
 
-if [[ -f /usr/bin/X ]]; then
-    if [[ ! -f /usr/sbin/xrdp ]]; then
+if command -v X >/dev/null; then
+    if dpkg-query -l xrdp; then
         echo "A2CLOUD: Installing xrdp/tightvncserver..."
         sudo apt-get -y install xrdp
         sudo apt-get -y clean
@@ -645,7 +645,7 @@ if [[ -f /usr/bin/X ]]; then
         echo "A2CLOUD: xrdp/tightvncserver is already installed."
     fi
 else
-    echo "A2CLOUD: /usr/bin/X not found; not installing xrdp/tightvncserver."
+    echo "A2CLOUD: X11 not found; not installing xrdp/tightvncserver."
 fi
 
 if [[ $setupSerialPortLogin ]]; then
@@ -1270,7 +1270,7 @@ if [[ $installArchiveTools ]]; then
 fi
 
 # add shortcuts to LXDE desktop and menu
-if [[ -f /usr/bin/X ]]; then
+if command -v X >/dev/null; then
 
     [[ -d /etc/xdg/lxsession/LXDE-pi ]] && lxde="lxde-pi" || lxde="lxde"
     echo "A2CLOUD: Creating LXDE desktop and menu shortcuts..."
@@ -1489,7 +1489,7 @@ if [[ $a2CloudDisk ]]; then
             nulib2 -p dsk2file.shk dsk2file58 | acmd -p "$a2CloudDisk" DSK2FILE SYS
 
             # Apple System Utilities 3.1 launch file
-            if [[ -f /usr/local/bin/unar ]]; then
+            if command -v unar >/dev/null; then
                 echo "A2CLOUD: Copying System Utilities launch file..."
                 acmd -g A2SYSDISK32.PO SYSUTIL.SYSTEM - | acmd -p "$a2CloudDisk" SYSUTIL SYS
             else
@@ -1632,7 +1632,7 @@ cd "$origDir"
 rm setup &> /dev/null
 rm a2cloud-setup &> /dev/null
 rm -rf /tmp/a2cloud-install &> /dev/null
-if [[ -f /usr/local/bin/gsport || -f /usr/bin/gsport || -f /usr/local/bin/kegs ]]; then
+if command -v gsport >/dev/null || command -v kegs >/dev/null; then
     sudo addgroup gsport &> /dev/null
     sudo addgroup kegs &> /dev/null
     sudo usermod -a -G audio,video,netdev,fuse,gsport,plugdev,kegs $USER &> /dev/null
