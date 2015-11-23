@@ -1295,29 +1295,31 @@ if command -v X >/dev/null; then
     # create user desktop items folder
     mkdir -p ~/Desktop
     # GSport:
-    if [[ -f /usr/bin/gsport ]]; then
-        echo -e "[Desktop Entry]\nName=GSport\nComment=Apple IIgs Emulator\nExec=lxterminal -e /usr/bin/gsport\nIcon=/usr/local/share/gsport32.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/gsport.desktop > ~/Desktop/gsport.desktop
-    elif [[ -f /usr/local/bin/gsport ]]; then
-        echo -e "[Desktop Entry]\nName=GSport\nComment=Apple IIgs Emulator\nExec=lxterminal -e /usr/local/bin/gsport\nIcon=/usr/local/share/gsport32.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/gsport.desktop > ~/Desktop/gsport.desktop
+    GSPORT_PATH="$(command -v gsport)"
+    if [ "$GSPORT_PATH" != "" ]; then
+        echo -e "[Desktop Entry]\nName=GSport\nComment=Apple IIgs Emulator\nExec=lxterminal -e $GSPORT_PATH\nIcon=/usr/local/share/gsport32.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/gsport.desktop > ~/Desktop/gsport.desktop
     fi
     if [[ ! -f /usr/local/share/gsport32.ico ]]; then
         sudo wget -qO /usr/local/share/gsport32.ico http://appleii.ivanx.com/a2cloud/files/gsport32.ico
     fi
     # KEGS:
-    if [[ -f /usr/local/bin/kegs ]]; then
-        echo -e "[Desktop Entry]\nName=KEGS\nComment=Apple IIgs Emulator\nExec=lxterminal -e /usr/local/bin/kegs\nIcon=/usr/local/share/kegsicon.png\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/kegs.desktop > /dev/null
+    KEGS_PATH="$(command -v kegs)"
+    if [ "KEGS_PATH" != "" ]; then
+        echo -e "[Desktop Entry]\nName=KEGS\nComment=Apple IIgs Emulator\nExec=lxterminal -e $KEGS_PATH\nIcon=/usr/local/share/kegsicon.png\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/kegs.desktop > /dev/null
         [[ ! -f ~/Desktop/gsport.desktop ]] && cp /usr/local/share/applications/kegs.desktop ~/Desktop/kegs.desktop
     fi
     if [[ ! -f /usr/local/share/kegsicon.png ]]; then
         sudo wget -qO /usr/local/share/kegsicon.png http://appleii.ivanx.com/a2cloud/files/kegsicon.png
     fi
     # LinApple:
-    if [[ -f /usr/local/bin/linapple ]]; then
-        echo -e "[Desktop Entry]\nName=LinApple\nComment=Apple IIe Emulator\nExec=lxterminal -e /usr/local/bin/linapple\nIcon=/usr/local/linapple/icon.bmp\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/linapple.desktop > ~/Desktop/linapple.desktop
+    LINAPPLE_PATH="$(command -v linapple)"
+    if [ "LINAPPLE_PATH" != "" ]; then
+        echo -e "[Desktop Entry]\nName=LinApple\nComment=Apple IIe Emulator\nExec=lxterminal -e $LINAPPLE_PATH\nIcon=/usr/local/linapple/icon.bmp\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/linapple.desktop > ~/Desktop/linapple.desktop
     fi
     # ADTPro Server:
-    if [[ -f /usr/local/bin/adtpro.sh ]]; then
-        echo -e "[Desktop Entry]\nName=ADTPro Server\nComment=Floppy Transfer Utility\nExec=/usr/local/bin/adtpro.sh\nIcon=/usr/local/adtpro/lib/ADTPro.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/adtproserver.desktop > ~/Desktop/adtproserver.desktop
+    ADTPRO_PATH="$(command -v adtpro.sh)"
+    if [ "ADTPRO_PATH" != "" ]; then
+        echo -e "[Desktop Entry]\nName=ADTPro Server\nComment=Floppy Transfer Utility\nExec=$ADTPRO_PATH\nIcon=/usr/local/adtpro/lib/ADTPro.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/adtproserver.desktop > ~/Desktop/adtproserver.desktop
     fi
     # LXTerminal:
     if [[ ! $(grep lxterminal.desktop /etc/xdg/lxpanel/profile/LXDE-pi/panels/panel 2> /dev/null) && ! -f ~/Desktop/lxterminal.desktop ]]; then
