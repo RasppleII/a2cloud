@@ -199,5 +199,7 @@ a2cloud (1.9.0) oldstable; urgency=low
     style.  Developers may want to install the devscripts package and have a
     look at the manpage for dch(1).  Mac developers, if you use TextExpander,
     I can share a snippet for RFC-2822 compliant dates.
+  * Use download.apple.com for Apple // files when possible, with archive.org
+    as a fallback.
 
  -- Joseph Carter <tjcarter@spiritsubstance.com>  Thu, 12 Nov 2015 21:50:48 -0800
