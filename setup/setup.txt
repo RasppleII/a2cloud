@@ -1,7 +1,7 @@
 #! /bin/bash
 # vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
 
-version="182"
+version="190"
 adtProVersion="2.0.1"
 
 # Ensure URL we'll use ends in a /
@@ -202,7 +202,7 @@ else
     installADTPro=
     echo
     echo -n "Install ADTPro server, for virtual drives and floppy disk transfers"
-    if [[ ! -f /usr/bin/X ]]; then
+    if ! command -v X >/dev/null; then
         echo
         echo -n "(the X Window System and LXDE desktop environment will be installed)"
     fi
@@ -392,7 +392,7 @@ source /usr/local/etc/a2cloudrc
 echo "A2CLOUD: Saving installer version..."
 echo "$version" | sudo tee /usr/local/etc/A2CLOUD-version &> /dev/null
 
-if [[ ! $(dpkg -l avahi-daemon 2> /dev/null | grep ^ii) || ! $(dpkg -l libnss-mdns 2> /dev/null | grep ^ii) ]]; then
+if ! dpkg-query -l avahi-daemon &>/dev/null || ! dpkg-query -l libnss-mdns &>/dev/null; then
     echo "A2CLOUD: Installing avahi-daemon (mDNS)..."
     sudo apt-get -y install avahi-daemon &> /dev/null
     sudo apt-get -y clean
@@ -420,7 +420,7 @@ if [[ $installADTPro ]]; then
         [[ $0 == "-bash" ]] && return 3 || exit 3
     fi
 
-    if [[ ! -f /usr/bin/X ]]; then
+    if ! command -v X >/dev/null; then
         echo "A2CLOUD: Installing X Window System and LXDE..."
         sudo apt-get -y install xorg lxde
         sudo apt-get -y clean
@@ -430,13 +430,6 @@ if [[ $installADTPro ]]; then
     else
         echo "A2CLOUD: X Window System and LXDE are already installed."
     fi
-
-    # if [[ ! -f /etc/xdg/autostart/lxterminal.desktop ]]; then
-    #    echo "A2CLOUD: Setting terminal window to auto-open on desktop..."
-    #    echo -e "\n[Desktop Entry]\nType=Application\nExec=/usr/bin/lxterminal" | sudo tee /etc/xdg/autostart/lxterminal.desktop > /dev/null
-    # else
-    #    echo "A2CLOUD: Terminal window already set to auto-open on desktop."
-    # fi
 
     if { lspci 2> /dev/null | grep -q VirtualBox; }; then
         if { ! grep -q default /etc/xdg/lxsession/LXDE/autostart; }; then
@@ -573,8 +566,8 @@ if [[ $installADTPro ]]; then
     [[ ! -f /usr/lib/RXTXcomm.jar ]] && sudo ln -s /usr/share/java/RXTXcomm.jar /usr/lib &> /dev/null
     [[ ! -d /usr/local/adtpro/lib/rxtx/rxtx-2.2pre2-local/arm ]] && ln -s /usr/lib/jni /usr/local/adtpro/lib/rxtx/rxtx-2.2pre2-local/arm &> /dev/null
 
-    if [[ ! -f /usr/bin/xvfb-run ]]; then
-        echo "A2CLOUD: Installing xvfb for headless operation..."cd
+    if ! command -v xvfb-run >/dev/null; then
+        echo "A2CLOUD: Installing xvfb for headless operation..."
         sudo apt-get -y install xvfb
         sudo apt-get -y clean
     else
@@ -636,8 +629,8 @@ if [[ $installADTPro ]]; then
 
 fi
 
-if [[ -f /usr/bin/X ]]; then
-    if [[ ! -f /usr/sbin/xrdp ]]; then
+if command -v X >/dev/null; then
+    if dpkg-query -l xrdp; then
         echo "A2CLOUD: Installing xrdp/tightvncserver..."
         sudo apt-get -y install xrdp
         sudo apt-get -y clean
@@ -645,7 +638,7 @@ if [[ -f /usr/bin/X ]]; then
         echo "A2CLOUD: xrdp/tightvncserver is already installed."
     fi
 else
-    echo "A2CLOUD: /usr/bin/X not found; not installing xrdp/tightvncserver."
+    echo "A2CLOUD: X11 not found; not installing xrdp/tightvncserver."
 fi
 
 if [[ $setupSerialPortLogin ]]; then
@@ -655,7 +648,7 @@ if [[ $setupSerialPortLogin ]]; then
     sudo sed -i 's/^\(T.*\)ttyAMA0 .* /#\1ttyAMA0 4800 /' /etc/inittab
     sudo sed -i 's/ttyAMA0,[0-9]*/ttyAMA0,4800/g' /boot/cmdline.txt 2> /dev/null
 
-    if [[ ! -f /usr/bin/screen ]]; then
+    if ! command -v screen >/dev/null; then
         echo "A2CLOUD: Installing Screen for multiple terminals..."
         sudo apt-get -y install screen
         sudo apt-get -y clean
@@ -756,7 +749,7 @@ fi
 
 if [[ $installCommTools ]]; then
 
-    if [[ ! -f /usr/bin/curl ]]; then
+    if ! command -v curl >/dev/null; then
         echo "A2CLOUD: Installing curl..."
         sudo apt-get -y install curl
         sudo apt-get -y clean
@@ -764,7 +757,7 @@ if [[ $installCommTools ]]; then
         echo "A2CLOUD: curl is already installed."
     fi
 
-    if [[ ! -f /usr/bin/sz ]]; then
+    if ! command -v sz >/dev/null; then
         echo "A2CLOUD: Installing rzsz for X/Y/Zmodem transfers..."
         sudo apt-get -y install lrzsz
         sudo apt-get -y clean
@@ -772,7 +765,7 @@ if [[ $installCommTools ]]; then
         echo "A2CLOUD: rzsz is already installed."
     fi
 
-    if [[ ! -f /usr/bin/ftp ]]; then
+    if ! command -v ftp >/dev/null; then
         echo "A2CLOUD: Installing ftp..."
         sudo apt-get -y install ftp
         sudo apt-get -y clean
@@ -780,7 +773,7 @@ if [[ $installCommTools ]]; then
         echo "A2CLOUD: ftp is already installed."
     fi
 
-    if [[ ! -f /usr/local/bin/cftp ]]; then
+    if ! command -v cftp >/dev/null; then
         echo "A2CLOUD: Installing cftp..."
         cd /tmp/a2cloud-install
         if [[ $downloadBinaries ]]; then
@@ -790,7 +783,7 @@ if [[ $installCommTools ]]; then
                 wget -qO- http://appleii.ivanx.com/a2cloud/files/cftp-debian7_x86.tgz | sudo tar Pzx
             fi
         fi
-        if [[ ! -f /usr/local/bin/cftp ]]; then
+        if ! command -v cftp >/dev/null; then
             sudo apt-get -y install build-essential
             sudo apt-get -y install ncurses-dev
             sudo apt-get -y clean
@@ -810,7 +803,7 @@ if [[ $installCommTools ]]; then
         echo "A2CLOUD: cftp is already installed."
     fi
 
-    if [[ ! -f /usr/bin/lynx ]]; then
+    if ! command -v lynx >/dev/null; then
         echo "A2CLOUD: Installing lynx..."
         sudo apt-get -y install lynx
         sudo apt-get -y clean
@@ -818,7 +811,7 @@ if [[ $installCommTools ]]; then
         echo "A2CLOUD: lynx is already installed."
     fi
 
-    if [[ ! -f /usr/bin/links ]]; then
+    if ! command -v links >/dev/null; then
         echo "A2CLOUD: Installing links..."
         sudo apt-get -y --force-yes install links
         sudo apt-get -y clean
@@ -828,7 +821,7 @@ if [[ $installCommTools ]]; then
 
     sudo wget -qO /usr/local/bin/a2news ${scriptURL}setup/a2news.txt
     sudo chmod ugo+x /usr/local/bin/a2news
-    if [[ ! -f /usr/bin/tin ]]; then
+    if ! command -v tin >/dev/null; then
         echo "A2CLOUD: Installing a2news/tin..."
         sudo apt-get -y install tin
         sudo apt-get -y clean
@@ -853,7 +846,7 @@ if [[ $installCommTools ]]; then
 
     sudo wget -qO /usr/local/bin/a2chat ${scriptURL}setup/a2chat.txt
     sudo chmod ugo+x /usr/local/bin/a2chat
-    if [[ ! -f /usr/bin/irssi ]]; then
+    if ! command -v irssi >/dev/null; then
         echo "A2CLOUD: Installing a2chat/irssi..."
         sudo apt-get -y install irssi
         sudo apt-get -y clean
@@ -861,7 +854,7 @@ if [[ $installCommTools ]]; then
         echo "A2CLOUD: a2chat/irssi is already installed."
     fi
 
-    if [[ ! -f /usr/bin/telnet ]]; then
+    if ! command -v telnet >/dev/null; then
         echo "A2CLOUD: Installing telnet..."
         sudo apt-get -y install telnet
         sudo apt-get -y clean
@@ -869,7 +862,9 @@ if [[ $installCommTools ]]; then
         echo "A2CLOUD: telnet is already installed."
     fi
 
-    if [[ ( ! -f /usr/bin/ttytter && ! -f /usr/local/bin/ttytter ) || ! -f "/usr/local/share/perl/5.14.2/Term/ReadLine/TTYtter.pm" ]]; then
+    # Do we need to check for the readline module here as well?
+    #if [[ ( ! -f /usr/bin/ttytter && ! -f /usr/local/bin/ttytter ) || ! -f "/usr/local/share/perl/5.14.2/Term/ReadLine/TTYtter.pm" ]]; then
+    if ! command -v ttyter >/dev/null; then
         echo "A2CLOUD: Installing TTYtter..."
         sudo wget -qO /usr/local/bin/ttytter http://www.floodgap.com/software/ttytter/dist2/2.1.00.txt
         sudo chmod ugo+x /usr/local/bin/ttytter
@@ -914,7 +909,7 @@ if [[ $installCommTools ]]; then
 fi
 
 if [[ $installA2Pi ]]; then
-    if [[ ! -f /sbin/a2pid ]]; then
+    if dpkg-query -l a2pi &>/dev/null; then
         echo "A2CLOUD: Installing Apple II Pi..."
         cd /tmp/a2cloud-install
         if ! grep 'schmenk.is-a-geek.com' /etc/apt/sources.list; then
@@ -931,7 +926,7 @@ if [[ $installA2Pi ]]; then
             sudo apt-get -y install libpcap0.8-dev
             sudo apt-get -y clean
         fi
-        if [[ ! -f /usr/bin/gsport ]]; then
+        if ! command -v gsport >/dev/null; then
             # echo "A2CLOUD: Updating package repositories to include Apple II Pi..."
             # sudo apt-get -y update > /dev/null
             echo "A2CLOUD: Installing Apple II Pi extras (GSport)..."
@@ -978,7 +973,7 @@ fi
 if [[ $installEmulators ]]; then
 
     # KEGS
-    if [[ ! -f /usr/local/bin/xkegs ]]; then
+    if ! command -v xkegs >/dev/null; then
         echo "A2CLOUD: Installing KEGS..."
         cd /tmp/a2cloud-install
         if [[ $downloadBinaries ]]; then
@@ -988,7 +983,7 @@ if [[ $installEmulators ]]; then
                 wget -qO- http://appleii.ivanx.com/a2cloud/files/kegs-debian7_x86.tgz | sudo tar Pzx
             fi
         fi
-        if [[ ! -f /usr/local/bin/xkegs ]]; then
+        if ! command -v xkegs >/dev/null; then
             echo "A2CLOUD: Building KEGS from source..."
             sudo apt-get -y install build-essential &> /dev/null
             sudo apt-get -y install libx11-dev libxext-dev xfonts-base &> /dev/null
@@ -1047,7 +1042,7 @@ if [[ $installEmulators ]]; then
                 wget -qO- http://appleii.ivanx.com/a2cloud/files/gsport-debian7_x86.tgz | sudo tar Pzx 2> /dev/null
             fi
         fi
-        if [[ ! -f /usr/local/bin/gsport ]]; then
+        if ! command -v gsport >/dev/null; then
             echo "A2CLOUD: Building GSport from source..."
             sudo apt-get -y install build-essential &> /dev/null
             sudo apt-get -y install libx11-dev libxext-dev xfonts-base libpcap0.8-dev &> /dev/null
@@ -1125,7 +1120,7 @@ if [[ $installEmulators ]]; then
 
 
     # LinApple
-    if [[ ! -f /usr/local/linapple/linapple ]]; then
+    if ! command -v linapple >/dev/null; then
         echo "A2CLOUD: Installing LinApple..."
         cd /tmp/a2cloud-install
         if [[ $downloadBinaries ]]; then
@@ -1135,7 +1130,7 @@ if [[ $installEmulators ]]; then
                 wget -qO- http://appleii.ivanx.com/a2cloud/files/linapple-debian7_x86.tgz | sudo tar Pzx
             fi
         fi
-        if [[ ! -f /usr/local/linapple/linapple ]]; then
+        if ! command -v linapple >/dev/null; then
             sudo apt-get -y install build-essential
             sudo apt-get -y install libsdl1.2-dev libcurl4-openssl-dev zlib1g-dev libzip-dev
             sudo apt-get -y clean
@@ -1168,8 +1163,9 @@ fi
 if [[ $installArchiveTools ]]; then
 
     if [[ ! -f /usr/local/bin/nulib2 || ! -f /usr/local/bin/sciibin || ! -f /usr/local/bin/usq ]]; then
+    if ! command -v nulib2 >/dev/null; then
 
-        echo "A2CLOUD: Installing nulib2, sciibin, unblu, unbit, unexec, usq..."
+        echo "A2CLOUD: Installing nulib2..."
 
         cd /tmp/a2cloud-install
         if [[ $downloadBinaries ]]; then
@@ -1179,7 +1175,7 @@ if [[ $installArchiveTools ]]; then
                 wget -qO- http://appleii.ivanx.com/a2cloud/files/nulib2-debian7_x86.tgz | sudo tar Pzx
             fi
         fi
-        if [[ ! -f /usr/local/bin/nulib2 ]]; then
+        if ! command -v nulib2 >/dev/null; then
             sudo apt-get -y install build-essential
             sudo apt-get -y install zlib1g-dev
             sudo apt-get -y clean
@@ -1201,23 +1197,27 @@ if [[ $installArchiveTools ]]; then
             cd /tmp/a2cloud-install
             rm -rf nulib
         fi
-
-        if [[ ! -f /usr/local/bin/sciibin || ! -f /usr/local/bin/usq ]]; then
-            # install sciibin/unblu/unbit/unexec/usq
-            sudo apt-get -y install build-essential
-            sudo apt-get -y clean
-            rm -rf undoit &> /dev/null
-            mkdir -p undoit
-            cd undoit
-            wget -q http://web.archive.org/web/20110619163030/http://fadden.com/dl-apple2/undoit.zip
-            unzip undoit.zip
-            make
-            sudo mv sciibin unbit unblu unexec usq /usr/local/bin
-            cd /tmp/a2cloud-install
-            rm -rf undoit
-        fi
     else
-        echo "A2CLOUD: nulib2, sciibin, unblu, unbit, unexec, usq are already installed."
+        echo "A2CLOUD: nulib2 is already installed."
+    fi
+
+    if ! command -v sciibin >/dev/null; then
+
+        echo "A2CLOUD: Installing sciibin, unblu, unbit, unexec, usq..."
+
+        sudo apt-get -y install build-essential
+        sudo apt-get -y clean
+        rm -rf undoit &> /dev/null
+        mkdir -p undoit
+        cd undoit
+        wget -q http://web.archive.org/web/20110619163030/http://fadden.com/dl-apple2/undoit.zip
+        unzip undoit.zip
+        make
+        sudo mv sciibin unbit unblu unexec usq /usr/local/bin
+        cd /tmp/a2cloud-install
+        rm -rf undoit
+    else
+        echo "A2CLOUD: sciibin, unblu, unbit, unexec, usq are already installed."
     fi
 
     echo "A2CLOUD: Setting up shk2image command..."
@@ -1226,47 +1226,51 @@ if [[ $installArchiveTools ]]; then
 
     # download and install The Unarchiver, for expanding apple.com disk images
     # http://wakaba.c3.cx/s/apps/unarchiver.html
-    if [[ ! -f /usr/local/bin/unar ]]; then
+    if ! command -v unar >/dev/null; then
         echo "A2CLOUD: Installing The Unarchiver..."
-        cd /tmp/a2cloud-install
-        if [[ $downloadBinaries ]]; then
-            if [[ $isRpi || $isDebian ]]; then
-                sudo apt-get -y install libgnustep-base1.22
-                sudo apt-get -y clean
-                if [[ $isRpi ]]; then
-                    wget -qO- http://appleii.ivanx.com/a2cloud/files/unar-rpi.tgz | sudo tar Pzx
-                elif [[ $isDebian ]]; then
-                    wget -qO- http://appleii.ivanx.com/a2cloud/files/unar-debian7_x86.tgz | sudo tar Pzx
+        if apt-cache show unar &>/dev/null; then
+            sudo apt-get -y install unar
+        else
+            cd /tmp/a2cloud-install
+            if [[ $downloadBinaries ]]; then
+                if [[ $isRpi || $isDebian ]]; then
+                    sudo apt-get -y install libgnustep-base1.22
+                    sudo apt-get -y clean
+                    if [[ $isRpi ]]; then
+                        wget -qO- http://appleii.ivanx.com/a2cloud/files/unar-rpi.tgz | sudo tar Pzx
+                    elif [[ $isDebian ]]; then
+                        wget -qO- http://appleii.ivanx.com/a2cloud/files/unar-debian7_x86.tgz | sudo tar Pzx
+                    fi
                 fi
             fi
+            if ! command -v unar >/dev/null; then
+                sudo apt-get -y install build-essential
+                sudo apt-get -y install libgnustep-base-dev libz-dev libbz2-dev
+                sudo apt-get -y install libssl-dev libicu-dev unzip
+                sudo apt-get -y clean
+                rm -rf unar &> /dev/null
+                mkdir -p unar
+                cd unar
+                wget -q -nc http://theunarchiver.googlecode.com/files/unar1.7_src.zip
+                unzip -o unar1.7_src.zip
+                cd The\ Unarchiver/XADMaster
+                make -f Makefile.linux
+                sudo mv lsar unar /usr/local/bin
+                cd ../Extra
+                sudo mkdir -p /usr/local/man/man1
+                sudo mv lsar.1 unar.1 /usr/local/man/man1
+                cd /tmp/a2cloud-install
+                rm -rf unar
+            fi
+            sudo mandb &> /dev/null
         fi
-        if [[ ! -f /usr/local/bin/unar ]]; then
-            sudo apt-get -y install build-essential
-            sudo apt-get -y install libgnustep-base-dev libz-dev libbz2-dev
-            sudo apt-get -y install libssl-dev libicu-dev unzip
-            sudo apt-get -y clean
-            rm -rf unar &> /dev/null
-            mkdir -p unar
-            cd unar
-            wget -q -nc http://theunarchiver.googlecode.com/files/unar1.7_src.zip
-            unzip -o unar1.7_src.zip
-            cd The\ Unarchiver/XADMaster
-            make -f Makefile.linux
-            sudo mv lsar unar /usr/local/bin
-            cd ../Extra
-            sudo mkdir -p /usr/local/man/man1
-            sudo mv lsar.1 unar.1 /usr/local/man/man1
-            cd /tmp/a2cloud-install
-            rm -rf unar
-        fi
-        sudo mandb &> /dev/null
     else
         echo "A2CLOUD: The Unarchiver is already installed."
     fi
 fi
 
 # add shortcuts to LXDE desktop and menu
-if [[ -f /usr/bin/X ]]; then
+if command -v X >/dev/null; then
 
     [[ -d /etc/xdg/lxsession/LXDE-pi ]] && lxde="lxde-pi" || lxde="lxde"
     echo "A2CLOUD: Creating LXDE desktop and menu shortcuts..."
@@ -1291,29 +1295,31 @@ if [[ -f /usr/bin/X ]]; then
     # create user desktop items folder
     mkdir -p ~/Desktop
     # GSport:
-    if [[ -f /usr/bin/gsport ]]; then
-        echo -e "[Desktop Entry]\nName=GSport\nComment=Apple IIgs Emulator\nExec=lxterminal -e /usr/bin/gsport\nIcon=/usr/local/share/gsport32.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/gsport.desktop > ~/Desktop/gsport.desktop
-    elif [[ -f /usr/local/bin/gsport ]]; then
-        echo -e "[Desktop Entry]\nName=GSport\nComment=Apple IIgs Emulator\nExec=lxterminal -e /usr/local/bin/gsport\nIcon=/usr/local/share/gsport32.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/gsport.desktop > ~/Desktop/gsport.desktop
+    GSPORT_PATH="$(command -v gsport)"
+    if [ "$GSPORT_PATH" != "" ]; then
+        echo -e "[Desktop Entry]\nName=GSport\nComment=Apple IIgs Emulator\nExec=lxterminal -e $GSPORT_PATH\nIcon=/usr/local/share/gsport32.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/gsport.desktop > ~/Desktop/gsport.desktop
     fi
     if [[ ! -f /usr/local/share/gsport32.ico ]]; then
         sudo wget -qO /usr/local/share/gsport32.ico http://appleii.ivanx.com/a2cloud/files/gsport32.ico
     fi
     # KEGS:
-    if [[ -f /usr/local/bin/kegs ]]; then
-        echo -e "[Desktop Entry]\nName=KEGS\nComment=Apple IIgs Emulator\nExec=lxterminal -e /usr/local/bin/kegs\nIcon=/usr/local/share/kegsicon.png\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/kegs.desktop > /dev/null
+    KEGS_PATH="$(command -v kegs)"
+    if [ "KEGS_PATH" != "" ]; then
+        echo -e "[Desktop Entry]\nName=KEGS\nComment=Apple IIgs Emulator\nExec=lxterminal -e $KEGS_PATH\nIcon=/usr/local/share/kegsicon.png\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/kegs.desktop > /dev/null
         [[ ! -f ~/Desktop/gsport.desktop ]] && cp /usr/local/share/applications/kegs.desktop ~/Desktop/kegs.desktop
     fi
     if [[ ! -f /usr/local/share/kegsicon.png ]]; then
         sudo wget -qO /usr/local/share/kegsicon.png http://appleii.ivanx.com/a2cloud/files/kegsicon.png
     fi
     # LinApple:
-    if [[ -f /usr/local/bin/linapple ]]; then
-        echo -e "[Desktop Entry]\nName=LinApple\nComment=Apple IIe Emulator\nExec=lxterminal -e /usr/local/bin/linapple\nIcon=/usr/local/linapple/icon.bmp\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/linapple.desktop > ~/Desktop/linapple.desktop
+    LINAPPLE_PATH="$(command -v linapple)"
+    if [ "LINAPPLE_PATH" != "" ]; then
+        echo -e "[Desktop Entry]\nName=LinApple\nComment=Apple IIe Emulator\nExec=lxterminal -e $LINAPPLE_PATH\nIcon=/usr/local/linapple/icon.bmp\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/linapple.desktop > ~/Desktop/linapple.desktop
     fi
     # ADTPro Server:
-    if [[ -f /usr/local/bin/adtpro.sh ]]; then
-        echo -e "[Desktop Entry]\nName=ADTPro Server\nComment=Floppy Transfer Utility\nExec=/usr/local/bin/adtpro.sh\nIcon=/usr/local/adtpro/lib/ADTPro.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/adtproserver.desktop > ~/Desktop/adtproserver.desktop
+    ADTPRO_PATH="$(command -v adtpro.sh)"
+    if [ "ADTPRO_PATH" != "" ]; then
+        echo -e "[Desktop Entry]\nName=ADTPro Server\nComment=Floppy Transfer Utility\nExec=$ADTPRO_PATH\nIcon=/usr/local/adtpro/lib/ADTPro.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/adtproserver.desktop > ~/Desktop/adtproserver.desktop
     fi
     # LXTerminal:
     if [[ ! $(grep lxterminal.desktop /etc/xdg/lxpanel/profile/LXDE-pi/panels/panel 2> /dev/null) && ! -f ~/Desktop/lxterminal.desktop ]]; then
@@ -1428,7 +1434,7 @@ if [[ $a2CloudDisk ]]; then
             sysutilsBackupURL="http://archive.org/download/download.info.apple.com.2012.11/download.info.apple.com.2012.11.zip/download.info.apple.com%2FApple_Support_Area%2FApple_Software_Updates%2FEnglish-North_American%2FApple_II%2FApple_II_Supplemental%2F"
 
             # Apple System Utilities 3.1 support files
-            if [[ -f /usr/local/bin/unar ]]; then
+            if command -v unar >/dev/null; then
                 echo "A2CLOUD: Downloading and copying System Utilities support files..."
                 cd /tmp/a2cloud-install
                 wget --max-redirect 0 -qO Apple_II_System_Disk_3.2.sea.bin ${sysutilsURL}Apple_II_System_Disk_3.2.sea.bin
@@ -1498,7 +1504,7 @@ if [[ $a2CloudDisk ]]; then
             nulib2 -p dsk2file.shk dsk2file58 | acmd -p "$a2CloudDisk" DSK2FILE SYS
 
             # Apple System Utilities 3.1 launch file
-            if [[ -f /usr/local/bin/unar ]]; then
+            if command -v unar >/dev/null; then
                 echo "A2CLOUD: Copying System Utilities launch file..."
                 acmd -g A2SYSDISK32.PO SYSUTIL.SYSTEM - | acmd -p "$a2CloudDisk" SYSUTIL SYS
             else
@@ -1641,7 +1647,7 @@ cd "$origDir"
 rm setup &> /dev/null
 rm a2cloud-setup &> /dev/null
 rm -rf /tmp/a2cloud-install &> /dev/null
-if [[ -f /usr/local/bin/gsport || -f /usr/bin/gsport || -f /usr/local/bin/kegs ]]; then
+if command -v gsport >/dev/null || command -v kegs >/dev/null; then
     sudo addgroup gsport &> /dev/null
     sudo addgroup kegs &> /dev/null
     sudo usermod -a -G audio,video,netdev,fuse,gsport,plugdev,kegs $USER &> /dev/null

@@ -139,4 +139,6 @@ $HEADLESS"$MY_JAVA_HOME"java -Xms256m -Xmx512m "$TWEAK" $ADTPRO_EXTRA_JAVA_PARMS
 if [[ $1 == "serial" ]]; then
     echo "Starting up on interface $serialPortName. Please wait..."
 fi
-sleep 30
+if [ -t 0 ]; then
+    sleep 30
+fi
