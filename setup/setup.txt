@@ -1404,8 +1404,15 @@ if [[ $a2CloudDisk ]]; then
             acmd -d "$a2CloudDisk" BASIC
             acmd -d "$a2CloudDisk" STARTUP.SYSTEM
             acmd -d "$a2CloudDisk" ADTPRO
+
+            gsosURL="http://download.info.apple.com/Apple_Support_Area/Apple_Software_Updates/English-North_American/Apple_II/Apple_IIGS_System_6.0.1/"
+            gsosBackupURL="http://archive.org/download/download.info.apple.com.2012.11/download.info.apple.com.2012.11.zip/download.info.apple.com%2FApple_Support_Area%2FApple_Software_Updates%2FEnglish-North_American%2FApple_II%2FApple_IIGS_System_6.0.1%2F"
+
             # start from ADTPro distribution image and replace BASIC.SYSTEM 1.4.1 with 1.5
-            wget -qO Disk_3_of_7-SystemTools1.sea.bin http://archive.org/download/download.info.apple.com.2012.11/download.info.apple.com.2012.11.zip/download.info.apple.com%2FApple_Support_Area%2FApple_Software_Updates%2FEnglish-North_American%2FApple_II%2FApple_IIGS_System_6.0.1%2FDisk_3_of_7-SystemTools1.sea.bin
+            wget --max-redirect 0 -qO Disk_3_of_7-SystemTools1.sea.bin ${gsosURL}Disk_3_of_7-SystemTools1.sea.bin
+            if (( $? != 0 )); then
+                wget -qO Disk_3_of_7-SystemTools1.sea.bin ${gsosBackupURL}Disk_3_of_7-SystemTools1.sea.bin
+            fi
             unar -k skip Disk_3_of_7-SystemTools1.sea.bin &> /dev/null
             mv 'Disk 3 of 7-SystemTools1.sea' SystemTools1.dc42
             acmd -g SystemTools1.dc42 BASIC.SYSTEM - | acmd -p "$a2CloudDisk" BASIC.SYSTEM SYS
@@ -1417,11 +1424,17 @@ if [[ $a2CloudDisk ]]; then
             acmd -g /usr/local/adtpro/disks/VDRIVE-*DSK VEDRIVE -        | acmd -p "$a2CloudDisk" VEDRIVE SYS
             acmd -g /usr/local/adtpro/disks/VDRIVE-*DSK VEDRIVE.CONFIG - | acmd -p "$a2CloudDisk" VEDRIVE.CONFIG BAS
 
+            sysutilsURL="http://download.info.apple.com/Apple_Support_Area/Apple_Software_Updates/English-North_American/Apple_II/Apple_II_Supplemental/"
+            sysutilsBackupURL="http://archive.org/download/download.info.apple.com.2012.11/download.info.apple.com.2012.11.zip/download.info.apple.com%2FApple_Support_Area%2FApple_Software_Updates%2FEnglish-North_American%2FApple_II%2FApple_II_Supplemental%2F"
+
             # Apple System Utilities 3.1 support files
             if [[ -f /usr/local/bin/unar ]]; then
                 echo "A2CLOUD: Downloading and copying System Utilities support files..."
                 cd /tmp/a2cloud-install
-                wget -qO Apple_II_System_Disk_3.2.sea.bin http://archive.org/download/download.info.apple.com.2012.11/download.info.apple.com.2012.11.zip/download.info.apple.com%2FApple_Support_Area%2FApple_Software_Updates%2FEnglish-North_American%2FApple_II%2FApple_II_Supplemental%2FApple_II_System_Disk_3.2.sea.bin
+                wget --max-redirect 0 -qO Apple_II_System_Disk_3.2.sea.bin ${sysutilsURL}Apple_II_System_Disk_3.2.sea.bin
+                if (( $? != 0 )); then
+                    wget -qO Apple_II_System_Disk_3.2.sea.bin ${sysutilsBackupURL}Apple_II_System_Disk_3.2.sea.bin
+                fi
                 unar -k skip Apple_II_System_Disk_3.2.sea.bin &> /dev/null
                 dd if='Apple II System Disk 3.2.sea' of=A2SYSDISK32.PO bs=1 skip=84 count=819200 2> /dev/null
                 acmd -g A2SYSDISK32.PO UTIL.0 - | acmd -p "$a2CloudDisk" UTIL.0 BIN \$0900
