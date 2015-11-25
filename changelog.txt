@@ -199,6 +199,10 @@ a2cloud (1.9.0) oldstable; urgency=low
     style.  Developers may want to install the devscripts package and have a
     look at the manpage for dch(1).  Mac developers, if you use TextExpander,
     I can share a snippet for RFC-2822 compliant dates.
+  * Make adtpro.sh delay only happen when running interactively.
+  * Begin using $PATH to find things so we can replace local binaries with
+    packages later on.
+  * Use unar package if it's available.
   * Use download.apple.com for Apple // files when possible, with archive.org
     as a fallback.
 
