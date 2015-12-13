@@ -9,5 +9,5 @@ The A2CLOUD scripts themselves are written primarily by Ivan Drucker and
 released under the WTFPL version 2, which you may download from its web page
 at <http://www.wtfpl.net/txt/copying/>.  This is essentially a public domain
 release, which doesn't extend to the other programs used by A2CLOUD such as
-ADTPro or the various Linux tools it installs.  These hav etheir own license
+ADTPro or the various Linux tools it installs.  These have their own license
 terms and Copyrights.
