@@ -1667,105 +1667,105 @@ fi
 #          A2PI 1.5 (PiDrive update) on A2CLOUD disk
 #          ADTPro 2.0.1 server, and 2.0.1 client on A2CLOUD disk
 
-# 1.8.0d-- √ creates shortcuts on desktop for GSport, KEGS, LinApple, ADTPro server on x86
-#          √ adds LXTerminal to desktop for non-A2Pi version
-#          √ ProDOS instruction screen on GSOS install
-#          √ provide via downloaded program that is dd notrunc'd over PRODOS (instead of writeCharsHex)
-#          √ figure out why lines in autostart are supposed to start with @ (daemon; restarts command on crash)
-#          √ install AppleCommander-1.3.5.13id (so Spectrum installer will work)
-#          √ fix mouse not working in VirtualBox framebuffer
-#          √  requires uninstalling (or temporarily disabling, if possible) VirtualBox guest additions
-#          √ can be activated if vboxguest module is unloaded *while gsport is running*
-#          √ offer to uninstall vboxguestmodule if gsport is in run console
-#          √ rename slot6drive1 and 2 to not contain "-blank" in slot6.tgz and gsport and kegs (x86) archives
-#          √ add links browser
-#          √ fix webupd8team getting added twice to sources.list
-#          √ install GSport for non-Pi
-#          √ figure out how to replace Raspbian entry in OS json dynamically
-#          √ command "a2cloud-update rasppleii" to update raspple ii
-#          √ prevent samba update causing dialog to come up
-#          √ create rasppleii-update
-#          √ make rasppleii-update universal even for non-Raspple II installs -- it's just raspbian-update + a2cloud-update + a2server-update
-#          √ creates shortcuts on desktop for GSport, KEGS, LinApple, ADTPro server on Pi
-#          √ download gsport and kegs icons
-#          √ no longer opens terminal window (since icons exist)
-#          √   (remove /etc/xdg/autostart/lxterminal.desktop)
-#          √ create aliases for raspbian-update and rasppleii-update
-#          √ update A2CLOUD help file and aliases for GSport
-#          √ create raspbian-update
-#          √ update a2cloud-help
-#          √ update motd (vm, raspple ii/a2cloud-pi) for gsport
-#          √ see if shortcuts work in Raspple II 110
-#          √ check for /etc/xdg/lxsession/LXDE-pi; if so:
-#            √ create ~/.config/menus/lxde-pi-applications.menu, with reference to /etc/xdg/menus/lxde-pi-applications.menu
-#            √ no xrandr VBOX0 on the Pi; remove it if present (a2cloud 1.7.x may have put it there)
-#          √ user groups for pi user not only apple2
-#          √ gsport-setup and kegs post install text to say ctrl-F12 for reboot
-#          √ add "links" to motd and help
-#          √ put a -Xmx128m in acmd so gsport and kegs setup work on Pi A/A+ (256 MB)
-#          √ added 'disablesafemode' to NOOBS recovery.cmdline (also in raspbian-update) to make it work on (at least) my A+
-#          √ option for GISK rather than clean setup for GSport on x86
-#          √ provide actual command for clean GSOS + Spectrum install, which is what gsport runs if no HD available
-#          √ provide command for clean GSOS install for KEGS
-#          √ add Dave's preflight/postflight stuff (groups, ownership permissions) for gsport
-#          √ install libpcap0.8-dev as part of Apple II Pi, GSport install, and GSport launcher
-#          √ make kegs-setup
-#          √ make kegs splash text
-#          √ doesn't add VirtualBox 800x600 if installing on Pi
-#          √ stop xrandr from being added multiple times to autostart in VirtualBox
-#          √ only install vbox 800x600 if running in VirtualBox
-#          √ disable screen blanking in vbox console
-#          √ disable screensaver in vbox LXDE
-#          √ disable screen blanking in vbox LXDE
-#          √ don't create LXTerminal desktop shortcut if RPi
-#          √ -6 arg provides empty ProDOS disks in S6D1 and S6D2 to GSport to speed things up
-#          √ -6 arg provides empty ProDOS disks in S6D1 and S6D2 to KEGS to speed things up
-#          √ can test if password is "raspberry" or "apple2" and advise accordingly
-#          √ enable Uthernet by default in gsport-setup
-#          √ enable AppleTalk Turbo by default in gsport-setup
-#          √ make kegs run as root
-#          √ consolidate gsport-setup and kegs-setup
-#               √ gsport-setup is gsport, gsport-setup -k is kegs
-#               √ clean up KEGS/GSport installer sections to be consistent
-#               √ create kegs-setup placeholders that call gsport-setup -k
-#          √ gsport-setup only offer system disks/GSport if java/acmd are available
-#          √ suppress policykit error that appears after upgrade:
-#               √ http://www.raspberrypi.org/forums/viewtopic.php?t=98617
-#          √ see if uninstalling vbox additions is really necessary (nope)
+# 1.8.0d-- * creates shortcuts on desktop for GSport, KEGS, LinApple, ADTPro server on x86
+#          * adds LXTerminal to desktop for non-A2Pi version
+#          * ProDOS instruction screen on GSOS install
+#          * provide via downloaded program that is dd notrunc'd over PRODOS (instead of writeCharsHex)
+#          * figure out why lines in autostart are supposed to start with @ (daemon; restarts command on crash)
+#          * install AppleCommander-1.3.5.13id (so Spectrum installer will work)
+#          * fix mouse not working in VirtualBox framebuffer
+#               * requires uninstalling (or temporarily disabling, if possible) VirtualBox guest additions
+#          * can be activated if vboxguest module is unloaded *while gsport is running*
+#          * offer to uninstall vboxguestmodule if gsport is in run console
+#          * rename slot6drive1 and 2 to not contain "-blank" in slot6.tgz and gsport and kegs (x86) archives
+#          * add links browser
+#          * fix webupd8team getting added twice to sources.list
+#          * install GSport for non-Pi
+#          * figure out how to replace Raspbian entry in OS json dynamically
+#          * command "a2cloud-update rasppleii" to update raspple ii
+#          * prevent samba update causing dialog to come up
+#          * create rasppleii-update
+#          * make rasppleii-update universal even for non-Raspple II installs -- it's just raspbian-update + a2cloud-update + a2server-update
+#          * creates shortcuts on desktop for GSport, KEGS, LinApple, ADTPro server on Pi
+#          * download gsport and kegs icons
+#          * no longer opens terminal window (since icons exist)
+#               * (remove /etc/xdg/autostart/lxterminal.desktop)
+#          * create aliases for raspbian-update and rasppleii-update
+#          * update A2CLOUD help file and aliases for GSport
+#          * create raspbian-update
+#          * update a2cloud-help
+#          * update motd (vm, raspple ii/a2cloud-pi) for gsport
+#          * see if shortcuts work in Raspple II 110
+#          * check for /etc/xdg/lxsession/LXDE-pi; if so:
+#               * create ~/.config/menus/lxde-pi-applications.menu, with reference to /etc/xdg/menus/lxde-pi-applications.menu
+#               * no xrandr VBOX0 on the Pi; remove it if present (a2cloud 1.7.x may have put it there)
+#          * user groups for pi user not only apple2
+#          * gsport-setup and kegs post install text to say ctrl-F12 for reboot
+#          * add "links" to motd and help
+#          * put a -Xmx128m in acmd so gsport and kegs setup work on Pi A/A+ (256 MB)
+#          * added 'disablesafemode' to NOOBS recovery.cmdline (also in raspbian-update) to make it work on (at least) my A+
+#          * option for GISK rather than clean setup for GSport on x86
+#          * provide actual command for clean GSOS + Spectrum install, which is what gsport runs if no HD available
+#          * provide command for clean GSOS install for KEGS
+#          * add Dave's preflight/postflight stuff (groups, ownership permissions) for gsport
+#          * install libpcap0.8-dev as part of Apple II Pi, GSport install, and GSport launcher
+#          * make kegs-setup
+#          * make kegs splash text
+#          * doesn't add VirtualBox 800x600 if installing on Pi
+#          * stop xrandr from being added multiple times to autostart in VirtualBox
+#          * only install vbox 800x600 if running in VirtualBox
+#          * disable screen blanking in vbox console
+#          * disable screensaver in vbox LXDE
+#          * disable screen blanking in vbox LXDE
+#          * don't create LXTerminal desktop shortcut if RPi
+#          * -6 arg provides empty ProDOS disks in S6D1 and S6D2 to GSport to speed things up
+#          * -6 arg provides empty ProDOS disks in S6D1 and S6D2 to KEGS to speed things up
+#          * can test if password is "raspberry" or "apple2" and advise accordingly
+#          * enable Uthernet by default in gsport-setup
+#          * enable AppleTalk Turbo by default in gsport-setup
+#          * make kegs run as root
+#          * consolidate gsport-setup and kegs-setup
+#               * gsport-setup is gsport, gsport-setup -k is kegs
+#               * clean up KEGS/GSport installer sections to be consistent
+#               * create kegs-setup placeholders that call gsport-setup -k
+#          * gsport-setup only offer system disks/GSport if java/acmd are available
+#          * suppress policykit error that appears after upgrade:
+#               * http://www.raspberrypi.org/forums/viewtopic.php?t=98617
+#          * see if uninstalling vbox additions is really necessary (nope)
 
-#          √ A2SERVER: creates symlink to /usr/local/etc/netatalk in /etc
-#          √ A2SERVER: -r no repo update option
-#          √ A2SERVER: can test if password is "raspberry" or "apple2" and advise accordingly
-#          √ A2SERVER: set AFP password to "apple2"
-#          √ A2SERVER: automated Windows Sharing install option -w
-#          √ A2SERVER: automate SMB password set
-#          √ A2SERVER: fix bug where turning off windows sharing then on again made it not restart at startup
-#          √ A2SERVER: turnkey (non-prompting) updater
-#          √ A2SERVER: show current and available versions on run
-#          √ A2SERVER: -v option to show version and exit
-#          √ A2SERVER: -h shows help
-#          √ A2SERVER: prefix status messages with A2SERVER:
-#          √ A2SERVER: fixed OS X connection problems by adding dhx2 uams files to rpi and x86 tarballs
-#          √ A2SERVER: set user password to "apple2"
-#          √ A2SERVER: support a2server-update rasppleii
-#          √ A2SERVER: automated netboot install option -b
-#          √ A2SERVER: deletes /tmp/a2server-packageReposUpdated at end
-#          √ A2SERVER: update help and aliases for raspbian-update
-#          √ A2SERVER: update a2server-setup rasppleii
-#          √ A2SERVER: add "a2server-update rasppleii"
-#          √ A2SERVER: disable screen blanking in Debian VM console
-#          √ A2SERVER: add raspbian-update and rasppleii-update
+#          * A2SERVER: creates symlink to /usr/local/etc/netatalk in /etc
+#          * A2SERVER: -r no repo update option
+#          * A2SERVER: can test if password is "raspberry" or "apple2" and advise accordingly
+#          * A2SERVER: set AFP password to "apple2"
+#          * A2SERVER: automated Windows Sharing install option -w
+#          * A2SERVER: automate SMB password set
+#          * A2SERVER: fix bug where turning off windows sharing then on again made it not restart at startup
+#          * A2SERVER: turnkey (non-prompting) updater
+#          * A2SERVER: show current and available versions on run
+#          * A2SERVER: -v option to show version and exit
+#          * A2SERVER: -h shows help
+#          * A2SERVER: prefix status messages with A2SERVER:
+#          * A2SERVER: fixed OS X connection problems by adding dhx2 uams files to rpi and x86 tarballs
+#          * A2SERVER: set user password to "apple2"
+#          * A2SERVER: support a2server-update rasppleii
+#          * A2SERVER: automated netboot install option -b
+#          * A2SERVER: deletes /tmp/a2server-packageReposUpdated at end
+#          * A2SERVER: update help and aliases for raspbian-update
+#          * A2SERVER: update a2server-setup rasppleii
+#          * A2SERVER: add "a2server-update rasppleii"
+#          * A2SERVER: disable screen blanking in Debian VM console
+#          * A2SERVER: add raspbian-update and rasppleii-update
 
 #          NOOBS:
-#          √ get photo B slide into all NOOBS slides (even non-a version) and also upload to online
-#          √ make NOOBS default to US keyboard (recovery.cmdline append lang=en keyboard=us)
-#          √ make NOOBS-lite 1.4.0+ that can install Raspple II from net, use for upgrade
-#          √  (change URL and default OS in noobs-master/recovery/config.h
-#          √ change "raspple" option to 'os' or '-os'
-#          √ remove silentinstall in raspbian-update
-#          √ add 'disablesafemode' to recovery.cmdline in Raspple II and Raspple II Lite
+#          * get photo B slide into all NOOBS slides (even non-a version) and also upload to online
+#          * make NOOBS default to US keyboard (recovery.cmdline append lang=en keyboard=us)
+#          * make NOOBS-lite 1.4.0+ that can install Raspple II from net, use for upgrade
+#               * (change URL and default OS in noobs-master/recovery/config.h
+#          * change "raspple" option to 'os' or '-os'
+#          * remove silentinstall in raspbian-update
+#          * add 'disablesafemode' to recovery.cmdline in Raspple II and Raspple II Lite
 
-#          √ make raspbian-update NOOBS-aware, both for standard NOOBS and Raspple II
+#          * make raspbian-update NOOBS-aware, both for standard NOOBS and Raspple II
 
 # 1.7.2 -- manually triggers udev rules during startup if ttyusbhandler script didn't execute (which it doesn't in Raspbian 31-Jan-2015/Kernel 3.18)
 #          doesn't provide Java space warning if java is already installed
@@ -1796,12 +1796,12 @@ fi
 #          fixed cppo -e bug that always created a resource fork file even if there is no resource fork
 #          shk2image leaves nothing behind in /tmp
 #          wildcard copy all files on A2PI disk except PRODOS/BASIC.SYSTEM/*A3* to A2CLOUD disks when building
-#        @ √ new A2CLOUD disks with A2PI client 1.4
+#        @ - new A2CLOUD disks with A2PI client 1.4
 #          % update before install for a2chat/a2news/kegs/kegs-setup/linapple/gsport/gsport-setup
 #          disables IPv6 for exim4 to properly prevent startup error messages; restores log folder if not there
 #       ^@ A2CLOUD.HDV is now A2CLOUD.PO (with symlink to A2CLOUD.HDV)
-#          √ renamed MACRO files on server to be .txt and moved to files
-#       ^@ √ new startup app on disk to make it easier to get to A2PI
+#          - renamed MACRO files on server to be .txt and moved to files
+#       ^@ - new startup app on disk to make it easier to get to A2PI
 #          a2cloud-setup updates a2news/a2chat/kegs/kegs-setup/linapple wrappers
 #          added screen to a2cloud-help
 
@@ -1916,12 +1916,12 @@ fi
 #          fixed cppo -e bug that always created a resource fork file even if there is no resource fork
 #          shk2image leaves nothing behind in /tmp
 #          wildcard copy all files on A2PI disk except PRODOS/BASIC.SYSTEM/*A3* to A2CLOUD disks when building
-#        @ √ new A2CLOUD disks with A2PI client 1.4
+#        @ - new A2CLOUD disks with A2PI client 1.4
 #          % update before install for a2chat/a2news/kegs/kegs-setup/linapple/gsport/gsport-setup
 #          disables IPv6 for exim4 to properly prevent startup error messages; restores log folder if not there
 #       ^@ A2CLOUD.HDV is now A2CLOUD.PO (with symlink to A2CLOUD.HDV)
-#          √ renamed MACRO files on server to be .txt and moved to files
-#       ^@ √ new startup app on disk to make it easier to get to A2PI
+#          - renamed MACRO files on server to be .txt and moved to files
+#       ^@ - new startup app on disk to make it easier to get to A2PI
 #          a2cloud-setup updates a2news/a2chat/kegs/kegs-setup/linapple wrappers
 #          added screen to a2cloud-help
 
