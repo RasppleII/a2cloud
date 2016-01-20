@@ -12,41 +12,6 @@ esac
 
 ## ID-bashbyter routines
 
-binToDec () {
-# converts single-byte binary string (8 bits) value to decimal
-# warning: no error checking
-# arg: binary string up to 8 bits
-# out: decimal value
-    dec=0
-    bits=$1
-    while (( ${#bits} < 8 )); do
-        bits="0$bits"
-    done
-        for n in {0..7}; do
-        (( dec+=( ${bits:$n:1} * ( 2**(7-$n) ) ) ))
-    done
-    echo -n $dec
-}
-
-writecharDec () {
-# write corresponding character of single-byte decimal value into file
-# arg1: filename
-# arg2: offset (# of bytes to skip before writing)
-# arg3: decimal number from 0-255
-# exit: 8=extraneous arg, 11=missing arg1, 12=missing arg2,
-#       13=missing arg3, 22=invalid arg2, 23=invalid arg3
-#  out: nothing
-    [[ $1 ]] || return 11; [[ $2 ]] || return 12; [[ $3 ]] || return 13
-    [[ $4 ]] && return 8
-    [[ ( $(printf %d "$2" 2> /dev/null) == $2 ) \
-     && ( $2 -ge 0 ) ]] || return 22
-    [[ ( $(printf %d "$3" 2> /dev/null) == $3 ) \
-     && ( $3 -ge 0 ) && ( $3 -lt 255 ) ]] || return 23
-    # args are valid
-    echo -n -e "\x$(printf %02X "$3")" | \
-    dd of="$1" bs=1 seek=$(($2)) conv=notrunc 2> /dev/null
-}
-
 writecharsHex () {
 # write corresponding characters of hex values into file
 # arg1: filename
@@ -87,8 +52,6 @@ if [[ -f /usr/local/etc/A2CLOUD-version ]]; then
     echo "A2CLOUD version available: $version"
     echo "A2CLOUD version installed: $(cat /usr/local/etc/A2CLOUD-version)"
 fi
-
-args="$@"
 
 buildA2CloudDisk=
 downloadBinaries=1
