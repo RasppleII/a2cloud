@@ -1,4 +1,4 @@
-a2cloud (1.9.0) oldstable; urgency=low
+a2cloud (1.8.3) oldstable; urgency=low
 
   * Does NOT support Raspbian jessie yet (thus the oldstable).
   * First release from GitHub version
