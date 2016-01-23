@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# to do: replace Spectrum Deluxe (2.5.3) with Spectrum Gold (2.5.4)
+
 readcharHex () {
 # read one character from file & convert to corresponding hex value
 # arg1: filename
