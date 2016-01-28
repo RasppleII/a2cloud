@@ -161,6 +161,7 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg
             [[ ! -f $adFile ]] && { echoerr "Not an AppleDouble file: $adFile"; exit 1; }
 
             # get metadata from appleDouble header
+            [[ $(dd if="$adFile" bs=1 count=1 skip=741 2> /dev/null | wc -c) -gt 0 ]] && isExtFile=1 || isExtFile=
             fileData=$(dd if="$adFile" bs=1 count=24 skip=637 2> /dev/null | xxd -p | tr -d '\n')
             ftVar="P_${fileData:34:2}";
             [[ ${!ftVar} ]] && ft=${!ftVar} || ft="\$$fc"; # set file type
@@ -180,72 +181,85 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg
             mDateTimeHex=$(printf %08X $(( 2#$(printf %07d $(bc <<< "obase=2;${mDateFields[0]}"))$(printf %04d $(bc <<< "obase=2;${mDateFields[1]}"))$(printf %05d $(bc <<< "obase=2;${mDateFields[2]}"))$(printf %08d $(bc <<< "obase=2;${mDateFields[3]}"))$(printf %08d $(bc <<< "obase=2;${mDateFields[4]}")) )))
             mDateTimeHex=${mDateTimeHex:2:2}${mDateTimeHex:0:2}${mDateTimeHex:6:2}${mDateTimeHex:4:2}
 
-            # create forks and extended file entry
-            dfName=X$(printf %04X $RANDOM $RANDOM $RANDOM)
-            while [[ ! $rfName || $rfName == $dfName ]]; do
-                rfName=X$(printf %04X $RANDOM $RANDOM $RANDOM)
-            done
-            while [[ ! $extName || $rfName == $extName || $dfName == $extName ]]; do
-                extName=X$(printf %04X $RANDOM $RANDOM $RANDOM)
-            done
-            java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" "${adFile%*.AppleDouble/*}$dfName" 2> /dev/null
-            dd if="$prodosArg" 2> /dev/null | java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" "${adFile%*.AppleDouble/*}$dfName" $00 2> $acmdStdErr
-            java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" "${adFile%*.AppleDouble/*}$rfName" 2> /dev/null
-            dd if="$adFile" bs=741 skip=1 2> /dev/null | java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" "${adFile%*.AppleDouble/*}$rfName" $00 2> $acmdStdErr
-            java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" "${adFile%*.AppleDouble/*}$extName" 2> /dev/null
-            dd if="/dev/zero" bs=512 count=1 2> /dev/null | java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" "${adFile%*.AppleDouble/*}$extName" "$ft" "$auxType" 2> $acmdStdErr
+            # create forks and file entry
+            fileName="${prodosPath##*/}"
+            if [[ $isExtFile ]]; then
+                dfName=X$(printf %04X $RANDOM $RANDOM $RANDOM)
+                while [[ ! $rfName || $rfName == $dfName ]]; do
+                    rfName=X$(printf %04X $RANDOM $RANDOM $RANDOM)
+                done
+                while [[ $fileName == "${prodosPath##*/}" || $rfName == $fileName || $dfName == $fileName ]]; do
+                    fileName=X$(printf %04X $RANDOM $RANDOM $RANDOM)
+                done
+                java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" "${adFile%*.AppleDouble/*}$dfName" 2> /dev/null
+                dd if="$prodosArg" 2> /dev/null | java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" "${adFile%*.AppleDouble/*}$dfName" $00 2> $acmdStdErr
+                java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" "${adFile%*.AppleDouble/*}$rfName" 2> /dev/null
+                dd if="$adFile" bs=741 skip=1 2> /dev/null | java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" "${adFile%*.AppleDouble/*}$rfName" $00 2> $acmdStdErr
+            fi
 
-            # find extended file entry and extended key block offsets
-            extOffset=$(grep --byte-offset --only-matching --text ".$extName" "$imageArg" | cut -d ':' -f 1)
-            extEntry=$(dd if="$imageArg" bs=1 count=39 skip=$extOffset 2> /dev/null | xxd -p | tr -d '\n')
-            extKeyBlockOffset=$(( ( ( $(printf %d 0x"${extEntry:36:2}") * 256 ) + $(printf %d 0x"${extEntry:34:2}") * 512 ) ))
-            parentDirKeyBlockOffset=$(( ( ( $(printf %d 0x"${extEntry:76:2}") * 256 ) + $(printf %d 0x"${extEntry:74:2}") * 512 ) ))
+            # create file entry, then find it
+            java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" "${adFile%*.AppleDouble/*}$fileName" 2> /dev/null
+            [[ $isExtFile ]] && ddsrc="if=/dev/zero bs=512 count=1" || ddsrc="if=$prodosArg"
+            dd $ddsrc 2> /dev/null | java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" "${adFile%*.AppleDouble/*}$fileName" "$ft" "$auxType" 2> $acmdStdErr
+            fileEntryOffset=$(grep --byte-offset --only-matching --text ".$fileName" "$imageArg" | cut -d ':' -f 1)
+            fileEntry=$(dd if="$imageArg" bs=1 count=39 skip=$fileEntryOffset 2> /dev/null | xxd -p | tr -d '\n')
+    
+            if [[ $isExtFile ]]; then
+                extKeyBlockOffset=$(( ( ( $(printf %d 0x"${fileEntry:36:2}") * 256 ) + $(printf %d 0x"${fileEntry:34:2}") * 512 ) ))
 
-            # find data fork, copy storage type, key block, block size, length to extended key block mini-entry
-            # then mark as available/deleted
-            dfOffset=$(grep --byte-offset --only-matching --text ".$dfName" "$imageArg" | cut -d ':' -f 1)
-            dfEntry=$(dd if="$imageArg" bs=1 count=39 skip=$dfOffset 2> /dev/null | xxd -p | tr -d '\n')
-            dfStorageType=$(printf %02X $(( $(printf %d 0x${dfEntry:0:2}) >> 4 )) )
-            dfBlocksUsed=$(( ( $(printf %d 0x${dfEntry:40:2}) * 256 ) + $(printf %d 0x${dfEntry:38:2}) ))
-            dfInfo=${dfEntry:34:14}
-            echo -n -e \\x"$dfStorageType"$(sed 's/../\\x&/g' <<< $dfInfo) \
-              | dd of="$imageArg" conv=notrunc bs=1 seek=$(( extKeyBlockOffset+0 )) 2> /dev/null
-            # mark as deleted
-            echo -n -e \\x0${dfEntry:1:1} \
-              | dd of="$imageArg" conv=notrunc bs=1 seek=$(( dfOffset+0 )) 2> /dev/null
-
-            # find data fork, copy storage type, key block, block size, length to extended key block mini-entry
-            # then mark as available/deleted
-            rfOffset=$(grep --byte-offset --only-matching --text ".$rfName" "$imageArg" | cut -d ':' -f 1)
-            rfEntry=$(dd if="$imageArg" bs=1 count=39 skip=$rfOffset 2> /dev/null | xxd -p | tr -d '\n')
-            rfStorageType=$(printf %02X $(( $(printf %d 0x${rfEntry:0:2}) >> 4 )) )
-            rfBlocksUsed=$(( ( $(printf %d 0x${rfEntry:40:2}) * 256 ) + $(printf %d 0x${rfEntry:38:2}) ))
-            rfInfo=${rfEntry:34:14}
-            echo -n -e \\x"$rfStorageType"$(sed 's/../\\x&/g' <<< $rfInfo) \
-              | dd of="$imageArg" conv=notrunc bs=1 seek=$(( extKeyBlockOffset+256 )) 2> /dev/null
-            # mark as deleted
-            echo -n -e \\x0${rfEntry:1:1} \
-              | dd of="$imageArg" conv=notrunc bs=1 seek=$(( rfOffset+0 )) 2> /dev/null
-
-            # reduce active file count in directory by two
-            fileCountHex=$(dd if="$imageArg" bs=1 count=2 skip=$((parentDirKeyBlockOffset+4+33)) 2> /dev/null | xxd -p)
-            fileCount=$(( ( $(printf %d 0x${fileCountHex:2:2}) * 256 ) + $(printf %d 0x${fileCountHex:0:2}) ))
-            fileCountHex=$(printf %04X $((fileCount - 2)))
-            echo -n -e \\x${fileCountHex:2:2}\\x${fileCountHex:0:2} \
-              | dd of="$imageArg" conv=notrunc bs=1 seek=$((parentDirKeyBlockOffset+4+33)) #2> /dev/null
+                # find data fork, copy storage type, key block, block size, length to extended key block mini-entry
+                # then mark as available/deleted
+                dfOffset=$(grep --byte-offset --only-matching --text ".$dfName" "$imageArg" | cut -d ':' -f 1)
+                dfEntry=$(dd if="$imageArg" bs=1 count=39 skip=$dfOffset 2> /dev/null | xxd -p | tr -d '\n')
+                dfStorageType=$(printf %02X $(( $(printf %d 0x${dfEntry:0:2}) >> 4 )) )
+                dfBlocksUsed=$(( ( $(printf %d 0x${dfEntry:40:2}) * 256 ) + $(printf %d 0x${dfEntry:38:2}) ))
+                dfInfo=${dfEntry:34:14}
+                echo -n -e \\x"$dfStorageType"$(sed 's/../\\x&/g' <<< $dfInfo) \
+                  | dd of="$imageArg" conv=notrunc bs=1 seek=$(( extKeyBlockOffset+0 )) 2> /dev/null
+                # mark as deleted
+                echo -n -e \\x0${dfEntry:1:1} \
+                  | dd of="$imageArg" conv=notrunc bs=1 seek=$(( dfOffset+0 )) 2> /dev/null
+    
+                # find resource fork, copy storage type, key block, block size, length to extended key block mini-entry
+                # then mark as available/deleted
+                rfOffset=$(grep --byte-offset --only-matching --text ".$rfName" "$imageArg" | cut -d ':' -f 1)
+                rfEntry=$(dd if="$imageArg" bs=1 count=39 skip=$rfOffset 2> /dev/null | xxd -p | tr -d '\n')
+                rfStorageType=$(printf %02X $(( $(printf %d 0x${rfEntry:0:2}) >> 4 )) )
+                rfBlocksUsed=$(( ( $(printf %d 0x${rfEntry:40:2}) * 256 ) + $(printf %d 0x${rfEntry:38:2}) ))
+                rfInfo=${rfEntry:34:14}
+                echo -n -e \\x"$rfStorageType"$(sed 's/../\\x&/g' <<< $rfInfo) \
+                  | dd of="$imageArg" conv=notrunc bs=1 seek=$(( extKeyBlockOffset+256 )) 2> /dev/null
+                # mark as deleted
+                echo -n -e \\x0${rfEntry:1:1} \
+                  | dd of="$imageArg" conv=notrunc bs=1 seek=$(( rfOffset+0 )) 2> /dev/null
+    
+                # reduce active file count in directory by two
+                parentDirKeyBlockOffset=$(( ( ( $(printf %d 0x"${fileEntry:76:2}") * 256 ) + $(printf %d 0x"${fileEntry:74:2}") * 512 ) ))
+                fileCountHex=$(dd if="$imageArg" bs=1 count=2 skip=$((parentDirKeyBlockOffset+4+33)) 2> /dev/null | xxd -p)
+                fileCount=$(( ( $(printf %d 0x${fileCountHex:2:2}) * 256 ) + $(printf %d 0x${fileCountHex:0:2}) ))
+                fileCountHex=$(printf %04X $((fileCount - 2)))
+                echo -n -e \\x${fileCountHex:2:2}\\x${fileCountHex:0:2} \
+                  | dd of="$imageArg" conv=notrunc bs=1 seek=$((parentDirKeyBlockOffset+4+33)) 2> /dev/null
+                
+                # update extended file metadata
+                
+                # storage type (5), name length, name
+                name="${prodosPath##*/}"
+                nameLen=${#name}
+                nameHeader=$(printf %02X $((nameLen + 80)) )
+                nameField=$(echo -n $name | xxd -p | tr -d '\n' | sed -e :a -e 's/^.\{1,29\}$/&00/;ta')
+    
+                # blocks used
+                blocksUsed=$(( dfBlocksUsed + rfBlocksUsed + 1 ))
+    
+                # store updated metadata
+                fileEntry=${nameHeader}${nameField}${fileEntry:32}
+            fi
             
-            # update extended file metadata
-            
-            # storage type (5), name length, name
-            name="${prodosPath##*/}"
-            nameLen=${#name}
-            nameHeader=$(printf %02X $((nameLen + 80)) )
-            nameField=$(echo -n $name | xxd -p | tr -d '\n' | sed -e :a -e 's/^.\{1,29\}$/&00/;ta')
+            # put creation and modified date in file entry
+            fileEntry=${fileEntry:0:48}${cDateTimeHex}${fileEntry:56:10}${mDateTimeHex}${fileEntry:74:4}
 
-            # blocks used
-            blocksUsed=$(( dfBlocksUsed + rfBlocksUsed + 1 ))
-
-            # casemask for mixed case filename into extended file entry
+            # put casemask for mixed case filename in file entry
             if [[ "${prodosPath##*/}" != "${prodosArg##*/}" ]]; then # mixed case
                 caseMaskDec=32768
                 mixedName="${prodosArg##*/}"
@@ -254,14 +268,11 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg
                     (( caseMaskDec+=$(( $? * (2**(14-i)) )) ))
                 done
                 caseMaskHex=$(printf %04X $caseMaskDec)
-                extEntry=${extEntry:0:56}${caseMaskHex:2:2}${caseMaskHex:0:2}${extEntry:60}
+                fileEntry=${fileEntry:0:56}${caseMaskHex:2:2}${caseMaskHex:0:2}${fileEntry:60}
             fi
-            
-            # store updated metadata
-            extEntry=${nameHeader}${nameField}${extEntry:32:16}${cDateTimeHex}${extEntry:56:10}${mDateTimeHex}${extEntry:74:4}
 
-            # write updated metadata to extended file entry
-            echo -n -e $(sed 's/../\\x&/g' <<< $extEntry) | dd of="$imageArg" bs=1 conv=notrunc seek=$extOffset 2> /dev/null
+            # write updated metadata to file entry
+            echo -n -e $(sed 's/../\\x&/g' <<< $fileEntry) | dd of="$imageArg" bs=1 conv=notrunc seek=$fileEntryOffset 2> /dev/null
         fi
     fi
 
