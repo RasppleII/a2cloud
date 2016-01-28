@@ -32,6 +32,12 @@ helpExit () {
             echoerr "    ProDOS subdirectories in <filename> will be created if needed."
             echoerr "-c  <filename> <imagename> [[$|0x]<type>] [[$|0x]<auxtype>] synonym for -p"
             echoerr "    with filename and imagename reversed."
+            echoerr "-ad <imagename> <filename>"
+            echoerr "    copy AppleDouble file into ProDOS disk image"
+            #echoerr "-cd <imagename> <filename> <dateTimeString>|<dateTimeStamp>"
+            #echoerr "    set creation date and time of file in ProDOS disk image"
+            #echoerr "-md <imagename> <filename> <dateTimeString>|<dateTimeStamp>"
+            #echoerr "    set modified date and time of file in ProDOS disk image"
         else
             cat $acmdStdErr
         fi
@@ -69,12 +75,18 @@ if [[ $arg1 != "-i" && $arg1 != "-ls" && $arg1 != "-l" && $arg1 != "-ll" && $arg
     vsd2_md5="$(md5sum /usr/local/adtpro/disks/Virtual2.po)"
 fi
 
-if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" ) && $2 && $3 ]]; then
+if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg1 == "-ad" ) && $2 && $3 ]]; then
 
+    adFile=
     getArg=
     if [[ $arg1 == "-p" ]]; then
         prodosArg="$3"
         imageArg="$2"
+    elif [[ $arg1 == "-ad" ]]; then
+        prodosArg="$3"
+        imageArg="$2"
+        [[ $prodosArg == *"/"* ]] && adFile="${prodosArg%/*}/"
+        adFile+=".AppleDouble/${prodosArg##*/}"
     elif [[ $arg1 == "-c" ]]; then
         prodosArg="$2"
         imageArg="$3"
@@ -106,39 +118,150 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" ) && $2
         done
         IFS="$IFS_orig"
 
+        # filetype to name table
+        P_00=UNK; P_01=BAD; P_02=PCD; P_03=PTX; P_04=TXT; P_05=PDA; P_06=BIN; P_07=FNT; P_08=FOT; P_09=BA3; P_0a=DA3; P_0b=WPF; P_0c=SOS; P_0f=DIR; P_10=RPD; P_11=RPI; P_12=AFD; P_13=AFM; P_14=AFR; P_15=SCL; P_16=PFS; P_19=ADB; P_1a=AWP; P_1b=ASP; P_20=TDM; P_21=IPS; P_22=UPV; P_29=3SD; P_2a=8SC; P_2b=8OB; P_2c=8IC; P_2d=8LD; P_2e=P8C; P_41=OCR; P_42=FTD; P_50=GWP; P_51=GSS; P_52=GDB; P_53=DRW; P_54=GDP; P_55=HMD; P_56=EDU; P_57=STN; P_58=HLP; P_59=COM; P_5a=CFG; P_5b=ANM; P_5c=MUM; P_5d=ENT; P_5e=DVU; P_60=PRE; P_6b=BIO; P_6d=DVR; P_6e=PRE; P_6f=HDV; P_80=GEZ; P_81=GE1; P_82=GEO; P_83=GE3; P_84=GE4; P_85=GE5; P_86=GE6; P_87=GE7; P_88=GE8; P_89=GE9; P_8a=GEA; P_8b=GEB; P_8c=GEC; P_8d=GED; P_8e=GEE; P_8f=GEF; P_a0=WP_; P_ab=GSB; P_ac=TDF; P_ad=BDF; P_b0=SRC; P_b1=OBJ; P_b2=LIB; P_b3=S16; P_b4=RTL; P_b5=EXE; P_b6=STR; P_b7=TSF; P_b8=NDA; P_b9=CDA; P_ba=TOL; P_bb=DRV; P_bc=LDF; P_bd=FST; P_bf=DOC; P_c0=PNT; P_c1=PIC; P_c2=ANI; P_c3=PAL; P_c5=OOG; P_c6=SCR; P_c7=CDV; P_c8=FON; P_c9=FND; P_ca=ICN; P_d5=MUS; P_d6=INS; P_d7=MDI; P_d8=SND; P_db=DBM; P_e0=SHK; P_e2=DTS; P_ee=R16; P_ef=PAS; P_f0=CMD; P_f9=P16; P_fa=INT; P_fb=IVR; P_fc=BAS; P_fd=VAR; P_fe=REL; P_ff=SYS;
+
         # process filetype
-        [[ ${3:0:2} == "0x" ]] && ftArg="\$${3:2}" || ftArg="$3"
-        auxType="$4"
+        if [[ ! $adFile ]]; then
+            [[ ${3:0:2} == "0x" ]] && ftArg="\$${3:2}" || ftArg="$3"
+            auxType="$4"
 
-        # assume BIN/$2000 if filetype omitted
-        if [[ ! $ftArg ]]; then
-            ft="BIN"
-            auxType="\$2000"
-        # accept hex or decimal number for file type
-        elif [[ ( ${ftArg:0:1} == '$' && ${#ftArg} -eq 3 ) || $(grep [0-9] <<< ${ftArg:0:1}) ]]; then
-            if [[ ${ftArg:0:1} == '$' ]]; then
-                fc=$(tr [:upper:] [:lower:] <<< ${ftArg:1:2})
+            # assume BIN/$2000 if filetype omitted
+            if [[ ! $ftArg ]]; then
+                ft="BIN"
+                auxType="\$2000"
+            # accept hex or decimal number for file type
+            elif [[ ( ${ftArg:0:1} == '$' && ${#ftArg} -eq 3 ) || $(grep [0-9] <<< ${ftArg:0:1}) ]]; then
+                if [[ ${ftArg:0:1} == '$' ]]; then
+                    fc=$(tr [:upper:] [:lower:] <<< ${ftArg:1:2})
+                else
+                    fc=$(decToHex $ftArg | tr [:upper:] [:lower:])
+                fi
+                ftVar="P_$fc";
+                [[ ${!ftVar} ]] && ft=${!ftVar} || ft="\$$fc";
             else
-                fc=$(decToHex $ftArg | tr [:upper:] [:lower:])
+                ft="$ftArg"
             fi
-            P_00=UNK; P_01=BAD; P_02=PCD; P_03=PTX; P_04=TXT; P_05=PDA; P_06=BIN; P_07=FNT; P_08=FOT; P_09=BA3; P_0a=DA3; P_0b=WPF; P_0c=SOS; P_0f=DIR; P_10=RPD; P_11=RPI; P_12=AFD; P_13=AFM; P_14=AFR; P_15=SCL; P_16=PFS; P_19=ADB; P_1a=AWP; P_1b=ASP; P_20=TDM; P_21=IPS; P_22=UPV; P_29=3SD; P_2a=8SC; P_2b=8OB; P_2c=8IC; P_2d=8LD; P_2e=P8C; P_41=OCR; P_42=FTD; P_50=GWP; P_51=GSS; P_52=GDB; P_53=DRW; P_54=GDP; P_55=HMD; P_56=EDU; P_57=STN; P_58=HLP; P_59=COM; P_5a=CFG; P_5b=ANM; P_5c=MUM; P_5d=ENT; P_5e=DVU; P_60=PRE; P_6b=BIO; P_6d=DVR; P_6e=PRE; P_6f=HDV; P_80=GEZ; P_81=GE1; P_82=GEO; P_83=GE3; P_84=GE4; P_85=GE5; P_86=GE6; P_87=GE7; P_88=GE8; P_89=GE9; P_8a=GEA; P_8b=GEB; P_8c=GEC; P_8d=GED; P_8e=GEE; P_8f=GEF; P_a0=WP_; P_ab=GSB; P_ac=TDF; P_ad=BDF; P_b0=SRC; P_b1=OBJ; P_b2=LIB; P_b3=S16; P_b4=RTL; P_b5=EXE; P_b6=STR; P_b7=TSF; P_b8=NDA; P_b9=CDA; P_ba=TOL; P_bb=DRV; P_bc=LDF; P_bd=FST; P_bf=DOC; P_c0=PNT; P_c1=PIC; P_c2=ANI; P_c3=PAL; P_c5=OOG; P_c6=SCR; P_c7=CDV; P_c8=FON; P_c9=FND; P_ca=ICN; P_d5=MUS; P_d6=INS; P_d7=MDI; P_d8=SND; P_db=DBM; P_e0=SHK; P_e2=DTS; P_ee=R16; P_ef=PAS; P_f0=CMD; P_f9=P16; P_fa=INT; P_fb=IVR; P_fc=BAS; P_fd=VAR; P_fe=REL; P_ff=SYS;
-            ftVar="P_$fc";
-            [[ ${!ftVar} ]] && ft=${!ftVar} || ft="\$$fc";
-        else
-            ft="$ftArg"
-        fi
+    
+            # set auxtype to $0801 for Applesoft programs if not specified
+            [[ $ft == "BAS" && ! $auxType ]] && auxType="\$0801"
 
-        # set auxtype to $0801 for Applesoft programs if not specified
-        [[ $ft == "BAS" && ! $auxType ]] && auxType="\$0801"
-
-        # test for absence of stdin [[ -t 0 ]] and if absent use ProDOS name
-        if [[ -t 0 ]]; then
+            # test for absence of stdin [[ -t 0 ]] and if absent use ProDOS name
+            if [[ -t 0 ]]; then
+                [[ ! -f $prodosArg ]] && { echoerr "$prodosArg not found."; exit 1; }
+                java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" $prodosPath &> /dev/null
+                java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" $prodosPath $ft $auxType < $prodosArg 2> $acmdStdErr
+            else
+                java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" $prodosPath &> /dev/null
+                java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" $prodosPath $ft $auxType 2> $acmdStdErr
+            fi            
+        else # AppleDouble, get resource fork and file metadata from header file
+        
             [[ ! -f $prodosArg ]] && { echoerr "$prodosArg not found."; exit 1; }
-            java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" $prodosPath &> /dev/null
-            java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" $prodosPath $ft $auxType < $prodosArg 2> $acmdStdErr
-        else
-            java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" $prodosPath &> /dev/null
-            java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" $prodosPath $ft $auxType 2> $acmdStdErr
+            [[ ! -f $adFile ]] && { echoerr "Not an AppleDouble file: $adFile"; exit 1; }
+
+            # get metadata from appleDouble header
+            fileData=$(dd if="$adFile" bs=1 count=24 skip=637 2> /dev/null | xxd -p | tr -d '\n')
+            ftVar="P_${fileData:34:2}";
+            [[ ${!ftVar} ]] && ft=${!ftVar} || ft="\$$fc"; # set file type
+            auxType="\$"${fileData:36:4}
+            cDateTime=$(printf %d 0x${fileData:0:8})
+            mDateTime=$(printf %d 0x${fileData:8:8})
+            [[ $(printf %d 0x"${fileData:0:2}") -gt 127 ]] && (( cDateTime-=4294967296 )) # handle negative hex number
+            [[ $(printf %d 0x"${fileData:8:2}") -gt 127 ]] && (( mDateTime-=4294967296 )) # handle negative hex number
+            (( cDateTime+=946684800 )) # convert AD timestamp to Unix timestamp
+            (( mDateTime+=946684800 )) # convert AD timestamp to Unix timestamp
+            # convert unix timestamp to ProDOS bitfield
+            # yyyyyyymmmmddddd 000hhhhh00mmmmmm
+            cDateFields=($(date -d @$cDateTime +"%y %m %d %H %M"))
+            mDateFields=($(date -d @$mDateTime +"%y %m %d %H %M"))
+            cDateTimeHex=$(printf %08X $(( 2#$(printf %07d $(bc <<< "obase=2;${cDateFields[0]}"))$(printf %04d $(bc <<< "obase=2;${cDateFields[1]}"))$(printf %05d $(bc <<< "obase=2;${cDateFields[2]}"))$(printf %08d $(bc <<< "obase=2;${cDateFields[3]}"))$(printf %08d $(bc <<< "obase=2;${cDateFields[4]}")) )))
+            cDateTimeHex=${cDateTimeHex:2:2}${cDateTimeHex:0:2}${cDateTimeHex:6:2}${cDateTimeHex:4:2}
+            mDateTimeHex=$(printf %08X $(( 2#$(printf %07d $(bc <<< "obase=2;${mDateFields[0]}"))$(printf %04d $(bc <<< "obase=2;${mDateFields[1]}"))$(printf %05d $(bc <<< "obase=2;${mDateFields[2]}"))$(printf %08d $(bc <<< "obase=2;${mDateFields[3]}"))$(printf %08d $(bc <<< "obase=2;${mDateFields[4]}")) )))
+            mDateTimeHex=${mDateTimeHex:2:2}${mDateTimeHex:0:2}${mDateTimeHex:6:2}${mDateTimeHex:4:2}
+
+            # create forks and extended file entry
+            dfName=X$(printf %04X $RANDOM $RANDOM $RANDOM)
+            while [[ ! $rfName || $rfName == $dfName ]]; do
+                rfName=X$(printf %04X $RANDOM $RANDOM $RANDOM)
+            done
+            while [[ ! $extName || $rfName == $extName || $dfName == $extName ]]; do
+                extName=X$(printf %04X $RANDOM $RANDOM $RANDOM)
+            done
+            java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" "${adFile%*.AppleDouble/*}$dfName" 2> /dev/null
+            dd if="$prodosArg" 2> /dev/null | java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" "${adFile%*.AppleDouble/*}$dfName" $00 2> $acmdStdErr
+            java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" "${adFile%*.AppleDouble/*}$rfName" 2> /dev/null
+            dd if="$adFile" bs=741 skip=1 2> /dev/null | java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" "${adFile%*.AppleDouble/*}$rfName" $00 2> $acmdStdErr
+            java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" "${adFile%*.AppleDouble/*}$extName" 2> /dev/null
+            dd if="/dev/zero" bs=512 count=1 2> /dev/null | java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" "${adFile%*.AppleDouble/*}$extName" "$ft" "$auxType" 2> $acmdStdErr
+
+            # find extended file entry and extended key block offsets
+            extOffset=$(grep --byte-offset --only-matching --text ".$extName" "$imageArg" | cut -d ':' -f 1)
+            extEntry=$(dd if="$imageArg" bs=1 count=39 skip=$extOffset 2> /dev/null | xxd -p | tr -d '\n')
+            extKeyBlockOffset=$(( ( ( $(printf %d 0x"${extEntry:36:2}") * 256 ) + $(printf %d 0x"${extEntry:34:2}") * 512 ) ))
+            parentDirKeyBlockOffset=$(( ( ( $(printf %d 0x"${extEntry:76:2}") * 256 ) + $(printf %d 0x"${extEntry:74:2}") * 512 ) ))
+
+            # find data fork, copy storage type, key block, block size, length to extended key block mini-entry
+            # then mark as available/deleted
+            dfOffset=$(grep --byte-offset --only-matching --text ".$dfName" "$imageArg" | cut -d ':' -f 1)
+            dfEntry=$(dd if="$imageArg" bs=1 count=39 skip=$dfOffset 2> /dev/null | xxd -p | tr -d '\n')
+            dfStorageType=$(printf %02X $(( $(printf %d 0x${dfEntry:0:2}) >> 4 )) )
+            dfBlocksUsed=$(( ( $(printf %d 0x${dfEntry:40:2}) * 256 ) + $(printf %d 0x${dfEntry:38:2}) ))
+            dfInfo=${dfEntry:34:14}
+            echo -n -e \\x"$dfStorageType"$(sed 's/../\\x&/g' <<< $dfInfo) \
+              | dd of="$imageArg" conv=notrunc bs=1 seek=$(( extKeyBlockOffset+0 )) 2> /dev/null
+            # mark as deleted
+            echo -n -e \\x0${dfEntry:1:1} \
+              | dd of="$imageArg" conv=notrunc bs=1 seek=$(( dfOffset+0 )) 2> /dev/null
+
+            # find data fork, copy storage type, key block, block size, length to extended key block mini-entry
+            # then mark as available/deleted
+            rfOffset=$(grep --byte-offset --only-matching --text ".$rfName" "$imageArg" | cut -d ':' -f 1)
+            rfEntry=$(dd if="$imageArg" bs=1 count=39 skip=$rfOffset 2> /dev/null | xxd -p | tr -d '\n')
+            rfStorageType=$(printf %02X $(( $(printf %d 0x${rfEntry:0:2}) >> 4 )) )
+            rfBlocksUsed=$(( ( $(printf %d 0x${rfEntry:40:2}) * 256 ) + $(printf %d 0x${rfEntry:38:2}) ))
+            rfInfo=${rfEntry:34:14}
+            echo -n -e \\x"$rfStorageType"$(sed 's/../\\x&/g' <<< $rfInfo) \
+              | dd of="$imageArg" conv=notrunc bs=1 seek=$(( extKeyBlockOffset+256 )) 2> /dev/null
+            # mark as deleted
+            echo -n -e \\x0${rfEntry:1:1} \
+              | dd of="$imageArg" conv=notrunc bs=1 seek=$(( rfOffset+0 )) 2> /dev/null
+
+            # reduce active file count in directory by two
+            fileCountHex=$(dd if="$imageArg" bs=1 count=2 skip=$((parentDirKeyBlockOffset+4+33)) 2> /dev/null | xxd -p)
+            fileCount=$(( ( $(printf %d 0x${fileCountHex:2:2}) * 256 ) + $(printf %d 0x${fileCountHex:0:2}) ))
+            fileCountHex=$(printf %04X $((fileCount - 2)))
+            echo -n -e \\x${fileCountHex:2:2}\\x${fileCountHex:0:2} \
+              | dd of="$imageArg" conv=notrunc bs=1 seek=$((parentDirKeyBlockOffset+4+33)) #2> /dev/null
+            
+            # update extended file metadata
+            
+            # storage type (5), name length, name
+            name="${prodosPath##*/}"
+            nameLen=${#name}
+            nameHeader=$(printf %02X $((nameLen + 80)) )
+            nameField=$(echo -n $name | xxd -p | tr -d '\n' | sed -e :a -e 's/^.\{1,29\}$/&00/;ta')
+
+            # blocks used
+            blocksUsed=$(( dfBlocksUsed + rfBlocksUsed + 1 ))
+
+            # casemask for mixed case filename into extended file entry
+            if [[ "${prodosPath##*/}" != "${prodosArg##*/}" ]]; then # mixed case
+                caseMaskDec=32768
+                mixedName="${prodosArg##*/}"
+                for (( i=0; i<${#mixedName}; i++ )); do
+                    [[ "${mixedName:$i:1}" == $(tr [:lower:]  [:upper:] <<< "${mixedName:$i:1}") ]] # $? == 0 means uppercase
+                    (( caseMaskDec+=$(( $? * (2**(14-i)) )) ))
+                done
+                caseMaskHex=$(printf %04X $caseMaskDec)
+                extEntry=${extEntry:0:56}${caseMaskHex:2:2}${caseMaskHex:0:2}${extEntry:60}
+            fi
+            
+            # store updated metadata
+            extEntry=${nameHeader}${nameField}${extEntry:32:16}${cDateTimeHex}${extEntry:56:10}${mDateTimeHex}${extEntry:74:4}
+
+            # write updated metadata to extended file entry
+            echo -n -e $(sed 's/../\\x&/g' <<< $extEntry) | dd of="$imageArg" bs=1 conv=notrunc seek=$extOffset 2> /dev/null
         fi
     fi
 
