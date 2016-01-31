@@ -1,6 +1,9 @@
 #! /bin/bash
 # vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
 
+# set default AppleCommander location if ADTPro is not installed
+defaultAcPath=$(echo -n /usr/local/bin/AppleCommander-*-ac.jar)
+
 decToHex () {
 # converts single-byte decimal value to hexadecimal equivalent
 # arg: decimal value from 0-255
@@ -59,14 +62,114 @@ helpExit () {
     exit $exitVal
 }
 
+decToBin () {
+    dec=$1
+    bits=""
+    for i in 7 6 5 4 3 2 1 0; do
+        bits+=$(( (dec & (2**i)) >> i ))
+    done
+    echo "1${bits#*1}"
+}
+
 arg1=$1
 
 acmdStdErr="/tmp/acmd_$RANDOM$RANDOM"
 
-[[ -f /usr/local/adtpro/adtpro.sh ]] && adtPath="/usr/local/adtpro" || adtPath=$(ls -1d /Applications/ADTPro* | head -1);
+[[ -f /usr/libexec/java_home ]] && osx=1 || osx=
+
+if [[ $osx ]]; then
+    if ! /usr/libexec/java_home &> /dev/null; then
+        echo -n "AppleCommander requires the Java JDK. Do you want to install it now? "
+        read
+        if [[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]]; then
+            # install Oracle Java for OS X
+            echo "Downloading Java JDK..."
+            mkdir -p /tmp/jdk
+            curl -L --cookie oraclelicense=accept-securebackup-cookie $(curl -L "http://www.oracle.com/"$(curl -L "http://www.oracle.com/technetwork/java/javase/downloads/" 2> /dev/null | grep -o -m 1 '/technetwork/java/javase/downloads/jdk.-downloads-[0-9]*\.html') 2> /dev/null | grep -o 'http://.*macosx-x64.dmg' | sort | tail -1) 2> /dev/null > /tmp/jdk/jdk.dmg
+            echo "Installing Java JDK..."
+            hdiutil attach /tmp/jdk/jdk.dmg &> /dev/null
+            sudo installer -pkg /Volumes/JDK*/JDK*.pkg -target /
+            diskutil unmountDisk /Volumes/JDK*
+            rm -r /tmp/jdk 2> /dev/null
+            if ! /usr/libexec/java_home &> /dev/null; then
+                echo "The Java JDK could not be installed."
+                echo "Type \"java\" and then click \"More Info...\" to download and install it manually."
+                exit 1
+            fi
+        else
+            exit 1
+        fi
+    fi
+else # not OS X, so presumably Linux
+    if ! hash java &> /dev/null; then
+        echo -n "AppleCommander requires the Java JDK. "
+        if hash apt-get; then
+            echo -n "Do you want to install it now? "
+            read
+            if [[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]]; then
+                # from http://www.webupd8.org/2012/06/how-to-install-oracle-java-7-in-debian.html
+                if { ! grep -q webupd8team /etc/apt/sources.list; }; then
+                    {
+                        echo;
+                        echo "# Oracle Java JDK";
+                        echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu precise main";
+                        echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu precise main";
+                    } | sudo tee -a /etc/apt/sources.list > /dev/null
+                fi
+                sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886
+                sudo apt-get -y update
+                echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+                sudo apt-get -y install oracle-java8-installer
+                sudo apt-get -y clean
+            else
+                exit 1
+            fi
+        fi
+    fi
+    if ! hash java &> /dev/null; then
+        echo
+        echo "Get it from http://www.oracle.com/technetwork/java/javase/downloads/"
+        exit 1
+    fi
+fi
+
+setAcPath () {
+    acPath=$defaultAcPath
+    adtPath=
+    if [[ ! -f $acPath ]]; then
+        if [[ -f /usr/local/adtpro/adtpro.sh ]]; then
+            adtPath="/usr/local/adtpro"
+        elif [[ $osx ]]; then
+            adtPath=$(echo -n /Applications/ADTPro* | tr ' ' '\n' | sort | head -1);
+        fi
+        if [[ -d "$adtPath" ]]; then
+            acPath="$adtPath"/lib/AppleCommander/AppleCommander-ac.jar
+            [[ ! -f $acPath ]] && acPath=$(echo -n "$adtPath"/lib/AppleCommander/AppleCommander-*-ac.jar)
+        fi
+    fi
+    acPath=$(echo -n $acPath)
+}
+
+setAcPath
+if [[ ! -f $acPath ]]; then
+    echo "Installing AppleCommander..."
+    sudo mkdir -p /usr/local/bin
+    acUrl="http://sourceforge.net/projects/applecommander/files/AppleCommander%20-%20Interim/testcase/AppleCommander-1.3.5.13id-ac.jar/download"
+    if [[ $osx ]]; then
+        curl -L "$acUrl" 2> /dev/null | sudo tee /usr/local/bin/AppleCommander-1.3.5.13id-ac.jar > /dev/null
+    else
+        sudo wget -qO /usr/local/bin/AppleCommander-1.3.5.13id-ac.jar "$acUrl"
+    fi
+    setAcPath
+    if [[ ! -f "$acPath" ]]; then
+        echo "AppleCommander couldn't be installed. Download it from"
+        echo "http://applecommander.sourceforge.net and put it in /usr/local/bin."
+        exit 1
+    fi
+fi
 
 if [[ ! $2 || $arg1 == "-h" ]]; then
-    java -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar 2> $acmdStdErr
+    java -jar "$acPath" 2> $acmdStdErr
     [[ $? -eq 127 ]] && exit 127 || helpExit $arg1
 fi
 
@@ -104,7 +207,7 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg
         outFile=
         [[ $3 && $3 != "-" ]] && outFile="$3"
         [[ ! $3 ]] && outFile="${2##*/}"
-        java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar $getArg "$imageArg" "$fileArg" $outFile 2> $acmdStdErr
+        java -Xmx128m -jar "$acPath" $getArg "$imageArg" "$fileArg" $outFile 2> $acmdStdErr
     else # put file
 
         # test ProDOS name legitimacy
@@ -149,11 +252,11 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg
             # test for absence of stdin [[ -t 0 ]] and if absent use ProDOS name
             if [[ -t 0 ]]; then
                 [[ ! -f $prodosArg ]] && { echoerr "$prodosArg not found."; exit 1; }
-                java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" $prodosPath &> /dev/null
-                java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" $prodosPath $ft $auxType < $prodosArg 2> $acmdStdErr
+                java -Xmx128m -jar "$acPath" -d "$imageArg" $prodosPath &> /dev/null
+                java -Xmx128m -jar "$acPath" -p "$imageArg" $prodosPath $ft $auxType < $prodosArg 2> $acmdStdErr
             else
-                java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" $prodosPath &> /dev/null
-                java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" $prodosPath $ft $auxType 2> $acmdStdErr
+                java -Xmx128m -jar "$acPath" -d "$imageArg" $prodosPath &> /dev/null
+                java -Xmx128m -jar "$acPath" -p "$imageArg" $prodosPath $ft $auxType 2> $acmdStdErr
             fi            
         else # AppleDouble, get resource fork and file metadata from header file
         
@@ -172,13 +275,14 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg
             [[ $(printf %d 0x"${fileData:8:2}") -gt 127 ]] && (( mDateTime-=4294967296 )) # handle negative hex number
             (( cDateTime+=946684800 )) # convert AD timestamp to Unix timestamp
             (( mDateTime+=946684800 )) # convert AD timestamp to Unix timestamp
-            # convert unix timestamp to ProDOS bitfield
-            # yyyyyyymmmmddddd 000hhhhh00mmmmmm
-            cDateFields=($(date -d @$cDateTime +"%y %m %d %H %M"))
-            mDateFields=($(date -d @$mDateTime +"%y %m %d %H %M"))
-            cDateTimeHex=$(printf %08X $(( 2#$(printf %07d $(bc <<< "obase=2;${cDateFields[0]}"))$(printf %04d $(bc <<< "obase=2;${cDateFields[1]}"))$(printf %05d $(bc <<< "obase=2;${cDateFields[2]}"))$(printf %08d $(bc <<< "obase=2;${cDateFields[3]}"))$(printf %08d $(bc <<< "obase=2;${cDateFields[4]}")) )))
+            # convert unix timestamp to ProDOS bitfield yyyyyyymmmmddddd 000hhhhh00mmmmmm
+            cDateFields=($(date -d @$cDateTime +"%y %m %d %H %M" 2> /dev/null))
+            [[ ! $cDateFields ]] && cDateFields=($(date -r $cDateTime +"%y %m %d %H %M")) # OS X/BSD
+            mDateFields=($(date -d @$mDateTime +"%y %m %d %H %M" 2> /dev/null))
+            [[ ! $mDateFields ]] && mDateFields=($(date -r $mDateTime +"%y %m %d %H %M")) # OS X/BSD
+            cDateTimeHex=$(printf %08X $(( 2#$(printf %07d $(decToBin ${cDateFields[0]}))$(printf %04d $(decToBin ${cDateFields[1]}))$(printf %05d $(decToBin ${cDateFields[2]}))$(printf %08d $(decToBin ${cDateFields[3]}))$(printf %08d $(decToBin ${cDateFields[4]})) )))
             cDateTimeHex=${cDateTimeHex:2:2}${cDateTimeHex:0:2}${cDateTimeHex:6:2}${cDateTimeHex:4:2}
-            mDateTimeHex=$(printf %08X $(( 2#$(printf %07d $(bc <<< "obase=2;${mDateFields[0]}"))$(printf %04d $(bc <<< "obase=2;${mDateFields[1]}"))$(printf %05d $(bc <<< "obase=2;${mDateFields[2]}"))$(printf %08d $(bc <<< "obase=2;${mDateFields[3]}"))$(printf %08d $(bc <<< "obase=2;${mDateFields[4]}")) )))
+            mDateTimeHex=$(printf %08X $(( 2#$(printf %07d $(decToBin ${mDateFields[0]}))$(printf %04d $(decToBin ${mDateFields[1]}))$(printf %05d $(decToBin ${mDateFields[2]}))$(printf %08d $(decToBin ${mDateFields[3]}))$(printf %08d $(decToBin ${mDateFields[4]})) )))
             mDateTimeHex=${mDateTimeHex:2:2}${mDateTimeHex:0:2}${mDateTimeHex:6:2}${mDateTimeHex:4:2}
 
             # create forks and file entry
@@ -191,25 +295,26 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg
                 while [[ $fileName == "${prodosPath##*/}" || $rfName == $fileName || $dfName == $fileName ]]; do
                     fileName=X$(printf %04X $RANDOM $RANDOM $RANDOM)
                 done
-                java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" "${adFile%*.AppleDouble/*}$dfName" 2> /dev/null
-                dd if="$prodosArg" 2> /dev/null | java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" "${adFile%*.AppleDouble/*}$dfName" $00 2> $acmdStdErr
-                java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" "${adFile%*.AppleDouble/*}$rfName" 2> /dev/null
-                dd if="$adFile" bs=741 skip=1 2> /dev/null | java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" "${adFile%*.AppleDouble/*}$rfName" $00 2> $acmdStdErr
+                java -Xmx128m -jar "$acPath" -d "$imageArg" "${adFile%*.AppleDouble/*}$dfName" 2> /dev/null
+                dd if="$prodosArg" 2> /dev/null | java -Xmx128m -jar "$acPath" -p "$imageArg" "${adFile%*.AppleDouble/*}$dfName" $00 2> $acmdStdErr
+                java -Xmx128m -jar "$acPath" -d "$imageArg" "${adFile%*.AppleDouble/*}$rfName" 2> /dev/null
+                dd if="$adFile" bs=741 skip=1 2> /dev/null | java -Xmx128m -jar "$acPath" -p "$imageArg" "${adFile%*.AppleDouble/*}$rfName" $00 2> $acmdStdErr
             fi
 
             # create file entry, then find it
-            java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" "${adFile%*.AppleDouble/*}$fileName" 2> /dev/null
+            java -Xmx128m -jar "$acPath" -d "$imageArg" "${adFile%*.AppleDouble/*}$fileName" 2> /dev/null
             [[ $isExtFile ]] && ddsrc="if=/dev/zero bs=512 count=1" || ddsrc="if=$prodosArg"
-            dd $ddsrc 2> /dev/null | java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" "${adFile%*.AppleDouble/*}$fileName" "$ft" "$auxType" 2> $acmdStdErr
-            fileEntryOffset=$(grep --byte-offset --only-matching --text ".$fileName" "$imageArg" | cut -d ':' -f 1)
+            dd $ddsrc 2> /dev/null | java -Xmx128m -jar "$acPath" -p "$imageArg" "${adFile%*.AppleDouble/*}$fileName" "$ft" "$auxType" 2> $acmdStdErr
+            # thx to http://unix.stackexchange.com/a/122945/99697 for perl alternative to broken --byte-offset in grep 2.5.1 (e.g. in OS X)
+            fileEntryOffset=$(perl -n0777e "print pos()-length('.$fileName') while /.$fileName/g" < "$imageArg")
             fileEntry=$(dd if="$imageArg" bs=1 count=39 skip=$fileEntryOffset 2> /dev/null | xxd -p | tr -d '\n')
-    
+
             if [[ $isExtFile ]]; then
                 extKeyBlockOffset=$(( ( ( $(printf %d 0x"${fileEntry:36:2}") * 256 ) + $(printf %d 0x"${fileEntry:34:2}") * 512 ) ))
 
                 # find data fork, copy storage type, key block, block size, length to extended key block mini-entry
                 # then mark as available/deleted
-                dfOffset=$(grep --byte-offset --only-matching --text ".$dfName" "$imageArg" | cut -d ':' -f 1)
+                dfOffset=$(perl -n0777e "print pos()-length('.$dfName') while /.$dfName/g" < "$imageArg")
                 dfEntry=$(dd if="$imageArg" bs=1 count=39 skip=$dfOffset 2> /dev/null | xxd -p | tr -d '\n')
                 dfStorageType=$(printf %02X $(( $(printf %d 0x${dfEntry:0:2}) >> 4 )) )
                 dfBlocksUsed=$(( ( $(printf %d 0x${dfEntry:40:2}) * 256 ) + $(printf %d 0x${dfEntry:38:2}) ))
@@ -222,7 +327,7 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg
     
                 # find resource fork, copy storage type, key block, block size, length to extended key block mini-entry
                 # then mark as available/deleted
-                rfOffset=$(grep --byte-offset --only-matching --text ".$rfName" "$imageArg" | cut -d ':' -f 1)
+                rfOffset=$(perl -n0777e "print pos()-length('.$rfName') while /.$rfName/g" < "$imageArg")
                 rfEntry=$(dd if="$imageArg" bs=1 count=39 skip=$rfOffset 2> /dev/null | xxd -p | tr -d '\n')
                 rfStorageType=$(printf %02X $(( $(printf %d 0x${rfEntry:0:2}) >> 4 )) )
                 rfBlocksUsed=$(( ( $(printf %d 0x${rfEntry:40:2}) * 256 ) + $(printf %d 0x${rfEntry:38:2}) ))
@@ -279,7 +384,7 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg
 else
 
     imageArg="$2"
-    java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar "$@" 2> $acmdStdErr
+    java -Xmx128m -jar "$acPath" "$@" 2> $acmdStdErr
 
 fi
 
