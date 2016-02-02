@@ -22,7 +22,9 @@ helpExit () {
             echoerr "    ProDOS subdirectories in <filename> will be created if needed."
             echoerr "    If an AppleDouble file or Nulib2 extended filename is detected,"
             echoerr "    <type> and <auxtype> are automatically set, and resource forks are kept."
-            echoerr "    (To extract these from a ProDOS image file, use cppo -ad or cppo -e.)"
+            if hash cppo &> /dev/null; then
+                echoerr "    (To extract these from a ProDOS image file, use cppo -ad or cppo -e.)"
+            fi
             echoerr "-c  <filename> <imagename> [[$|0x]<type>] [[$|0x]<auxtype>] synonym for -p"
             echoerr "    with filename and imagename reversed."
             #echoerr "-cd <imagename> <filename> <dateTimeString>|<dateTimeStamp>"
