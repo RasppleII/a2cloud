@@ -156,6 +156,8 @@ if [[ ! -f $acPath ]]; then
     fi
 fi
 
+ac="java -Xmx128m -jar $acPath"
+
 if [[ ! $2 || $arg1 == "-h" ]]; then
     java -jar "$acPath" 2> $acmdStdErr
     [[ $? -eq 127 ]] && exit 127 || helpExit $arg1
@@ -191,6 +193,13 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" ) && $2
             prodosArg=$(echo -n "${prodosArg%#*}"#??????)
             rFile="${prodosArg}"r
         fi
+        if [[ $AD || $EX ]]; then
+            # if target is not a ProDOS disk, ignore metadata
+            if ! $ac -i "$imageArg" | grep -q '^Disk Format: ProDOS'; then
+                AD=
+                EX=
+            fi
+        fi
     elif [[ $arg1 == "-g" || $arg1 == "-e" ]]; then
         fileArg="$3"
         imageArg="$2"
@@ -206,7 +215,7 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" ) && $2
         outFile=
         [[ $3 && $3 != "-" ]] && outFile="$3"
         [[ ! $3 ]] && outFile="${2##*/}"
-        java -Xmx128m -jar "$acPath" $getArg "$imageArg" "$fileArg" $outFile 2> $acmdStdErr
+        $ac $getArg "$imageArg" "$fileArg" $outFile 2> $acmdStdErr
     
     else # put file
 
@@ -252,11 +261,11 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" ) && $2
             # test for absence of stdin [[ -t 0 ]] and if absent use ProDOS name
             if [[ -t 0 ]]; then
                 [[ ! -f $prodosArg ]] && { echoerr "$prodosArg not found."; exit 1; }
-                java -Xmx128m -jar "$acPath" -d "$imageArg" $prodosPath &> /dev/null
-                java -Xmx128m -jar "$acPath" -p "$imageArg" $prodosPath $ft $auxType < $prodosArg 2> $acmdStdErr
+                $ac -d "$imageArg" $prodosPath &> /dev/null
+                $ac -p "$imageArg" $prodosPath $ft $auxType < $prodosArg 2> $acmdStdErr
             else
-                java -Xmx128m -jar "$acPath" -d "$imageArg" $prodosPath &> /dev/null
-                java -Xmx128m -jar "$acPath" -p "$imageArg" $prodosPath $ft $auxType 2> $acmdStdErr
+                $ac -d "$imageArg" $prodosPath &> /dev/null
+                $ac -p "$imageArg" $prodosPath $ft $auxType 2> $acmdStdErr
             fi            
         else # AppleDouble or nulib extended, get resource fork and file metadata from header file
         
@@ -309,16 +318,16 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" ) && $2
                 while [[ $fileName == "${prodosPath##*/}" || $rfName == $fileName || $dfName == $fileName ]]; do
                     fileName=X$(printf %04X $RANDOM $RANDOM $RANDOM)
                 done
-                java -Xmx128m -jar "$acPath" -d "$imageArg" "${prodosArgParent}$dfName" 2> /dev/null
-                dd if="$prodosArg" 2> /dev/null | java -Xmx128m -jar "$acPath" -p "$imageArg" "${prodosArgParent}$dfName" $00 2> $acmdStdErr
-                java -Xmx128m -jar "$acPath" -d "$imageArg" "${prodosArgParent}$rfName" 2> /dev/null
-                dd if="$rFile" bs=1 skip=$(( 0$AD ? 741 : 0 )) 2> /dev/null | java -Xmx128m -jar "$acPath" -p "$imageArg" "${prodosArgParent}$rfName" $00 2> $acmdStdErr
+                $ac -d "$imageArg" "${prodosArgParent}$dfName" 2> /dev/null
+                dd if="$prodosArg" 2> /dev/null | $ac -p "$imageArg" "${prodosArgParent}$dfName" $00 2> $acmdStdErr
+                $ac -d "$imageArg" "${prodosArgParent}$rfName" 2> /dev/null
+                dd if="$rFile" bs=1 skip=$(( 0$AD ? 741 : 0 )) 2> /dev/null | $ac -p "$imageArg" "${prodosArgParent}$rfName" $00 2> $acmdStdErr
             fi
 
             # create file entry, then find it
-            java -Xmx128m -jar "$acPath" -d "$imageArg" "${prodosArgParent}$fileName" 2> /dev/null
+            $ac -d "$imageArg" "${prodosArgParent}$fileName" 2> /dev/null
             [[ $isExtFile ]] && ddsrc="if=/dev/zero bs=512 count=1" || ddsrc="if=$prodosArg"
-            dd $ddsrc 2> /dev/null | java -Xmx128m -jar "$acPath" -p "$imageArg" "${prodosArgParent}$fileName" "$ft" "$auxType" 2> $acmdStdErr
+            dd $ddsrc 2> /dev/null | $ac -p "$imageArg" "${prodosArgParent}$fileName" "$ft" "$auxType" 2> $acmdStdErr
             # thx to http://unix.stackexchange.com/a/122945/99697 for perl alternative to broken --byte-offset in grep 2.5.1 (e.g. in OS X)
             fileEntryOffset=$(perl -n0777e "print pos()-length('.$fileName') while /.$fileName/g" < "$imageArg")
             fileEntry=$(dd if="$imageArg" bs=1 count=39 skip=$fileEntryOffset 2> /dev/null | xxd -p | tr -d '\n')
@@ -400,7 +409,7 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" ) && $2
 else
 
     imageArg="$2"
-    java -Xmx128m -jar "$acPath" "$@" 2> $acmdStdErr
+    $ac "$@" 2> $acmdStdErr
 
 fi
 
