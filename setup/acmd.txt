@@ -20,12 +20,11 @@ helpExit () {
             echoerr "    into ProDOS disk image. <type> is either three-letter or numeric"
             echoerr "    ProDOS file type (BIN if omitted). Will read from stdin if supplied."
             echoerr "    ProDOS subdirectories in <filename> will be created if needed."
+            echoerr "    If an AppleDouble file or Nulib2 extended filename is detected,"
+            echoerr "    <type> and <auxtype> are automatically set, and resource forks are kept."
+            echoerr "    (To extract these from a ProDOS image file, use cppo -ad or cppo -e.)"
             echoerr "-c  <filename> <imagename> [[$|0x]<type>] [[$|0x]<auxtype>] synonym for -p"
             echoerr "    with filename and imagename reversed."
-            echoerr "-ad <imagename> <filename>"
-            echoerr "    copy AppleDouble file into ProDOS disk image"
-            echoerr "-f  <imagename> <filename>"
-            echoerr "    copy Nulib2 extended filename into ProDOS disk image"
             #echoerr "-cd <imagename> <filename> <dateTimeString>|<dateTimeStamp>"
             #echoerr "    set creation date and time of file in ProDOS disk image"
             #echoerr "-md <imagename> <filename> <dateTimeString>|<dateTimeStamp>"
@@ -167,7 +166,7 @@ if [[ $arg1 != "-i" && $arg1 != "-ls" && $arg1 != "-l" && $arg1 != "-ll" && $arg
     vsd2_md5="$(md5sum /usr/local/adtpro/disks/Virtual2.po)"
 fi
 
-if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg1 == "-ad" || $arg1 == "-f" ) && $2 && $3 ]]; then
+if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" ) && $2 && $3 ]]; then
 
     AD=
     EX=
@@ -175,24 +174,23 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg
     prodosArgParent=
     rFile=
     getArg=
-    if [[ $arg1 == "-p" ]]; then
-        prodosArg="$3"
-        imageArg="$2"
-    elif [[ $arg1 == "-ad" || $arg1 == "-f" ]]; then
-        prodosArg="$3"
-        imageArg="$2"
+    if [[ $arg1 == "-c" || $arg1 == "-p" ]]; then
+        if [[ $arg1 == "-c" ]]; then
+            prodosArg="$2"
+            imageArg="$3"
+        elif [[ $arg1 == "-p" ]]; then
+            prodosArg="$3"
+            imageArg="$2"
+        fi
         [[ $prodosArg == *"/"* ]] && prodosArgParent="${prodosArg%/*}/"
-        if [[ $arg1 == "-ad" ]]; then
+        rFile="${prodosArgParent}.AppleDouble/${prodosArg##*/}"
+        if [[ -f "$prodosArg" && -f "$rFile" ]]; then # AppleDouble
             AD=1
-            rFile="${prodosArgParent}.AppleDouble/${prodosArg##*/}"
-        else
+        elif [ -f "${prodosArg%#*}"#?????? ]; then # Nulib2 ext filename
             EX=1
             prodosArg=$(echo -n "${prodosArg%#*}"#??????)
             rFile="${prodosArg}"r
         fi
-    elif [[ $arg1 == "-c" ]]; then
-        prodosArg="$2"
-        imageArg="$3"
     elif [[ $arg1 == "-g" || $arg1 == "-e" ]]; then
         fileArg="$3"
         imageArg="$2"
@@ -204,10 +202,12 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg
     shift
 
     if [[ $getArg ]]; then # get file
+
         outFile=
         [[ $3 && $3 != "-" ]] && outFile="$3"
         [[ ! $3 ]] && outFile="${2##*/}"
         java -Xmx128m -jar "$acPath" $getArg "$imageArg" "$fileArg" $outFile 2> $acmdStdErr
+    
     else # put file
 
         # test ProDOS name validity
