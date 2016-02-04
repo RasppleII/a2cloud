@@ -1,4 +1,5 @@
-#!/bin/bash
+#! /bin/bash
+# vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
 
 # to do: replace Spectrum Deluxe (2.5.3) with Spectrum Gold (2.5.4)
 
@@ -93,8 +94,11 @@ gisk=
 installDisks=
 kegs=
 
-{ acmd &> /dev/null || [[ $? -ne 127 ]]; } && acmdOK=1 || acmdOK=
+which acmd >/dev/null && acmdOK=1 || acmdOK=
 
+if [[ $0 == *kegs-setup* ]]; then
+    kegs=1
+fi
 
 while { [[ $1 ]] || (( (0 + $gisk + $noDisks + $installDisks + 0) > 1 )); }; do
     arg=$(tr -d '-' <<< ${1,,})
@@ -125,7 +129,7 @@ while { [[ $1 ]] || (( (0 + $gisk + $noDisks + $installDisks + 0) > 1 )); }; do
     else
         echo "Usage: $emulatorSetup [rom1|rom3] [-6] [-y [-g|-i|-n]]"
         echo "rom1: use GS ROM 01"
-        echo "rom3: use GS ROM 03"
+        echo "rom3: use GS ROM 3"
         echo "-k: set up KEGS (rather than GSport)"
         echo "-6: put blank disks in slot 6"
         echo "-y: auto-answer yes (no prompting)"
