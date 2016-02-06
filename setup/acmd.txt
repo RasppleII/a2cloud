@@ -1,18 +1,8 @@
 #! /bin/bash
 # vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
 
-decToHex () {
-# converts single-byte decimal value to hexadecimal equivalent
-# arg: decimal value from 0-255
-# out: two-digit hex value from 00-FF
-#exit: 8=extraneous arg, 11=missing arg, 21=invalid arg
-    [[ $arg1 ]] || return 11
-    [[ $2 ]] && return 8
-    [[ ( $(printf %d "$arg1" 2> /dev/null) == $arg1 ) \
-        && ( $arg1 -ge 0 ) && ( $arg1 -le 255 ) ]] || return 21
-    # args are valid
-    printf %02X "$arg1"
-}
+# set default AppleCommander location if ADTPro is not installed
+defaultAcPath=$(echo -n /usr/local/bin/AppleCommander-*-ac.jar)
 
 echoerr() {
     echo "$@" 1>&2;
@@ -30,10 +20,13 @@ helpExit () {
             echoerr "    into ProDOS disk image. <type> is either three-letter or numeric"
             echoerr "    ProDOS file type (BIN if omitted). Will read from stdin if supplied."
             echoerr "    ProDOS subdirectories in <filename> will be created if needed."
+            echoerr "    If an AppleDouble file or Nulib2 extended filename is detected,"
+            echoerr "    <type> and <auxtype> are automatically set, and resource forks are kept."
+            if hash cppo &> /dev/null; then
+                echoerr "    (To extract these from a ProDOS image file, use cppo -ad or cppo -e.)"
+            fi
             echoerr "-c  <filename> <imagename> [[$|0x]<type>] [[$|0x]<auxtype>] synonym for -p"
             echoerr "    with filename and imagename reversed."
-            echoerr "-ad <imagename> <filename>"
-            echoerr "    copy AppleDouble file into ProDOS disk image"
             #echoerr "-cd <imagename> <filename> <dateTimeString>|<dateTimeStamp>"
             #echoerr "    set creation date and time of file in ProDOS disk image"
             #echoerr "-md <imagename> <filename> <dateTimeString>|<dateTimeStamp>"
@@ -59,14 +52,116 @@ helpExit () {
     exit $exitVal
 }
 
+decToBin () {
+    dec="$(( 10#$1 ))"
+    bits=""
+    for i in 7 6 5 4 3 2 1 0; do
+        bits+=$(( (dec & (2**i)) >> i ))
+    done
+    echo -n "$(( 10#$bits ))"
+}
+
 arg1=$1
 
 acmdStdErr="/tmp/acmd_$RANDOM$RANDOM"
 
-[[ -f /usr/local/adtpro/adtpro.sh ]] && adtPath="/usr/local/adtpro" || adtPath=$(ls -1d /Applications/ADTPro* | head -1);
+[[ -f /usr/libexec/java_home ]] && osx=1 || osx=
+
+if [[ $osx ]]; then
+    if ! /usr/libexec/java_home &> /dev/null; then
+        echo -n "AppleCommander requires the Java JDK. Do you want to install it now? "
+        read
+        if [[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]]; then
+            # install Oracle Java for OS X
+            echo "Downloading Java JDK..."
+            mkdir -p /tmp/jdk
+            curl -L --cookie oraclelicense=accept-securebackup-cookie $(curl -L "http://www.oracle.com/"$(curl -L "http://www.oracle.com/technetwork/java/javase/downloads/" 2> /dev/null | grep -o -m 1 '/technetwork/java/javase/downloads/jdk.-downloads-[0-9]*\.html') 2> /dev/null | grep -o 'http://.*macosx-x64.dmg' | sort | tail -1) 2> /dev/null > /tmp/jdk/jdk.dmg
+            echo "Installing Java JDK..."
+            hdiutil attach /tmp/jdk/jdk.dmg &> /dev/null
+            sudo installer -pkg /Volumes/JDK*/JDK*.pkg -target /
+            diskutil unmountDisk /Volumes/JDK*
+            rm -r /tmp/jdk 2> /dev/null
+            if ! /usr/libexec/java_home &> /dev/null; then
+                echo "The Java JDK could not be installed."
+                echo "Type \"java\" and then click \"More Info...\" to download and install it manually."
+                exit 1
+            fi
+        else
+            exit 1
+        fi
+    fi
+else # not OS X, so presumably Linux
+    if ! hash java &> /dev/null; then
+        echo -n "AppleCommander requires the Java JDK. "
+        if hash apt-get; then
+            echo -n "Do you want to install it now? "
+            read
+            if [[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]]; then
+                # from http://www.webupd8.org/2012/06/how-to-install-oracle-java-7-in-debian.html
+                if { ! grep -q webupd8team /etc/apt/sources.list; }; then
+                    {
+                        echo;
+                        echo "# Oracle Java JDK";
+                        echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu precise main";
+                        echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu precise main";
+                    } | sudo tee -a /etc/apt/sources.list > /dev/null
+                fi
+                sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886
+                sudo apt-get -y update
+                echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+                sudo apt-get -y install oracle-java8-installer
+                sudo apt-get -y clean
+            else
+                exit 1
+            fi
+        fi
+    fi
+    if ! hash java &> /dev/null; then
+        echo
+        echo "Get it from http://www.oracle.com/technetwork/java/javase/downloads/"
+        exit 1
+    fi
+fi
+
+setAcPath () {
+    acPath=$defaultAcPath
+    adtPath=
+    if [[ ! -f $acPath ]]; then
+        if [[ -f /usr/local/adtpro/adtpro.sh ]]; then
+            adtPath="/usr/local/adtpro"
+        elif [[ $osx ]]; then
+            adtPath=$(echo -n /Applications/ADTPro* | tr ' ' '\n' | sort | head -1);
+        fi
+        if [[ -d "$adtPath" ]]; then
+            acPath="$adtPath"/lib/AppleCommander/AppleCommander-ac.jar
+            [[ ! -f $acPath ]] && acPath=$(echo -n "$adtPath"/lib/AppleCommander/AppleCommander-*-ac.jar)
+        fi
+    fi
+    acPath=$(echo -n $acPath)
+}
+
+setAcPath
+if [[ ! -f $acPath ]]; then
+    echo "Installing AppleCommander..."
+    sudo mkdir -p /usr/local/bin
+    acUrl="http://sourceforge.net/projects/applecommander/files/AppleCommander%20-%20Interim/testcase/AppleCommander-1.3.5.13id-ac.jar/download"
+    if [[ $osx ]]; then
+        curl -L "$acUrl" 2> /dev/null | sudo tee /usr/local/bin/AppleCommander-1.3.5.13id-ac.jar > /dev/null
+    else
+        sudo wget -qO /usr/local/bin/AppleCommander-1.3.5.13id-ac.jar "$acUrl"
+    fi
+    setAcPath
+    if [[ ! -f "$acPath" ]]; then
+        echo "AppleCommander couldn't be installed. Download it from"
+        echo "http://applecommander.sourceforge.net and put it in /usr/local/bin."
+        exit 1
+    fi
+fi
+
+ac="java -Xmx128m -jar $acPath"
 
 if [[ ! $2 || $arg1 == "-h" ]]; then
-    java -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar 2> $acmdStdErr
+    java -jar "$acPath" 2> $acmdStdErr
     [[ $? -eq 127 ]] && exit 127 || helpExit $arg1
 fi
 
@@ -75,21 +170,38 @@ if [[ $arg1 != "-i" && $arg1 != "-ls" && $arg1 != "-l" && $arg1 != "-ll" && $arg
     vsd2_md5="$(md5sum /usr/local/adtpro/disks/Virtual2.po)"
 fi
 
-if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg1 == "-ad" ) && $2 && $3 ]]; then
+if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" ) && $2 && $3 ]]; then
 
-    adFile=
+    AD=
+    EX=
+    prodosArg=
+    prodosArgParent=
+    rFile=
     getArg=
-    if [[ $arg1 == "-p" ]]; then
-        prodosArg="$3"
-        imageArg="$2"
-    elif [[ $arg1 == "-ad" ]]; then
-        prodosArg="$3"
-        imageArg="$2"
-        [[ $prodosArg == *"/"* ]] && adFile="${prodosArg%/*}/"
-        adFile+=".AppleDouble/${prodosArg##*/}"
-    elif [[ $arg1 == "-c" ]]; then
-        prodosArg="$2"
-        imageArg="$3"
+    if [[ $arg1 == "-c" || $arg1 == "-p" ]]; then
+        if [[ $arg1 == "-c" ]]; then
+            prodosArg="$2"
+            imageArg="$3"
+        elif [[ $arg1 == "-p" ]]; then
+            prodosArg="$3"
+            imageArg="$2"
+        fi
+        [[ $prodosArg == *"/"* ]] && prodosArgParent="${prodosArg%/*}/"
+        rFile="${prodosArgParent}.AppleDouble/${prodosArg##*/}"
+        if [[ -f "$prodosArg" && -f "$rFile" ]]; then # AppleDouble
+            AD=1
+        elif [ -f "${prodosArg%#*}"#?????? ]; then # Nulib2 ext filename
+            EX=1
+            prodosArg=$(echo -n "${prodosArg%#*}"#??????)
+            rFile="${prodosArg}"r
+        fi
+        if [[ $AD || $EX ]]; then
+            # if target is not a ProDOS disk, ignore metadata
+            if ! $ac -i "$imageArg" | grep -q '^Disk Format: ProDOS'; then
+                AD=
+                EX=
+            fi
+        fi
     elif [[ $arg1 == "-g" || $arg1 == "-e" ]]; then
         fileArg="$3"
         imageArg="$2"
@@ -101,14 +213,16 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg
     shift
 
     if [[ $getArg ]]; then # get file
+
         outFile=
         [[ $3 && $3 != "-" ]] && outFile="$3"
         [[ ! $3 ]] && outFile="${2##*/}"
-        java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar $getArg "$imageArg" "$fileArg" $outFile 2> $acmdStdErr
+        $ac $getArg "$imageArg" "$fileArg" $outFile 2> $acmdStdErr
+    
     else # put file
 
-        # test ProDOS name legitimacy
-        prodosPath=$(tr [:lower:] [:upper:] <<< $prodosArg )
+        # test ProDOS name validity
+        prodosPath=$(tr [:lower:] [:upper:] <<< "${prodosArg%#*}" )
         IFS_orig="$IFS"; IFS="/";
         prodosPathParts="$prodosPath"
         for thisProdosPathPart in $prodosPathParts; do
@@ -122,7 +236,7 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg
         P_00=UNK; P_01=BAD; P_02=PCD; P_03=PTX; P_04=TXT; P_05=PDA; P_06=BIN; P_07=FNT; P_08=FOT; P_09=BA3; P_0a=DA3; P_0b=WPF; P_0c=SOS; P_0f=DIR; P_10=RPD; P_11=RPI; P_12=AFD; P_13=AFM; P_14=AFR; P_15=SCL; P_16=PFS; P_19=ADB; P_1a=AWP; P_1b=ASP; P_20=TDM; P_21=IPS; P_22=UPV; P_29=3SD; P_2a=8SC; P_2b=8OB; P_2c=8IC; P_2d=8LD; P_2e=P8C; P_41=OCR; P_42=FTD; P_50=GWP; P_51=GSS; P_52=GDB; P_53=DRW; P_54=GDP; P_55=HMD; P_56=EDU; P_57=STN; P_58=HLP; P_59=COM; P_5a=CFG; P_5b=ANM; P_5c=MUM; P_5d=ENT; P_5e=DVU; P_60=PRE; P_6b=BIO; P_6d=DVR; P_6e=PRE; P_6f=HDV; P_80=GEZ; P_81=GE1; P_82=GEO; P_83=GE3; P_84=GE4; P_85=GE5; P_86=GE6; P_87=GE7; P_88=GE8; P_89=GE9; P_8a=GEA; P_8b=GEB; P_8c=GEC; P_8d=GED; P_8e=GEE; P_8f=GEF; P_a0=WP_; P_ab=GSB; P_ac=TDF; P_ad=BDF; P_b0=SRC; P_b1=OBJ; P_b2=LIB; P_b3=S16; P_b4=RTL; P_b5=EXE; P_b6=STR; P_b7=TSF; P_b8=NDA; P_b9=CDA; P_ba=TOL; P_bb=DRV; P_bc=LDF; P_bd=FST; P_bf=DOC; P_c0=PNT; P_c1=PIC; P_c2=ANI; P_c3=PAL; P_c5=OOG; P_c6=SCR; P_c7=CDV; P_c8=FON; P_c9=FND; P_ca=ICN; P_d5=MUS; P_d6=INS; P_d7=MDI; P_d8=SND; P_db=DBM; P_e0=SHK; P_e2=DTS; P_ee=R16; P_ef=PAS; P_f0=CMD; P_f9=P16; P_fa=INT; P_fb=IVR; P_fc=BAS; P_fd=VAR; P_fe=REL; P_ff=SYS;
 
         # process filetype
-        if [[ ! $adFile ]]; then
+        if [[ ! $AD && ! $EX ]]; then # no resource fork or metadata
             [[ ${3:0:2} == "0x" ]] && ftArg="\$${3:2}" || ftArg="$3"
             auxType="$4"
 
@@ -135,7 +249,7 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg
                 if [[ ${ftArg:0:1} == '$' ]]; then
                     fc=$(tr [:upper:] [:lower:] <<< ${ftArg:1:2})
                 else
-                    fc=$(decToHex $ftArg | tr [:upper:] [:lower:])
+                    fc=$(printf %02X "$ftArg" | tr [:upper:] [:lower:])
                 fi
                 ftVar="P_$fc";
                 [[ ${!ftVar} ]] && ft=${!ftVar} || ft="\$$fc";
@@ -149,126 +263,155 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" || $arg
             # test for absence of stdin [[ -t 0 ]] and if absent use ProDOS name
             if [[ -t 0 ]]; then
                 [[ ! -f $prodosArg ]] && { echoerr "$prodosArg not found."; exit 1; }
-                java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" $prodosPath &> /dev/null
-                java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" $prodosPath $ft $auxType < $prodosArg 2> $acmdStdErr
+                $ac -d "$imageArg" $prodosPath &> /dev/null
+                $ac -p "$imageArg" $prodosPath $ft $auxType < $prodosArg 2> $acmdStdErr
             else
-                java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" $prodosPath &> /dev/null
-                java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" $prodosPath $ft $auxType 2> $acmdStdErr
+                $ac -d "$imageArg" $prodosPath &> /dev/null
+                $ac -p "$imageArg" $prodosPath $ft $auxType 2> $acmdStdErr
             fi            
-        else # AppleDouble, get resource fork and file metadata from header file
+        else # AppleDouble or nulib extended, get resource fork and file metadata from header file
         
             [[ ! -f $prodosArg ]] && { echoerr "$prodosArg not found."; exit 1; }
-            [[ ! -f $adFile ]] && { echoerr "Not an AppleDouble file: $adFile"; exit 1; }
+            [[ $AD && ! -f $rFile ]] && { echoerr "Not an AppleDouble file: $rFile"; exit 1; }
 
-            # get metadata from appleDouble header
-            fileData=$(dd if="$adFile" bs=1 count=24 skip=637 2> /dev/null | xxd -p | tr -d '\n')
-            ftVar="P_${fileData:34:2}";
+            if [[ $AD ]]; then
+                # get metadata from AppleDouble header
+                [[ $(dd if="$rFile" bs=1 count=1 skip=741 2> /dev/null | wc -c) -gt 0 ]] && isExtFile=1 || isExtFile=
+                fileData=$(dd if="$rFile" bs=1 count=24 skip=637 2> /dev/null | xxd -p | tr -d '\n')
+                ftVar="P_${fileData:34:2}";
+                auxType="\$"${fileData:36:4}
+                cDateTime=$(printf %d 0x${fileData:0:8})
+                mDateTime=$(printf %d 0x${fileData:8:8})
+                [[ $(printf %d 0x"${fileData:0:2}") -gt 127 ]] && (( cDateTime-=4294967296 )) # handle negative hex number
+                [[ $(printf %d 0x"${fileData:8:2}") -gt 127 ]] && (( mDateTime-=4294967296 )) # handle negative hex number
+                (( cDateTime+=946684800 )) # convert AD timestamp to Unix timestamp
+                (( mDateTime+=946684800 )) # convert AD timestamp to Unix timestamp
+            else # EX
+                # get metadata from file info
+                [[ -f "$rFile" ]] && isExtFile=1 || isExtFile=
+                ftVar="P_${prodosArg: -6:2}"
+                auxType="\$"${prodosArg: -4}
+                if [[ $osx ]]; then
+                    mDateTime=$(stat -f "%m" "$prodosArg")
+                else
+                    mDateTime=$(stat -c %Y "$prodosArg")
+                fi
+                cDateTime=$mDateTime
+            fi
             [[ ${!ftVar} ]] && ft=${!ftVar} || ft="\$$fc"; # set file type
-            auxType="\$"${fileData:36:4}
-            cDateTime=$(printf %d 0x${fileData:0:8})
-            mDateTime=$(printf %d 0x${fileData:8:8})
-            [[ $(printf %d 0x"${fileData:0:2}") -gt 127 ]] && (( cDateTime-=4294967296 )) # handle negative hex number
-            [[ $(printf %d 0x"${fileData:8:2}") -gt 127 ]] && (( mDateTime-=4294967296 )) # handle negative hex number
-            (( cDateTime+=946684800 )) # convert AD timestamp to Unix timestamp
-            (( mDateTime+=946684800 )) # convert AD timestamp to Unix timestamp
-            # convert unix timestamp to ProDOS bitfield
-            # yyyyyyymmmmddddd 000hhhhh00mmmmmm
-            cDateFields=($(date -d @$cDateTime +"%y %m %d %H %M"))
-            mDateFields=($(date -d @$mDateTime +"%y %m %d %H %M"))
-            cDateTimeHex=$(printf %08X $(( 2#$(printf %07d $(bc <<< "obase=2;${cDateFields[0]}"))$(printf %04d $(bc <<< "obase=2;${cDateFields[1]}"))$(printf %05d $(bc <<< "obase=2;${cDateFields[2]}"))$(printf %08d $(bc <<< "obase=2;${cDateFields[3]}"))$(printf %08d $(bc <<< "obase=2;${cDateFields[4]}")) )))
+            # convert unix timestamp to ProDOS bitfield yyyyyyymmmmddddd 000hhhhh00mmmmmm
+            cDateFields=($(date -d @$cDateTime +"%y %m %d %H %M" 2> /dev/null))
+            [[ ! $cDateFields ]] && cDateFields=($(date -r $cDateTime +"%y %m %d %H %M")) # OS X/BSD
+            mDateFields=($(date -d @$mDateTime +"%y %m %d %H %M" 2> /dev/null))
+            [[ ! $mDateFields ]] && mDateFields=($(date -r $mDateTime +"%y %m %d %H %M")) # OS X/BSD
+            cDateTimeHex=$(printf %08X $(( 2#$(printf %07d $(decToBin ${cDateFields[0]}))$(printf %04d $(decToBin ${cDateFields[1]}))$(printf %05d $(decToBin ${cDateFields[2]}))$(printf %08d $(decToBin ${cDateFields[3]}))$(printf %08d $(decToBin ${cDateFields[4]})) )))
             cDateTimeHex=${cDateTimeHex:2:2}${cDateTimeHex:0:2}${cDateTimeHex:6:2}${cDateTimeHex:4:2}
-            mDateTimeHex=$(printf %08X $(( 2#$(printf %07d $(bc <<< "obase=2;${mDateFields[0]}"))$(printf %04d $(bc <<< "obase=2;${mDateFields[1]}"))$(printf %05d $(bc <<< "obase=2;${mDateFields[2]}"))$(printf %08d $(bc <<< "obase=2;${mDateFields[3]}"))$(printf %08d $(bc <<< "obase=2;${mDateFields[4]}")) )))
+            mDateTimeHex=$(printf %08X $(( 2#$(printf %07d $(decToBin ${mDateFields[0]}))$(printf %04d $(decToBin ${mDateFields[1]}))$(printf %05d $(decToBin ${mDateFields[2]}))$(printf %08d $(decToBin ${mDateFields[3]}))$(printf %08d $(decToBin ${mDateFields[4]})) )))
             mDateTimeHex=${mDateTimeHex:2:2}${mDateTimeHex:0:2}${mDateTimeHex:6:2}${mDateTimeHex:4:2}
 
-            # create forks and extended file entry
-            dfName=X$(printf %04X $RANDOM $RANDOM $RANDOM)
-            while [[ ! $rfName || $rfName == $dfName ]]; do
-                rfName=X$(printf %04X $RANDOM $RANDOM $RANDOM)
-            done
-            while [[ ! $extName || $rfName == $extName || $dfName == $extName ]]; do
-                extName=X$(printf %04X $RANDOM $RANDOM $RANDOM)
-            done
-            java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" "${adFile%*.AppleDouble/*}$dfName" 2> /dev/null
-            dd if="$prodosArg" 2> /dev/null | java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" "${adFile%*.AppleDouble/*}$dfName" $00 2> $acmdStdErr
-            java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" "${adFile%*.AppleDouble/*}$rfName" 2> /dev/null
-            dd if="$adFile" bs=741 skip=1 2> /dev/null | java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" "${adFile%*.AppleDouble/*}$rfName" $00 2> $acmdStdErr
-            java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -d "$imageArg" "${adFile%*.AppleDouble/*}$extName" 2> /dev/null
-            dd if="/dev/zero" bs=512 count=1 2> /dev/null | java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar -p "$imageArg" "${adFile%*.AppleDouble/*}$extName" "$ft" "$auxType" 2> $acmdStdErr
+            # create forks and file entry
+            ### RIGHT HERE PROBLEMS IF #000000 specified and maybe if not
+            fileName="${prodosPath##*/}"
+            if [[ $isExtFile ]]; then
+                dfName=X$(printf %04X $RANDOM $RANDOM $RANDOM)
+                while [[ ! $rfName || $rfName == $dfName ]]; do
+                    rfName=X$(printf %04X $RANDOM $RANDOM $RANDOM)
+                done
+                while [[ $fileName == "${prodosPath##*/}" || $rfName == $fileName || $dfName == $fileName ]]; do
+                    fileName=X$(printf %04X $RANDOM $RANDOM $RANDOM)
+                done
+                $ac -d "$imageArg" "${prodosArgParent}$dfName" 2> /dev/null
+                dd if="$prodosArg" 2> /dev/null | $ac -p "$imageArg" "${prodosArgParent}$dfName" $00 2> $acmdStdErr
+                $ac -d "$imageArg" "${prodosArgParent}$rfName" 2> /dev/null
+                dd if="$rFile" bs=1 skip=$(( 0$AD ? 741 : 0 )) 2> /dev/null | $ac -p "$imageArg" "${prodosArgParent}$rfName" $00 2> $acmdStdErr
+            fi
 
-            # find extended file entry and extended key block offsets
-            extOffset=$(grep --byte-offset --only-matching --text ".$extName" "$imageArg" | cut -d ':' -f 1)
-            extEntry=$(dd if="$imageArg" bs=1 count=39 skip=$extOffset 2> /dev/null | xxd -p | tr -d '\n')
-            extKeyBlockOffset=$(( ( ( $(printf %d 0x"${extEntry:36:2}") * 256 ) + $(printf %d 0x"${extEntry:34:2}") * 512 ) ))
-            parentDirKeyBlockOffset=$(( ( ( $(printf %d 0x"${extEntry:76:2}") * 256 ) + $(printf %d 0x"${extEntry:74:2}") * 512 ) ))
+            # create file entry, then find it
+            $ac -d "$imageArg" "${prodosArgParent}$fileName" 2> /dev/null
+            [[ $isExtFile ]] && ddsrc="if=/dev/zero bs=512 count=1" || ddsrc="if=$prodosArg"
+            dd $ddsrc 2> /dev/null | $ac -p "$imageArg" "${prodosArgParent}$fileName" "$ft" "$auxType" 2> $acmdStdErr
+            # thx to http://unix.stackexchange.com/a/122945/99697 for perl alternative to broken --byte-offset in grep 2.5.1 (e.g. in OS X)
+            fileEntryOffset=$(perl -n0777e "print pos()-length('.$fileName') while /.$fileName/g" < "$imageArg")
+            fileEntry=$(dd if="$imageArg" bs=1 count=39 skip=$fileEntryOffset 2> /dev/null | xxd -p | tr -d '\n')
 
-            # find data fork, copy storage type, key block, block size, length to extended key block mini-entry
-            # then mark as available/deleted
-            dfOffset=$(grep --byte-offset --only-matching --text ".$dfName" "$imageArg" | cut -d ':' -f 1)
-            dfEntry=$(dd if="$imageArg" bs=1 count=39 skip=$dfOffset 2> /dev/null | xxd -p | tr -d '\n')
-            dfStorageType=$(printf %02X $(( $(printf %d 0x${dfEntry:0:2}) >> 4 )) )
-            dfBlocksUsed=$(( ( $(printf %d 0x${dfEntry:40:2}) * 256 ) + $(printf %d 0x${dfEntry:38:2}) ))
-            dfInfo=${dfEntry:34:14}
-            echo -n -e \\x"$dfStorageType"$(sed 's/../\\x&/g' <<< $dfInfo) \
-              | dd of="$imageArg" conv=notrunc bs=1 seek=$(( extKeyBlockOffset+0 )) 2> /dev/null
-            # mark as deleted
-            echo -n -e \\x0${dfEntry:1:1} \
-              | dd of="$imageArg" conv=notrunc bs=1 seek=$(( dfOffset+0 )) 2> /dev/null
+            if [[ $isExtFile ]]; then
+                extKeyBlockOffset=$(( ( ( $(printf %d 0x"${fileEntry:36:2}") * 256 ) + $(printf %d 0x"${fileEntry:34:2}") * 512 ) ))
 
-            # find data fork, copy storage type, key block, block size, length to extended key block mini-entry
-            # then mark as available/deleted
-            rfOffset=$(grep --byte-offset --only-matching --text ".$rfName" "$imageArg" | cut -d ':' -f 1)
-            rfEntry=$(dd if="$imageArg" bs=1 count=39 skip=$rfOffset 2> /dev/null | xxd -p | tr -d '\n')
-            rfStorageType=$(printf %02X $(( $(printf %d 0x${rfEntry:0:2}) >> 4 )) )
-            rfBlocksUsed=$(( ( $(printf %d 0x${rfEntry:40:2}) * 256 ) + $(printf %d 0x${rfEntry:38:2}) ))
-            rfInfo=${rfEntry:34:14}
-            echo -n -e \\x"$rfStorageType"$(sed 's/../\\x&/g' <<< $rfInfo) \
-              | dd of="$imageArg" conv=notrunc bs=1 seek=$(( extKeyBlockOffset+256 )) 2> /dev/null
-            # mark as deleted
-            echo -n -e \\x0${rfEntry:1:1} \
-              | dd of="$imageArg" conv=notrunc bs=1 seek=$(( rfOffset+0 )) 2> /dev/null
+                # find data fork, copy storage type, key block, block size, length to extended key block mini-entry
+                # then mark as available/deleted
+                dfOffset=$(perl -n0777e "print pos()-length('.$dfName') while /.$dfName/g" < "$imageArg")
+                dfEntry=$(dd if="$imageArg" bs=1 count=39 skip=$dfOffset 2> /dev/null | xxd -p | tr -d '\n')
+                dfStorageType=$(printf %02X $(( $(printf %d 0x${dfEntry:0:2}) >> 4 )) )
+                dfBlocksUsed=$(( ( $(printf %d 0x${dfEntry:40:2}) * 256 ) + $(printf %d 0x${dfEntry:38:2}) ))
+                dfInfo=${dfEntry:34:14}
+                echo -n -e \\x"$dfStorageType"$(sed 's/../\\x&/g' <<< $dfInfo) \
+                  | dd of="$imageArg" conv=notrunc bs=1 seek=$(( extKeyBlockOffset+0 )) 2> /dev/null
+                # mark as deleted
+                echo -n -e \\x0${dfEntry:1:1} \
+                  | dd of="$imageArg" conv=notrunc bs=1 seek=$(( dfOffset+0 )) 2> /dev/null
 
-            # reduce active file count in directory by two
-            fileCountHex=$(dd if="$imageArg" bs=1 count=2 skip=$((parentDirKeyBlockOffset+4+33)) 2> /dev/null | xxd -p)
-            fileCount=$(( ( $(printf %d 0x${fileCountHex:2:2}) * 256 ) + $(printf %d 0x${fileCountHex:0:2}) ))
-            fileCountHex=$(printf %04X $((fileCount - 2)))
-            echo -n -e \\x${fileCountHex:2:2}\\x${fileCountHex:0:2} \
-              | dd of="$imageArg" conv=notrunc bs=1 seek=$((parentDirKeyBlockOffset+4+33)) #2> /dev/null
+                # find resource fork, copy storage type, key block, block size, length to extended key block mini-entry
+                # then mark as available/deleted
+                rfOffset=$(perl -n0777e "print pos()-length('.$rfName') while /.$rfName/g" < "$imageArg")
+                rfEntry=$(dd if="$imageArg" bs=1 count=39 skip=$rfOffset 2> /dev/null | xxd -p | tr -d '\n')
+                rfStorageType=$(printf %02X $(( $(printf %d 0x${rfEntry:0:2}) >> 4 )) )
+                rfBlocksUsed=$(( ( $(printf %d 0x${rfEntry:40:2}) * 256 ) + $(printf %d 0x${rfEntry:38:2}) ))
+                rfInfo=${rfEntry:34:14}
+                echo -n -e \\x"$rfStorageType"$(sed 's/../\\x&/g' <<< $rfInfo) \
+                  | dd of="$imageArg" conv=notrunc bs=1 seek=$(( extKeyBlockOffset+256 )) 2> /dev/null
+                # mark as deleted
+                echo -n -e \\x0${rfEntry:1:1} \
+                  | dd of="$imageArg" conv=notrunc bs=1 seek=$(( rfOffset+0 )) 2> /dev/null
+
+                # reduce active file count in directory by two
+                parentDirKeyBlockOffset=$(( ( ( $(printf %d 0x"${fileEntry:76:2}") * 256 ) + $(printf %d 0x"${fileEntry:74:2}") * 512 ) ))
+                fileCountHex=$(dd if="$imageArg" bs=1 count=2 skip=$((parentDirKeyBlockOffset+4+33)) 2> /dev/null | xxd -p)
+                fileCount=$(( ( $(printf %d 0x${fileCountHex:2:2}) * 256 ) + $(printf %d 0x${fileCountHex:0:2}) ))
+                fileCountHex=$(printf %04X $((fileCount - 2)))
+                echo -n -e \\x${fileCountHex:2:2}\\x${fileCountHex:0:2} \
+                  | dd of="$imageArg" conv=notrunc bs=1 seek=$((parentDirKeyBlockOffset+4+33)) 2> /dev/null
+
+                # update extended file metadata
+                
+                # storage type (5), name length, name
+                name="${prodosPath##*/}"
+                nameLen=${#name}
+                nameHeader=$(printf %02X $((nameLen + 80)) )
+                nameField=$(echo -n $name | xxd -p | tr -d '\n' | sed -e :a -e 's/^.\{1,29\}$/&00/;ta')
+    
+                # blocks used
+                blocksUsed=$(( dfBlocksUsed + rfBlocksUsed + 1 ))
+    
+                # store updated metadata
+                fileEntry=${nameHeader}${nameField}${fileEntry:32}
+            fi
             
-            # update extended file metadata
-            
-            # storage type (5), name length, name
-            name="${prodosPath##*/}"
-            nameLen=${#name}
-            nameHeader=$(printf %02X $((nameLen + 80)) )
-            nameField=$(echo -n $name | xxd -p | tr -d '\n' | sed -e :a -e 's/^.\{1,29\}$/&00/;ta')
+            # put creation and modified date in file entry
+            fileEntry=${fileEntry:0:48}${cDateTimeHex}${fileEntry:56:10}${mDateTimeHex}${fileEntry:74:4}
 
-            # blocks used
-            blocksUsed=$(( dfBlocksUsed + rfBlocksUsed + 1 ))
-
-            # casemask for mixed case filename into extended file entry
+            # put casemask for mixed case filename in file entry
+            [[ $EX ]] && prodosArg="${prodosArg%#*}"
             if [[ "${prodosPath##*/}" != "${prodosArg##*/}" ]]; then # mixed case
                 caseMaskDec=32768
                 mixedName="${prodosArg##*/}"
+                [[ $EX ]] && mixedName="${mixedName%#*}"
                 for (( i=0; i<${#mixedName}; i++ )); do
                     [[ "${mixedName:$i:1}" == $(tr [:lower:]  [:upper:] <<< "${mixedName:$i:1}") ]] # $? == 0 means uppercase
                     (( caseMaskDec+=$(( $? * (2**(14-i)) )) ))
                 done
                 caseMaskHex=$(printf %04X $caseMaskDec)
-                extEntry=${extEntry:0:56}${caseMaskHex:2:2}${caseMaskHex:0:2}${extEntry:60}
+                fileEntry=${fileEntry:0:56}${caseMaskHex:2:2}${caseMaskHex:0:2}${fileEntry:60}
             fi
-            
-            # store updated metadata
-            extEntry=${nameHeader}${nameField}${extEntry:32:16}${cDateTimeHex}${extEntry:56:10}${mDateTimeHex}${extEntry:74:4}
 
-            # write updated metadata to extended file entry
-            echo -n -e $(sed 's/../\\x&/g' <<< $extEntry) | dd of="$imageArg" bs=1 conv=notrunc seek=$extOffset 2> /dev/null
+            # write updated metadata to file entry
+            echo -n -e $(sed 's/../\\x&/g' <<< $fileEntry) | dd of="$imageArg" bs=1 conv=notrunc seek=$fileEntryOffset 2> /dev/null
         fi
     fi
 
 else
 
     imageArg="$2"
-    java -Xmx128m -jar "$adtPath"/lib/AppleCommander/AppleCommander-ac.jar "$@" 2> $acmdStdErr
+    $ac "$@" 2> $acmdStdErr
 
 fi
 
