@@ -1010,7 +1010,7 @@ if [[ $installEmulators ]]; then
 #    # GSport, if non-RPi
 #    if [[ ! $isRpi && ! -f /usr/local/bin/gsport ]]; then
 #= APPLE2PI END
-    if [[ ! $isRpi && ! -f /usr/local/bin/gsport ]]; then
+    if [[ -f /usr/local/bin/gsport ]]; then
         echo "A2CLOUD: Installing GSport..."
         cd /tmp/a2cloud-install
         if [[ $downloadBinaries ]]; then
