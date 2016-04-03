@@ -1,6 +1,0 @@
-if [[ -f /usr/local/bin/gsport-setup ]]; then
-    wget -O /tmp/gsport-setup https://rawgit.com/RasppleII/a2cloud/master/setup/gsport-setup.txt
-    source /tmp/gsport-setup -k "$@"
-else
-    gsport-setup -k "$@"
-fi

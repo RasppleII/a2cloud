@@ -1,9 +1,0 @@
-#! /bin/bash
-# vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
-
-wget -qO /tmp/gsport-setup http://rawgit.com/RasppleII/a2cloud/master/setup/kegs-setup.txt
-if [[ $(wc -c /tmp/gsport-setup | grep '^0 ') ]]; then
-    echo "Please connect to the internet to set up KEGS."
-else
-    source /tmp/gsport-setup -k "$@"
-fi
