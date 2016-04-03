@@ -10,34 +10,6 @@ case "$A2CLOUD_SCRIPT_URL" in
     *) scriptURL="${A2CLOUD_SCRIPT_URL:-http://appleii.ivanx.com/a2cloud}/" ;;
 esac
 
-## ID-bashbyter routines
-
-writecharsHex () {
-# write corresponding characters of hex values into file
-# arg1: filename
-# arg2: offset (# of bytes to skip before writing)
-# arg3: string of two-digit hexadecimal numbers from 00-FF, period delimited (not checked!)
-#  out: nothing
-# exit: 8=extraneous arg, 11=missing arg1, 12=missing arg2,
-#       13=missing arg3, 22=invalid arg2, 23=invalid arg3
-    [[ $1 ]] || return 11; [[ $2 ]] || return 12; [[ $3 ]] || return 13
-    [[ $4 ]] && return 8
-    [[ ( $(printf %d "$2" 2> /dev/null) == $2 ) \
-    && ( $2 -ge 0 ) ]] || return 22
-    p=0
-    offset=$2
-    len=${#3}
-    while (( p < len )); do
-        outByte=${3:$p:2}
-        [[ $(printf %02X "0x$outByte" 2> /dev/null) == \
-        $(echo -n "$outByte" | tr [a-z] [A-Z]) ]] || return 23
-        # args are valid
-        echo -n -e "\x$outByte" | \
-        dd of="$1" bs=1 seek=$offset conv=notrunc 2> /dev/null
-        (( p += 3 ))
-        (( offset++ ))
-    done
-}
 
 # A2CLOUD installer start
 
@@ -1443,7 +1415,7 @@ if [[ $a2CloudDisk ]]; then
             nulib2 -xse ../pt31.shk > /dev/null
             # IIc slot 1 patch for ProTERM from Hugh Hood
             echo "A2CLOUD: Patching ProTERM for IIc printer port use..."
-            writecharsHex "PT3.CODE0#060000" 1638 "41.70.70.6C.65.20.49.49.63.2F.49.49.63.2B.20.50.72.69.6E.74.65.72.20.50.6F.72.74.20.20.20.20.20.06.07.10.41.70.70.6C.65.20.49.49.63.2F.49.49.63.2B.20.4D.6F.64.65.6D.20.50.6F.72.74.20.20.20.20.20.20.20.06.07.20"
+            echo -n -e "\x41\x70\x70\x6C\x65\x20\x49\x49\x63\x2F\x49\x49\x63\x2B\x20\x50\x72\x69\x6E\x74\x65\x72\x20\x50\x6F\x72\x74\x20\x20\x20\x20\x20\x06\x07\x10\x41\x70\x70\x6C\x65\x20\x49\x49\x63\x2F\x49\x49\x63\x2B\x20\x4D\x6F\x64\x65\x6D\x20\x50\x6F\x72\x74\x20\x20\x20\x20\x20\x20\x20\x06\x07\x20" | dd of="PT3.CODE0#060000" seek=1638 bs=1 conv=notrunc
             echo "A2CLOUD: Copying ProTERM..."
             for thisFile in /tmp/a2cloud-install/pt31/*; do
                 filenameUnix="${thisFile##*/}"
