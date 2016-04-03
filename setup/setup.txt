@@ -79,9 +79,6 @@ while [[ $1 ]]; do
         echo "-y: auto-answer yes to all prompts"
         echo "-r: don't update package lists"
         echo "-s: prompt for restart after installation"
-#= KEGS BEGIN
-#        echo "-6: put blank 140K disk images in GSport and KEGS slot 6"
-#= KEGS END
         echo "-6: put blank 140K disk images in GSport slot 6"
         echo "-b: build A2CLOUD disks, rather than downloading premade images"
         echo "-c: compile non-package items, rather than downloading binaries"
@@ -922,67 +919,6 @@ fi
 
 if [[ $installEmulators ]]; then
 
-#= KEGS BEGIN
-#    # KEGS
-#    if ! command -v xkegs >/dev/null; then
-#        echo "A2CLOUD: Installing KEGS..."
-#        cd /tmp/a2cloud-install
-#        if [[ $downloadBinaries ]]; then
-#            if [[ $isRpi ]]; then
-#                wget -qO- http://appleii.ivanx.com/a2cloud/files/kegs-rpi.tgz | sudo tar Pzx 2> /dev/null
-#            elif [[ $isDebian ]]; then
-#                wget -qO- http://appleii.ivanx.com/a2cloud/files/kegs-debian7_x86.tgz | sudo tar Pzx
-#            fi
-#        fi
-#        if ! command -v xkegs >/dev/null; then
-#            echo "A2CLOUD: Building KEGS from source..."
-#            sudo apt-get -y install build-essential &> /dev/null
-#            sudo apt-get -y install libx11-dev libxext-dev xfonts-base &> /dev/null
-#            sudo apt-get -y clean
-#            mkdir -p /tmp/a2cloud-install/kegs
-#            cd /tmp/a2cloud-install/kegs
-#            wget -q -O kegs.tgz kegs.sourceforge.net/kegs.0.91.tar.gz
-#            tar zxf kegs.tgz
-#            cd kegs.0.91/src
-#            rm vars 2> /dev/null
-#            ln -s vars_x86linux vars
-#            if [[ $isRpi ]]; then
-#                sudo sed -i 's/march=pentium/march=armv6k/' vars_x86linux
-#            fi
-#            make &> /dev/null
-#            gcc -o ../to_pro to_pro.c &> /dev/null
-#            gcc -o ../partls partls.c &> /dev/null
-#            sudo cp -P ../xkegs ../to_pro ../partls /usr/local/bin
-#            sudo cp ../config.kegs /usr/local/lib
-#            sudo chmod ugo+w /usr/local/lib/config.kegs
-#            cd /tmp/a2cloud-install
-#            rm -rf kegs
-#        fi
-#
-#        if [[ $slot6 ]]; then
-#            echo "A2CLOUD: Putting blank disks in KEGS slot 6..."
-#            sudo sed -i 's@^s6d1.*$@s6d1 = /usr/local/share/gsdisks/slot6drive1.po@' /usr/local/lib/config.kegs
-#            sudo sed -i 's@^s6d2.*$@s6d2 = /usr/local/share/gsdisks/slot6drive2.po@' /usr/local/lib/config.kegs
-#            if [[ ! -f /usr/local/share/gsdisks/slot6drive1.po || ! -f /usr/local/share/gsdisks/slot6drive2.po ]]; then
-#                wget -qO- http://appleii.ivanx.com/a2cloud/files/slot6.tgz | sudo tar Pzx 2> /dev/null
-#            fi
-#        fi
-#    else
-#        echo "A2CLOUD: KEGS is already installed."
-#    fi
-#    echo "A2CLOUD: Updating KEGS launch and setup files..."
-#
-#    sudo addgroup kegs &> /dev/null
-#    sudo chgrp kegs /usr/local/bin/xkegs
-#    sudo chmod u+s /usr/local/bin/xkegs
-#
-#    sudo wget -qO /usr/local/bin/kegs ${scriptURL}setup/kegs.txt
-#    sudo chmod ugo+x /usr/local/bin/kegs
-#    sudo wget -qO /usr/local/bin/kegs-setup ${scriptURL}setup/kegs-setup-shell.txt
-#    sudo chmod ugo+x /usr/local/bin/kegs-setup
-#= KEGS END
-
-
 #= APPLE2PI BEGIN
 #    # GSport, if non-RPi
 #    if [[ ! $isRpi && ! -f /usr/local/bin/gsport ]]; then
@@ -1257,17 +1193,6 @@ if command -v X >/dev/null; then
     if [[ ! -f /usr/local/share/gsport32.ico ]]; then
         sudo wget -qO /usr/local/share/gsport32.ico http://appleii.ivanx.com/a2cloud/files/gsport32.ico
     fi
-#= KEGS BEGIN
-#    # KEGS:
-#    KEGS_PATH="$(command -v kegs)"
-#    if [ "KEGS_PATH" != "" ]; then
-#        echo -e "[Desktop Entry]\nName=KEGS\nComment=Apple IIgs Emulator\nExec=lxterminal -e $KEGS_PATH\nIcon=/usr/local/share/kegsicon.png\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/kegs.desktop > /dev/null
-#        [[ ! -f ~/Desktop/gsport.desktop ]] && cp /usr/local/share/applications/kegs.desktop ~/Desktop/kegs.desktop
-#    fi
-#    if [[ ! -f /usr/local/share/kegsicon.png ]]; then
-#        sudo wget -qO /usr/local/share/kegsicon.png http://appleii.ivanx.com/a2cloud/files/kegsicon.png
-#    fi
-#= KEGS END
     # LinApple:
     LINAPPLE_PATH="$(command -v linapple)"
     if [ "LINAPPLE_PATH" != "" ]; then
@@ -1604,13 +1529,6 @@ cd "$origDir"
 rm setup &> /dev/null
 rm a2cloud-setup &> /dev/null
 rm -rf /tmp/a2cloud-install &> /dev/null
-#= KEGS BEGIN
-#if command -v gsport >/dev/null || command -v kegs >/dev/null; then
-#    sudo addgroup gsport &> /dev/null
-#    sudo addgroup kegs &> /dev/null
-#    sudo usermod -a -G audio,video,netdev,fuse,gsport,plugdev,kegs $USER &> /dev/null
-#    [[ ! $noSetGroups ]] && { groups | grep -q 'kegs.*gsport\|gsport.*kegs' || exec sudo su -l $USER; }
-#fi
 if command -v gsport >/dev/null; then
     sudo addgroup gsport &> /dev/null
     sudo usermod -a -G audio,video,netdev,fuse,gsport,plugdev $USER &> /dev/null
