@@ -13,12 +13,39 @@ esac
 
 # A2CLOUD installer start
 
+debianVersion=$(cat /etc/debian_version 2> /dev/null)
 isRpi=
-[[ -f /usr/bin/raspi-config ]] && isRpi=1
-[[ $isRpi ]] && { me="Pi"; fullme="Raspberry Pi"; } || { me="computer"; fullme="computer"; }
-
 isDebian=
-[[ ( -f /etc/debian_version ) && ( $(cut -c 1-2 < /etc/debian_version) == "7." ) && ( $(uname -m) == "i686" ) ]] && isDebian=1
+arch=
+if [[ -f /usr/bin/raspi-config ]]; then
+    isRpi=1
+    arch='rpi'
+    me="Pi"
+    fullme="Raspberry Pi"
+elif lsb_release -a 2> /dev/null | grep -q 'Distributor ID:.Debian' && [[ $(cut -d . -f 1 <<< $debianVersion) -ge "7" ]]; then
+    isDebian=1
+    uname_m="$(uname -m)"
+    if [[ $uname_m == "i686" ]]; then
+        arch='debian_x86'
+    elif [[ $uname_m == "x86_64" ]]; then
+        arch='debian_x64'
+    fi
+    me="computer"
+    fullme="computer"
+fi
+
+debianName=
+if [[ $debianVersion ]]; then
+    debianMajor=$(cut -d . -f 1 <<< $debianVersion)
+    if [[ $debianMajor == "8" ]]; then
+        debianName="jessie"
+    elif [[ $debianMajor == "7" ]]; then
+        debianName="wheezy"
+    else
+        debianName="unknown"
+    fi
+fi
+
 
 if [[ -f /usr/local/etc/A2CLOUD-version ]]; then
     echo "A2CLOUD version available: $version"
