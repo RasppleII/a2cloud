@@ -914,7 +914,7 @@ if [[ $installEmulators ]]; then
         fi
 
         # enable AppleTalk
-        if ! grep -q 'g_appletalk_turbo' "$gsportConfigFile"; then
+        if ! grep -q '^g_appletalk_turbo' "$gsportConfigFile"; then
             if grep -q 'bram1[00]' "$gsportConfigFile"; then
                 sudo sed -i 's/^\(bram1\[00\]\)/g_appletalk_turbo = 1\n\n\1/' "$gsportConfigFile"
             else
@@ -926,7 +926,7 @@ if [[ $installEmulators ]]; then
         # enable Uthernet
         if ! grep -q 'g_ethernet[^_]' "$gsportConfigFile"; then
             if grep -q 'bram1[00]' "$gsportConfigFile"; then
-                sudo sed -i 's/^\(bram1\[00\]\)/g_ethernet = 1\n\n\1/' config.txt
+                sudo sed -i 's/^\(bram1\[00\]\)/g_ethernet = 1\n\n\1/' "$gsportConfigFile"
             else
                 echo -e '\ng_ethernet = 1' | sudo tee -a "$gsportConfigFile" > /dev/null
             fi
