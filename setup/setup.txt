@@ -1375,31 +1375,6 @@ if [[ $a2CloudDisk ]]; then
 
         fi
 
-        # A2PI
-        if [[ ! $(acmd -ls "$a2CloudDisk" | grep '^  A2PI BIN') ]]; then
-            echo "A2CLOUD: Downloading and copying A2PI client..."
-            mkdir -p /tmp/a2cloud-install/a2pi
-            cd /tmp/a2cloud-install/a2pi
-            wget -qO a2pi.deb http://schmenk.is-a-geek.com/tarfiles/a2pi_armhf.deb
-            # dpkg-deb --fsys-tarfile a2pi.deb | tar --strip-components=4 --wildcards -O -x ./usr/share/a2pi/A2PI*.PO > A2PI.PO
-            dpkg-deb --fsys-tarfile a2pi.deb | tar --strip-components=4 --wildcards -x ./usr/share/a2pi/A2PI*.PO
-            a2piImage=$(ls -1r A2PI*.PO | head -1)
-            mkdir a2pidisk
-            cppo -e "$a2piImage" a2pidisk &> /dev/null
-            mv a2pidisk/A2PI* a2pidisk/A2PI
-            cd a2pidisk/A2PI
-            rm PRODOS* *A3* BASIC.SYSTEM*
-            cd ..
-            nulib2 -a -r -e ../a2pi.shk A2PI &> /dev/null
-            cd ..
-            shk2image a2pi.shk $a2CloudDisk &> /dev/null
-            shk2image a2pi.shk $a2CloudDisk140 &> /dev/null
-            cd /tmp/a2cloud-install
-            rm -rf a2pi
-        else
-            echo "A2CLOUD: A2PI client is already on the target disk image."
-        fi
-
         if [[ -f /usr/local/adtpro/disks/Virtual.po && ! -L /usr/local/adtpro/disks/Virtual.po ]]; then
             mv /usr/local/adtpro/disks/Virtual.po /usr/local/adtpro/disks/defaultVirtual.po &> /dev/null
             vsd1 -f /usr/local/adtpro/disks/defaultVirtual.po
@@ -1468,11 +1443,14 @@ cd "$origDir"
 rm setup &> /dev/null
 rm a2cloud-setup &> /dev/null
 rm -rf /tmp/a2cloud-install &> /dev/null
+
+### Emulators: add gsport groups (FIXME: This doesn't belong here...)
 if hash gsport 2>/dev/null; then
     sudo addgroup gsport &> /dev/null
-    sudo usermod -a -G audio,video,netdev,fuse,gsport,plugdev $USER &> /dev/null
+sudo usermod -a -G audio,video,netdev,fuse,gsport,plugdev $USER &> /dev/null
     [[ ! $noSetGroups ]] && { groups | grep -q 'gsport' || exec sudo su -l $USER; }
 fi
+
 [[ $doRestart ]] && sudo shutdown -r now
 
 # version history:
@@ -1910,4 +1888,30 @@ fi
 #    sudo sed -i 's/^g_ethernet = 0/g_ethernet = 1/' /usr/share/gsport/config.txt
 #
 #fi
+#= APPLE2PI END
+#= APPLE2PI BEGIN
+#        # A2PI
+#        if [[ ! $(acmd -ls "$a2CloudDisk" | grep '^  A2PI BIN') ]]; then
+#            echo "A2CLOUD: Downloading and copying A2PI client..."
+#            mkdir -p /tmp/a2cloud-install/a2pi
+#            cd /tmp/a2cloud-install/a2pi
+#            wget -qO a2pi.deb http://schmenk.is-a-geek.com/tarfiles/a2pi_armhf.deb
+#            # dpkg-deb --fsys-tarfile a2pi.deb | tar --strip-components=4 --wildcards -O -x ./usr/share/a2pi/A2PI*.PO > A2PI.PO
+#            dpkg-deb --fsys-tarfile a2pi.deb | tar --strip-components=4 --wildcards -x ./usr/share/a2pi/A2PI*.PO
+#            a2piImage=$(ls -1r A2PI*.PO | head -1)
+#            mkdir a2pidisk
+#            cppo -e "$a2piImage" a2pidisk &> /dev/null
+#            mv a2pidisk/A2PI* a2pidisk/A2PI
+#            cd a2pidisk/A2PI
+#            rm PRODOS* *A3* BASIC.SYSTEM*
+#            cd ..
+#            nulib2 -a -r -e ../a2pi.shk A2PI &> /dev/null
+#            cd ..
+#            shk2image a2pi.shk $a2CloudDisk &> /dev/null
+#            shk2image a2pi.shk $a2CloudDisk140 &> /dev/null
+#            cd /tmp/a2cloud-install
+#            rm -rf a2pi
+#        else
+#            echo "A2CLOUD: A2PI client is already on the target disk image."
+#        fi
 #= APPLE2PI END
