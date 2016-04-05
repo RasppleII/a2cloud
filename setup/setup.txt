@@ -862,6 +862,9 @@ fi
 if [[ $installEmulators ]]; then
 
     if ! hash gsport 2>/dev/null; then
+        # FIXME: This is a _TERRIBLE_ name/place for this...
+        gsportConfigFile='/usr/local/lib/config.txt'
+
         echo "A2CLOUD: Installing GSport..."
         cd /tmp/a2cloud-install
         if [[ $downloadBinaries ]]; then
@@ -888,7 +891,7 @@ if [[ $installEmulators ]]; then
             gcc -o ../partls partls.c &> /dev/null
             sudo cp -P ../gsportx ../to_pro ../partls /usr/local/bin
             sudo cp ../config.txt /usr/local/lib
-            sudo chmod ugo+w /usr/local/lib/config.txt
+            sudo chmod ugo+w "$gsportConfigFile"
             make clean &> /dev/null
             rm vars
             cp vars_fbrpilinux vars
@@ -903,36 +906,33 @@ if [[ $installEmulators ]]; then
 
         if [[ $slot6 ]]; then
             echo "A2CLOUD: Putting blank disks in GSport slot 6..."
-            sudo sed -i 's@^s6d1.*$@s6d1 = /usr/local/share/gsdisks/slot6drive1.po@' /usr/local/lib/config.txt
-            sudo sed -i 's@^s6d2.*$@s6d2 = /usr/local/share/gsdisks/slot6drive2.po@' /usr/local/lib/config.txt
+            sudo sed -i 's@^s6d1.*$@s6d1 = /usr/local/share/gsdisks/slot6drive1.po@' "$gsportConfigFile"
+            sudo sed -i 's@^s6d2.*$@s6d2 = /usr/local/share/gsdisks/slot6drive2.po@' "$gsportConfigFile"
             if [[ ! -f /usr/local/share/gsdisks/slot6drive1.po || ! -f /usr/local/share/gsdisks/slot6drive2.po ]]; then
                 wget -qO- http://appleii.ivanx.com/a2cloud/files/slot6.tgz | sudo tar Pzx 2> /dev/null
             fi
         fi
 
         # enable AppleTalk
-        if ! grep -q 'g_appletalk_turbo' /usr/local/lib/config.txt; then
-            if grep -q 'bram1[00]' /usr/local/lib/config.txt; then
-                sudo sed -i 's/^\(bram1\[00\]\)/g_appletalk_turbo = 1\n\n\1/' /usr/local/lib/config.txt
+        if ! grep -q 'g_appletalk_turbo' "$gsportConfigFile"; then
+            if grep -q 'bram1[00]' "$gsportConfigFile"; then
+                sudo sed -i 's/^\(bram1\[00\]\)/g_appletalk_turbo = 1\n\n\1/' "$gsportConfigFile"
             else
-                echo -e '\ng_appletalk_turbo = 1' | sudo tee -a /usr/local/lib/config.txt > /dev/null
+                echo -e '\ng_appletalk_turbo = 1' | sudo tee -a "$gsportConfigFile" > /dev/null
             fi
         fi
-        sudo sed -i 's/g_appletalk_turbo = 0/g_appletalk_turbo = 1/' /usr/local/lib/config.txt
+        sudo sed -i 's/g_appletalk_turbo = 0/g_appletalk_turbo = 1/' "$gsportConfigFile"
 
         # enable Uthernet
-        if ! grep -q 'g_ethernet[^_]' /usr/local/lib/config.txt; then
-            if grep -q 'bram1[00]' /usr/local/lib/config.txt; then
+        if ! grep -q 'g_ethernet[^_]' "$gsportConfigFile"; then
+            if grep -q 'bram1[00]' "$gsportConfigFile"; then
                 sudo sed -i 's/^\(bram1\[00\]\)/g_ethernet = 1\n\n\1/' config.txt
             else
-                echo -e '\ng_ethernet = 1' | sudo tee -a /usr/local/lib/config.txt > /dev/null
+                echo -e '\ng_ethernet = 1' | sudo tee -a "$gsportConfigFile" > /dev/null
             fi
         fi
-        sudo sed -i 's/g_ethernet = 0/g_ethernet = 1/' /usr/local/lib/config.txt
-    else
-        [[ ! $isRpi ]] && echo "A2CLOUD: GSport is already installed."
-    fi
-    if [[ ! $isRpi ]]; then
+        sudo sed -i 's/g_ethernet = 0/g_ethernet = 1/' "$gsportConfigFile"
+
         echo "A2CLOUD: Updating GSport launch and setup files..."
 
         sudo addgroup gsport &> /dev/null
@@ -945,6 +945,8 @@ if [[ $installEmulators ]]; then
         sudo chmod ugo+x /usr/local/bin/gsport
         sudo wget -qO /usr/local/bin/gsport-setup ${scriptURL}setup/gsport-setup-shell.txt
         sudo chmod ugo+x /usr/local/bin/gsport-setup
+    else
+        echo "A2CLOUD: GSport is already installed."
     fi
 
 
