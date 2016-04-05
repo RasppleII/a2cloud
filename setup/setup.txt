@@ -525,7 +525,7 @@ if [[ $installADTPro ]]; then
         echo "A2CLOUD: xvfb is already installed."
     fi
 
-    if [[ -f /usr/local/sbin/afpd ]]; then # A2SERVER/netatalk installed
+    if hash afpd 2>/dev/null; then # A2SERVER/netatalk installed
         if [[ ! -d /media/A2SHARED/ADTDISKS || ! $(grep ADTDISKS /usr/local/etc/netatalk/AppleVolumes.default) ]]; then
             echo "A2CLOUD: Setting up /usr/local/adtpro/disks for Apple file sharing..."
             if [[ ! -d /media/A2SHARED/ADTDISKS ]]; then
