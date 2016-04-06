@@ -7,11 +7,14 @@ adtProVersion="2.0.1"
 # Ensure URL we'll use ends in a /
 case "$A2CLOUD_SCRIPT_URL" in
     */) scriptURL="$A2CLOUD_SCRIPT_URL" ;;
-    *) scriptURL="${A2CLOUD_SCRIPT_URL:-http://appleii.ivanx.com/a2cloud}/" ;;
+    *) scriptURL="${A2CLOUD_SCRIPT_URL:-https://rawgit.com/RasppleII/a2server/current}/" ;;
 esac
-
-
-# A2CLOUD installer start
+case "$A2CLOUD_BINARY_URL" in
+    */) binaryURL="$A2CLOUD_BINARY_URL" ;;
+    *) binaryURL="${A2CLOUD_BINARY_URL:-http://ivanx.com/a2server/files}/" ;;
+esac
+useExternalURL=1
+[[ $A2CLOUD_NO_EXTERNAL ]] && useExternalURL=
 
 debianVersion=$(cat /etc/debian_version 2> /dev/null)
 isRpi=
