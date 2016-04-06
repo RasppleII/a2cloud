@@ -861,6 +861,7 @@ fi
 
 if [[ $installEmulators ]]; then
 
+    ### Emulators: GSport
     if ! hash gsport 2>/dev/null; then
         # FIXME: This is a _TERRIBLE_ name/place for this...
         gsportConfigFile='/usr/local/lib/config.txt'
@@ -868,6 +869,7 @@ if [[ $installEmulators ]]; then
         echo "A2CLOUD: Installing GSport..."
         cd /tmp/a2cloud-install
         if [[ $downloadBinaries ]]; then
+            ### Emulators: GSport: Install pre-built binaries
             sudo apt-get -y install libpcap0.8-dev &> /dev/null
             sudo apt-get -y clean
             if [[ $isDebian ]]; then
@@ -875,6 +877,7 @@ if [[ $installEmulators ]]; then
             fi
         fi
         if ! hash gsport 2>/dev/null; then
+            ### Emulators: GSport: Install from source
             echo "A2CLOUD: Building GSport from source..."
             sudo apt-get -y install build-essential &> /dev/null
             sudo apt-get -y install libx11-dev libxext-dev xfonts-base libpcap0.8-dev &> /dev/null
@@ -905,6 +908,7 @@ if [[ $installEmulators ]]; then
         fi
 
         if [[ $slot6 ]]; then
+            ### Emulators: GSport: Place blank disk images in slot 6
             echo "A2CLOUD: Putting blank disks in GSport slot 6..."
             sudo sed -i 's@^s6d1.*$@s6d1 = /usr/local/share/gsdisks/slot6drive1.po@' "$gsportConfigFile"
             sudo sed -i 's@^s6d2.*$@s6d2 = /usr/local/share/gsdisks/slot6drive2.po@' "$gsportConfigFile"
@@ -913,18 +917,18 @@ if [[ $installEmulators ]]; then
             fi
         fi
 
-        # enable AppleTalk
         if ! grep -q '^g_appletalk_turbo' "$gsportConfigFile"; then
+            ### Emulators: GSport: Enable AppleTalk Turbo support
             if grep -q 'bram1[00]' "$gsportConfigFile"; then
                 sudo sed -i 's/^\(bram1\[00\]\)/g_appletalk_turbo = 1\n\n\1/' "$gsportConfigFile"
             else
                 echo -e '\ng_appletalk_turbo = 1' | sudo tee -a "$gsportConfigFile" > /dev/null
             fi
         fi
-        sudo sed -i 's/g_appletalk_turbo = 0/g_appletalk_turbo = 1/' "$gsportConfigFile"
+        sudo sed -i 's/^g_appletalk_turbo = 0/g_appletalk_turbo = 1/' "$gsportConfigFile"
 
-        # enable Uthernet
         if ! grep -q 'g_ethernet[^_]' "$gsportConfigFile"; then
+            ### Emulators: GSport: Enable Uthernet emulation
             if grep -q 'bram1[00]' "$gsportConfigFile"; then
                 sudo sed -i 's/^\(bram1\[00\]\)/g_ethernet = 1\n\n\1/' "$gsportConfigFile"
             else
@@ -933,6 +937,7 @@ if [[ $installEmulators ]]; then
         fi
         sudo sed -i 's/g_ethernet = 0/g_ethernet = 1/' "$gsportConfigFile"
 
+        ### Emulators: GSport: Setup groups and wrapper scripts
         echo "A2CLOUD: Updating GSport launch and setup files..."
 
         sudo addgroup gsport &> /dev/null
@@ -945,16 +950,18 @@ if [[ $installEmulators ]]; then
         sudo chmod ugo+x /usr/local/bin/gsport
         sudo wget -qO /usr/local/bin/gsport-setup ${scriptURL}setup/gsport-setup-shell.txt
         sudo chmod ugo+x /usr/local/bin/gsport-setup
+
     else
         echo "A2CLOUD: GSport is already installed."
     fi
 
 
-    # LinApple
+    ### Emulators: LinApple
     if ! hash linapple 2>/dev/null; then
         echo "A2CLOUD: Installing LinApple..."
         cd /tmp/a2cloud-install
         if [[ $downloadBinaries ]]; then
+            ### Emulators: LinApple: Install pre-built binaries
             if [[ $isRpi ]]; then
                 wget -qO- http://appleii.ivanx.com/a2cloud/files/linapple-rpi.tgz | sudo tar Pzx
             elif [[ $isDebian ]]; then
@@ -962,6 +969,7 @@ if [[ $installEmulators ]]; then
             fi
         fi
         if ! hash linapple 2>/dev/null; then
+            ### Emulators: LinApple: Install from source
             sudo apt-get -y install build-essential
             sudo apt-get -y install libsdl1.2-dev libcurl4-openssl-dev zlib1g-dev libzip-dev
             sudo apt-get -y clean
@@ -988,6 +996,10 @@ if [[ $installEmulators ]]; then
     echo "A2CLOUD: Updating LinApple launch file..."
     sudo wget -qO /usr/local/bin/linapple ${scriptURL}setup/linapple.txt
     sudo chmod ugo+x /usr/local/bin/linapple
+
+    ### Emulators: Set Groups
+    sudo usermod -a -G audio,video,netdev,fuse,gsport,plugdev $USER &> /dev/null
+    [[ ! $noSetGroups ]] && { groups | grep -q 'gsport' || exec sudo su -l $USER; }
 
 fi
 
@@ -1444,13 +1456,6 @@ rm setup &> /dev/null
 rm a2cloud-setup &> /dev/null
 rm -rf /tmp/a2cloud-install &> /dev/null
 
-### Emulators: add gsport groups (FIXME: This doesn't belong here...)
-if hash gsport 2>/dev/null; then
-    sudo addgroup gsport &> /dev/null
-sudo usermod -a -G audio,video,netdev,fuse,gsport,plugdev $USER &> /dev/null
-    [[ ! $noSetGroups ]] && { groups | grep -q 'gsport' || exec sudo su -l $USER; }
-fi
-
 [[ $doRestart ]] && sudo shutdown -r now
 
 # version history:
@@ -1890,6 +1895,7 @@ fi
 #fi
 #= APPLE2PI END
 #= APPLE2PI BEGIN
+    # This was part of building the A2CLOUD disk image
 #        # A2PI
 #        if [[ ! $(acmd -ls "$a2CloudDisk" | grep '^  A2PI BIN') ]]; then
 #            echo "A2CLOUD: Downloading and copying A2PI client..."
