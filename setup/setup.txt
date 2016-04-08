@@ -1411,7 +1411,7 @@ if [[ $newImageName ]]; then
     vsd1 -f /usr/local/adtpro/disks/"$newImageName"
 fi
 
-echo 'wget -q -O /tmp/a2cloud-setup ${A2CLOUD_SCRIPT_URL:-https://rawgit.com/RasppleII/a2cloud/current/}setup/index.txt || { echo "Can'"'"'t download A2CLOUD setup scripts. Do you has internet?"; false; } && source /tmp/a2cloud-setup' | sudo tee /usr/local/bin/a2cloud-setup > /dev/null
+echo 'wget -q -O /tmp/a2cloud-setup ${A2CLOUD_SCRIPT_URL:-https://rawgit.com/RasppleII/a2cloud/current/}setup/setup.txt || { echo "Can'"'"'t download A2CLOUD setup scripts. Do you has internet?"; false; } && source /tmp/a2cloud-setup' | sudo tee /usr/local/bin/a2cloud-setup > /dev/null
 sudo chmod ugo+x /usr/local/bin/a2cloud-setup
 
 if [[ ! $restartPrompt ]]; then
