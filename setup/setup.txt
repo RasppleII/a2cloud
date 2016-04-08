@@ -316,11 +316,12 @@ fi
 # FIXME: We have "three" MOTD files in the A2CLOUD tree but we only use
 # one.  The other two come from the Raspple II tree.  We should clean
 # this up at some point.
+# FIXME#2: All of these MOTDs live in the A2CLOUD tree, so we'll get them from there.
 echo "A2CLOUD: Setting up motd..."
 if [[ $(grep Raspple /etc/motd) ]]; then
-    wget -qO- http://appleii.ivanx.com/rasppleii/motd-rasppleii.txt | sudo tee /etc/motd > /dev/null
+    wget -qO- ${scriptURL}setup/motd-rasppleii.txt | sudo tee /etc/motd > /dev/null
 elif [[ $(grep A2SERVER /etc/motd) ]]; then
-    wget -qO- http://appleii.ivanx.com/rasppleii/motd-vm.txt | sudo tee /etc/motd > /dev/null
+    wget -qO- ${scriptURL}setup/motd-vm.txt | sudo tee /etc/motd > /dev/null
 else
     wget -qO- ${scriptURL}setup/motd.txt | sudo tee /etc/motd > /dev/null
 fi
@@ -1432,8 +1433,7 @@ if [[ $newImageName ]]; then
     vsd1 -f /usr/local/adtpro/disks/"$newImageName"
 fi
 
-# FIXME: Change to ${scriptURL}
-echo "wget -qO /tmp/a2cloud-setup http://appleii.ivanx.com/a2cloud/setup; source /tmp/a2cloud-setup" | sudo tee /usr/local/bin/a2cloud-setup > /dev/null
+echo 'wget -q -O /tmp/a2cloud-setup ${A2CLOUD_SCRIPT_URL:-https://rawgit.com/RasppleII/a2cloud/current/}setup/index.txt || { echo "Can'"'"'t download A2CLOUD setup scripts. Do you has internet?"; false; } && source /tmp/a2cloud-setup' | sudo tee /usr/local/bin/a2cloud-setup > /dev/null
 sudo chmod ugo+x /usr/local/bin/a2cloud-setup
 
 if [[ ! $restartPrompt ]]; then
