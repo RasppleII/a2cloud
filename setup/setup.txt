@@ -319,11 +319,11 @@ fi
 # FIXME#2: All of these MOTDs live in the A2CLOUD tree, so we'll get them from there.
 echo "A2CLOUD: Setting up motd..."
 if [[ $(grep Raspple /etc/motd) ]]; then
-    wget -qO- ${scriptURL}setup/motd-rasppleii.txt | sudo tee /etc/motd > /dev/null
+    wget -qO- "${scriptURL}setup/motd-rasppleii.txt" | sudo tee /etc/motd > /dev/null
 elif [[ $(grep A2SERVER /etc/motd) ]]; then
-    wget -qO- ${scriptURL}setup/motd-vm.txt | sudo tee /etc/motd > /dev/null
+    wget -qO- "${scriptURL}setup/motd-vm.txt" | sudo tee /etc/motd > /dev/null
 else
-    wget -qO- ${scriptURL}setup/motd.txt | sudo tee /etc/motd > /dev/null
+    wget -qO- "${scriptURL}setup/motd.txt" | sudo tee /etc/motd > /dev/null
 fi
 
 if { lspci 2> /dev/null | grep -q VirtualBox; }; then
@@ -502,7 +502,7 @@ if [[ $installADTPro ]]; then
     fi
 
     echo "A2CLOUD: Setting up customized adtpro.sh..."
-    wget -qO /usr/local/adtpro/adtpro.sh ${scriptURL}setup/adtpro.sh.txt
+    wget -qO /usr/local/adtpro/adtpro.sh "${scriptURL}setup/adtpro.sh.txt"
     sudo chmod ugo+rwx /usr/local/adtpro/adtpro.sh
 
     if [[ $updateADTPro ]]; then
