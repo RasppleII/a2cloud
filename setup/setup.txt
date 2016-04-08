@@ -1148,7 +1148,7 @@ fi
 
 # create A2CLOUD disk
 
-if [[ ( $updateADTPro || $createBootDisk ) && -f /usr/local/bin/acmd ]]; then
+if [[ $updateADTPro || $createBootDisk ]] && hash acmd 2>/dev/null; then
     a2CloudDisk=/usr/local/adtpro/disks/A2CLOUD.PO
 else
     a2CloudDisk=
