@@ -7,7 +7,7 @@ adtProVersion="2.0.1"
 # Ensure URL we'll use ends in a /
 case "$A2CLOUD_SCRIPT_URL" in
     */) scriptURL="$A2CLOUD_SCRIPT_URL" ;;
-    *) scriptURL="${A2CLOUD_SCRIPT_URL:-https://rawgit.com/RasppleII/a2server/current}/" ;;
+    *) scriptURL="${A2CLOUD_SCRIPT_URL:-https://rawgit.com/RasppleII/a2cloud/current}/" ;;
 esac
 case "$A2CLOUD_BINARY_URL" in
     */) binaryURL="$A2CLOUD_BINARY_URL" ;;
@@ -1055,41 +1055,54 @@ if [[ $installArchiveTools ]]; then
     # download and install The Unarchiver, for expanding apple.com disk images
     # http://wakaba.c3.cx/s/apps/unarchiver.html
     if ! hash unar 2>/dev/null; then
+
         echo "A2CLOUD: Installing The Unarchiver..."
-        if apt-cache show unar &>/dev/null; then
+
+        # jessie and later: Just use the unar package
+        if [[ $debianMajor -ge 8 ]]; then
             sudo apt-get -y install unar
-        else
-            cd /tmp/a2cloud-install
-            if [[ $downloadBinaries ]]; then
-                if [[ $isRpi || $isDebian ]]; then
-                    sudo apt-get -y install libgnustep-base1.22
-                    sudo apt-get -y clean
-                    wget -qO- "${binaryURL}precompiled/unar-${arch}_${debianName}.tgz" | sudo tar Pzx
-                fi
+            sudo apt-get clean
+        fi
+
+        if ! hash unar 2>/dev/null; then
+            if [[ $downloadBinaries && "$(apt-cache search '^libgnustep-base1.22$')" ]]; then
+                # Dependencies: for unar
+                sudo apt-get -y install libgnustep-base1.22
+                sudo apt-get clean
+                { wget -qO- "${binaryURL}precompiled/unar-${arch}_${debianName}.tgz" | sudo tar Pzx; } &> /dev/null
             fi
+
+            # If all else fails, compile from source.
+
             if ! hash unar 2>/dev/null; then
-                sudo apt-get -y install build-essential
-                sudo apt-get -y install libgnustep-base-dev libz-dev libbz2-dev
-                sudo apt-get -y install libssl-dev libicu-dev unzip
-                sudo apt-get -y clean
-                rm -rf unar &> /dev/null
-                mkdir -p unar
-                cd unar
-                wget -q -nc http://theunarchiver.googlecode.com/files/unar1.7_src.zip
-                unzip -o unar1.7_src.zip
-                cd The\ Unarchiver/XADMaster
+                # Dependencies: build-deps for unar
+                sudo apt-get -y install build-essential libgnustep-base-dev libz-dev libbz2-dev libssl-dev libicu-dev unzip
+                sudo apt-get clean
+
+                rm -rf /tmp/unar &> /dev/null
+                mkdir /tmp/unar
+                cd /tmp/unar
+                if [[ $useExternalURL ]]; then
+                    wget -O unar-1.8.1.zip https://github.com/incbee/Unarchiver/archive/unar-1.8.1.zip
+                    unzip -o unar-1.8.1.zip &> /dev/null
+                fi
+                if [ ! -d *Unarchiver*/XADMaster ]; then # need single bracket for glob
+                    wget -O unar-1.8.1.zip ${binaryURL}external/source/unar-1.8.1.zip
+                    unzip -o unar-1.8.1.zip &> /dev/null
+                fi
+                cd *Unarchiver*/XADMaster
                 make -f Makefile.linux
                 sudo mv lsar unar /usr/local/bin
                 cd ../Extra
                 sudo mkdir -p /usr/local/man/man1
                 sudo mv lsar.1 unar.1 /usr/local/man/man1
-                cd /tmp/a2cloud-install
-                rm -rf unar
+                cd
+                rm -rf /tmp/unar
             fi
             sudo mandb &> /dev/null
         fi
     else
-        echo "A2CLOUD: The Unarchiver is already installed."
+        echo "A2CLOUD: The Unarchiver has already been installed."
     fi
 fi
 
