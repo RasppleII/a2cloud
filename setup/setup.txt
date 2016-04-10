@@ -533,13 +533,13 @@ if [[ $installADTPro ]]; then
     fi
 
     if hash afpd 2>/dev/null; then # A2SERVER/netatalk installed
-        if [[ ! -d /media/A2SHARED/ADTDISKS || ! $(grep ADTDISKS /usr/local/etc/netatalk/AppleVolumes.default) ]]; then
+        if [[ ! -d /srv/A2SERVER/ADTDISKS || ! $(grep ADTDISKS /usr/local/etc/netatalk/AppleVolumes.default) ]]; then
             echo "A2CLOUD: Setting up /usr/local/adtpro/disks for Apple file sharing..."
-            if [[ ! -d /media/A2SHARED/ADTDISKS ]]; then
-                ln -s /usr/local/adtpro/disks /media/A2SHARED/ADTDISKS 2>/dev/null
+            if [[ ! -d /srv/A2SERVER/ADTDISKS ]]; then
+                ln -s /usr/local/adtpro/disks /srv/A2SERVER/ADTDISKS 2>/dev/null
             fi
             if [[ ! $(grep ADTDISKS /usr/local/etc/netatalk/AppleVolumes.default) ]]; then
-                sudo sed -i 's@^# End of File@/media/A2SHARED/ADTDISKS ADTDISKS ea:ad\n\n# End of File@' /usr/local/etc/netatalk/AppleVolumes.default
+                sudo sed -i 's@^# End of File@/srv/A2SERVER/ADTDISKS ADTDISKS ea:ad\n\n# End of File@' /usr/local/etc/netatalk/AppleVolumes.default
             fi
             sudo /etc/init.d/netatalk restart
         else
@@ -553,7 +553,7 @@ if [[ $installADTPro ]]; then
             else
                 echo "A2CLOUD: Setting up /usr/local/adtpro/disks for Windows file sharing..."
                 echo "[ADTDISKS]" | sudo tee -a /etc/samba/smb.conf >/dev/null
-                echo "    path = /media/A2SHARED/ADTDISKS" | sudo tee -a /etc/samba/smb.conf >/dev/null
+                echo "    path = /srv/A2SERVER/ADTDISKS" | sudo tee -a /etc/samba/smb.conf >/dev/null
                 echo "    browsable = yes" | sudo tee -a /etc/samba/smb.conf >/dev/null
                 echo "    guest ok = yes" | sudo tee -a /etc/samba/smb.conf >/dev/null
                 echo "    read only = no" | sudo tee -a /etc/samba/smb.conf >/dev/null
