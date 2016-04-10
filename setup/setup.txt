@@ -4,6 +4,9 @@
 version="1.9.0"
 adtProVersion="2.0.1"
 
+# Jessie+, this NEEDS to be /usr/share
+xdgApplicationDir="/usr/share/applications"
+
 # Ensure URL we'll use ends in a /
 case "$A2CLOUD_SCRIPT_URL" in
     */) scriptURL="$A2CLOUD_SCRIPT_URL" ;;
@@ -1128,13 +1131,13 @@ if hash X 2>/dev/null; then
     sudo mkdir -p /usr/local/share/desktop-directories
     echo -e "[Desktop Entry]\nName=Apple II\nComment=Programs and utilities related to the Apple II\nIcon=/usr/local/linapple/icon.bmp\nType=Directory\n" | sudo tee /usr/local/share/desktop-directories/lxde-appleii.directory >/dev/null
     # create menu and desktop shortcuts
-    sudo mkdir -p /usr/local/share/applications
+    sudo mkdir -p "$xdgApplicationDir"
     # create user desktop items folder
     mkdir -p ~/Desktop
     # GSport:
     GSPORT_PATH="$(command -v gsport)"
     if [ "$GSPORT_PATH" != "" ]; then
-        echo -e "[Desktop Entry]\nName=GSport\nComment=Apple IIgs Emulator\nExec=lxterminal -e $GSPORT_PATH\nIcon=/usr/local/share/gsport32.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/gsport.desktop >~/Desktop/gsport.desktop
+        echo -e "[Desktop Entry]\nName=GSport\nComment=Apple IIgs Emulator\nExec=lxterminal -e $GSPORT_PATH\nIcon=/usr/local/share/gsport32.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee "$xdgApplicationDir/gsport.desktop" >~/Desktop/gsport.desktop
     fi
     if [[ ! -f /usr/local/share/gsport32.ico ]]; then
         sudo wget -qO /usr/local/share/gsport32.ico "${binaryURL}gsport32.ico"
@@ -1142,12 +1145,12 @@ if hash X 2>/dev/null; then
     # LinApple:
     LINAPPLE_PATH="$(command -v linapple)"
     if [ "LINAPPLE_PATH" != "" ]; then
-        echo -e "[Desktop Entry]\nName=LinApple\nComment=Apple IIe Emulator\nExec=lxterminal -e $LINAPPLE_PATH\nIcon=/usr/local/linapple/icon.bmp\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/linapple.desktop >~/Desktop/linapple.desktop
+        echo -e "[Desktop Entry]\nName=LinApple\nComment=Apple IIe Emulator\nExec=lxterminal -e $LINAPPLE_PATH\nIcon=/usr/local/linapple/icon.bmp\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee "$xdgApplicationDir/linapple.desktop" >~/Desktop/linapple.desktop
     fi
     # ADTPro Server:
     ADTPRO_PATH="$(command -v adtpro.sh)"
     if [ "ADTPRO_PATH" != "" ]; then
-        echo -e "[Desktop Entry]\nName=ADTPro Server\nComment=Floppy Transfer Utility\nExec=$ADTPRO_PATH\nIcon=/usr/local/adtpro/lib/ADTPro.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/adtproserver.desktop >~/Desktop/adtproserver.desktop
+        echo -e "[Desktop Entry]\nName=ADTPro Server\nComment=Floppy Transfer Utility\nExec=$ADTPRO_PATH\nIcon=/usr/local/adtpro/lib/ADTPro.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee "$xdgApplicationDir/adtproserver.desktop" >~/Desktop/adtproserver.desktop
     fi
     # LXTerminal:
     if [[ ! $(grep lxterminal.desktop /etc/xdg/lxpanel/profile/LXDE-pi/panels/panel 2>/dev/null) && ! -f ~/Desktop/lxterminal.desktop ]]; then
