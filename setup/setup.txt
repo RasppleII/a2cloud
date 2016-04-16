@@ -49,6 +49,15 @@ if [[ $debianVersion ]]; then
     fi
 fi
 
+isSystemd=
+isSysVInit=
+# If you really want something else, *you* maintain it!
+if command -v systemctl > /dev/null && systemctl | grep -q '\-\.mount'; then
+    isSystemd=1
+elif [[ -f /etc/inittab ]]; then
+    isSysVInit=1
+fi
+
 
 if [[ -f /usr/local/etc/A2CLOUD-version ]]; then
     installedVersion="$(cat /usr/local/etc/A2CLOUD-version)"
