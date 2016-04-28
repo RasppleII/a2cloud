@@ -649,8 +649,14 @@ if [[ $setupSerialPortLogin ]]; then
     ### SerialCon: Begin setting up serial console
     echo "A2CLOUD: Setting GPIO serial login to 4800 bps, and disabling..."
     # set console port login to 4800 bps (using RPi console cable) and comment it out
-    sudo sed -i 's/^\(T.*\)ttyAMA0 .* /#\1ttyAMA0 4800 /' /etc/inittab
-    sudo sed -i 's/ttyAMA0,[0-9]*/ttyAMA0,4800/g' /boot/cmdline.txt 2>/dev/null
+    if [[ -n "$isSystemd" ]]; then
+        sudo sed -i 's/ttyAMA0,[0-9]*/ttyAMA0,4800/g' /boot/cmdline.txt 2>/dev/null
+    elif [[ -n "$isSysVInit" ]]; then
+        sudo sed -i 's/^\(T.*\)ttyAMA0 .* /#\1ttyAMA0 4800 /' /etc/inittab
+        sudo sed -i 's/ttyAMA0,[0-9]*/ttyAMA0,4800/g' /boot/cmdline.txt 2>/dev/null
+    else
+        echo "A2CLOUD: Cannot set baudrate: Unrecognized init system"
+    fi
 
     if ! hash screen 2>/dev/null; then
         echo "A2CLOUD: Installing Screen for multiple terminals..."
@@ -704,15 +710,25 @@ if [[ $setupSerialPortLogin ]]; then
 
     ### SerialCon: Install inittab serial port login
     echo "A2CLOUD: Removing ttyUSB0 shell login..."
-    sudo sed -i "s/^\([^#].*ttyUSB0.*\)$//" /etc/inittab
+    if [[ -n "$isSystemd" ]]; then
+        # FIXME: Okay, the way we need to fix this is that we need to do the
+        # -scanttyUSB behavior and create a symlink in udev here.  If we have
+        # a /dev/ttySerialConsole link, it's real easy to do this here with
+        # systemd, and it actually makes the script below not necessary.<F10><F12><F12>
+        echo "A2CLOUD: systemd not yet supported here"
+    elif [[ -n "$isSysVInit" ]]; then
+        sudo sed -i "s/^\([^#].*ttyUSB0.*\)$//" /etc/inittab
 
-    if [[ ! $(grep -e '-scanttyUSB' /etc/inittab) ]]; then
-        echo "A2CLOUD: Adding USB port shell login at 4800 bps..."
-        echo -e "\n\n#for USB-to-serial adapter\nT1:23:respawn:/usr/local/sbin/usbgetty -h -L -scanttyUSB 4800 vt100" | sudo tee -a /etc/inittab >/dev/null
-        sudo init q
-        sudo pkill -f "getty.*ttyUSB"
+        if [[ ! $(grep -e '-scanttyUSB' /etc/inittab) ]]; then
+            echo "A2CLOUD: Adding USB port shell login at 4800 bps..."
+            echo -e "\n\n#for USB-to-serial adapter\nT1:23:respawn:/usr/local/sbin/usbgetty -h -L -scanttyUSB 4800 vt100" | sudo tee -a /etc/inittab >/dev/null
+            sudo init q
+            sudo pkill -f "getty.*ttyUSB"
+        else
+            echo "A2CLOUD: USB port shell login already added."
+        fi
     else
-        echo "A2CLOUD: USB port shell login already added."
+        echo "A2CLOUD: Cannot set baudrate: Unrecognized init system"
     fi
 fi
 
