@@ -75,7 +75,7 @@ if [ "$OS" = "Linux" ]; then
         if [[ $serialPortName ]]; then
             sed -i "s/^CommPort=.*$/CommPort=\/dev\/$serialPortName/" /usr/local/adtpro/disks/ADTPro.properties &> /dev/null
         else
-            serialPortName=$(grep 'CommPort=/dev/' ADTPro.properties 2> /dev/null | cut -f 3 -d '/')
+            serialPortName=$(grep 'CommPort=/dev/' /usr/local/adtpro/disks/ADTPro.properties 2> /dev/null | cut -f 3 -d '/')
         fi
     else
         echo -e "#ADTPro.properties\n#$(date)\nCommPortSpeed=115200\nCommPortBootstrapSpeed=2400\nCommPort=/dev/$serialPortName\nCommPortBootstrapPacing=250\nHardwareHandshaking=false\nSerialIPHost=localhost\nSerialIPPort=1977" > /usr/local/adtpro/disks/ADTPro.properties
