@@ -7,7 +7,7 @@ adtProVersion="2.0.1"
 # Ensure URL we'll use ends in a /
 case "$A2CLOUD_SCRIPT_URL" in
     */) scriptURL="$A2CLOUD_SCRIPT_URL" ;;
-    *) scriptURL="${A2CLOUD_SCRIPT_URL:-https://rawgit.com/RasppleII/a2cloud/current}/" ;;
+    *) scriptURL="${A2CLOUD_SCRIPT_URL:-https://rawgit.com/RasppleII/a2cloud/master}/" ;;
 esac
 case "$A2CLOUD_BINARY_URL" in
     */) binaryURL="$A2CLOUD_BINARY_URL" ;;
