@@ -19,7 +19,23 @@ else
 fi
 
 while [[ ! $nickname || ! $(grep -i '^[a-z_\-\\^{}|`][a-z0-9_\-\\^{}|`]*$' <<< $nickname) ]]; do
-    echo -n "Enter a nickname for chat (to change later, use 'a2chat -n'): "
+    echo "Choosing a nickname"
+    echo
+    echo "A nickname on irc is how you are known to other people.  It can"
+    echo "consist of letters, numbers, and punctuation symbols such as -, _, and ^."
+    echo "Some older IRC servers will cut your nickname to eight characters, but"
+    echo "more modern ones like A2Central do not."
+    echo
+    echo "Aliases are fine on irc, but really common names like James or Mark or"
+    echo "AppleIIGuy are likely to be used by someone else already.  A guy named"
+    echo "Joseph might use some variation of their name (such as JosephC or"
+    echo "tjcarter) or come up with something else entirely."
+    echo
+    echo "You can change your nickname once you're online by typing a command"
+    echo "like \"/nick <newnick>\", and you can rerun this script with the -n"
+    echo "parameter to have this script save your choice for future use."
+    echo
+    echo -n "Enter a nickname (use 'a2chat -n' to change it later): "
     read
     nickname=$REPLY
 done
