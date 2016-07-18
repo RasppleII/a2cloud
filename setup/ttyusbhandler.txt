@@ -35,11 +35,27 @@ elif [[ $1 == "add" ]]; then
         touch /tmp/udev-ttyUSBlower-added
         pkill -f "[A]DTPro"
         pkill -f "[u]sbgetty"
-        exec /usr/local/adtpro/adtpro.sh headless serial
+        exec echo "/usr/local/adtpro/adtpro.sh headless serial" | at -M now
     else # ttyUSBupper
         rm /tmp/udev-ttyUSBupper-added &> /dev/null
         touch /tmp/udev-ttyUSBupper-added
         pkill -f "[g]etty.*ttyUSB"
+        if [[ -f /bin/systemctl ]]; then # if systemd
+            # if USB-to-serial adapter is directly attached to upper port
+            if [[ -c /dev/ttyUSBupper ]]; then
+                ttyUSB=ttyUSBupper
+            # if hub in upper port, use highest numbered port on hub
+            elif [[ $(ls -1 /dev/ttyUSBupper_hub* 2> /dev/null | wc -l) -gt 0 ]]; then
+                ttyUSB=$(ls -1 /dev/ttyUSBupper_hub* 2> /dev/null | tail -1 | cut -c 6-)
+            # if hub in lower port with multiple adapters, use highest numbered port on hub
+            elif [[ $(ls -1 /dev/ttyUSBlower_hub* 2> /dev/null | wc -l) -gt 1 ]]; then
+                ttyUSB=$(ls -1 /dev/ttyUSBlower_hub* 2> /dev/null | tail -1 | cut -c 6-)
+            else
+            # by definition, this shouldn't happen
+                ttyUSB=
+            fi
+            exec systemctl restart usbgetty@$ttyUSB
+        fi
     fi
 else
     exit 2
