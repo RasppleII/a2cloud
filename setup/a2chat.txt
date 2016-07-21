@@ -46,10 +46,7 @@ echo $nickname > ~/.irssi/a2c.nickname
 if [[ -f ~/.irssi/startup ]]; then
     mv ~/.irssi/startup ~/.irssi/startup.orig
 fi
-# SOME broken versions of bash have an intentionally broken
-# echo -e for no justifiable reason.  Yes I mean YOU, Apple!
-echo "/network add -autosendcmd '/join #a2c.chat' Palomino.A2
-/server add -auto -network Palomino.A2 irc.a2central.com\n" > ~/.irssi/startup
+echo -e "/network add -autosendcmd '/join #a2c.chat' Palomino.A2\n/server add -auto -network Palomino.A2 irc.a2central.com\n" > ~/.irssi/startup
 
 if [[ -f ~/.irssi/config ]]; then
     cp ~/.irssi/config ~/.irssi/config.orig
