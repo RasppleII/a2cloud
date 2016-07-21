@@ -73,7 +73,59 @@ writecharsHex () {
 
 ### start
 
-[[ -f /usr/bin/raspi-config ]] && isRpi=1 || isRpi=
+# Ensure URL we'll use ends in a /
+case "$A2CLOUD_SCRIPT_URL" in
+    */) scriptURL="$A2CLOUD_SCRIPT_URL" ;;
+    *) scriptURL="${A2CLOUD_SCRIPT_URL:-https://raw.githubusercontent.com/RasppleII/a2cloud/master}/" ;;
+esac
+case "$A2CLOUD_BINARY_URL" in
+    */) binaryURL="$A2CLOUD_BINARY_URL" ;;
+    *) binaryURL="${A2CLOUD_BINARY_URL:-http://ivanx.com/a2cloud/files}/" ;;
+esac
+useExternalURL=1
+[[ $A2CLOUD_NO_EXTERNAL ]] && useExternalURL=
+
+debianVersion=$(cat /etc/debian_version 2> /dev/null)
+isRpi=
+isDebian=
+arch=
+if [[ -f /usr/bin/raspi-config ]]; then
+    isRpi=1
+    arch='rpi'
+    me="Pi"
+    fullme="Raspberry Pi"
+elif lsb_release -a 2> /dev/null | grep -q 'Distributor ID:.Debian' && [[ $(cut -d . -f 1 <<< $debianVersion) -ge "7" ]]; then
+    isDebian=1
+    uname_m="$(uname -m)"
+    if [[ $uname_m == "i686" ]]; then
+        arch='debian_x86'
+    elif [[ $uname_m == "x86_64" ]]; then
+        arch='debian_x64'
+    fi
+    me="computer"
+    fullme="computer"
+fi
+
+debianName=
+if [[ $debianVersion ]]; then
+    debianMajor=$(cut -d . -f 1 <<< $debianVersion)
+    if [[ $debianMajor == "8" ]]; then
+        debianName="jessie"
+    elif [[ $debianMajor == "7" ]]; then
+        debianName="wheezy"
+    else
+        debianName="unknown"
+    fi
+fi
+
+isSystemd=
+isSysVInit=
+# If you really want something else, *you* maintain it!
+if command -v systemctl > /dev/null && systemctl | grep -q '\-\.mount'; then
+    isSystemd=1
+elif [[ -f /etc/inittab ]]; then
+    isSysVInit=1
+fi
 
 emulatorName="GSport"
 emulatorStart="gsport"
@@ -94,10 +146,9 @@ gisk=
 installDisks=
 kegs=
 
-which acmd >/dev/null && acmdOK=1 || acmdOK=
-
-if [[ $0 == *kegs-setup* ]]; then
-    kegs=1
+acmdOK=
+if hash acmd 2> /dev/null; then
+    acmdOK=1
 fi
 
 while { [[ $1 ]] || (( (0 + $gisk + $noDisks + $installDisks + 0) > 1 )); }; do
@@ -123,14 +174,10 @@ while { [[ $1 ]] || (( (0 + $gisk + $noDisks + $installDisks + 0) > 1 )); }; do
     elif [[ $arg == "y" ]]; then
         autoAnswerYes=1
         shift
-    elif [[ $arg == "k" ]]; then
-        kegs=1
-        shift
     else
         echo "Usage: $emulatorSetup [rom1|rom3] [-6] [-y [-g|-i|-n]]"
         echo "rom1: use GS ROM 01"
         echo "rom3: use GS ROM 3"
-        echo "-k: set up KEGS (rather than GSport)"
         echo "-6: put blank disks in slot 6"
         echo "-y: auto-answer yes (no prompting)"
         echo "-i: use GS/OS and Spectrum installer disk images (use with -y)"
@@ -139,14 +186,6 @@ while { [[ $1 ]] || (( (0 + $gisk + $noDisks + $installDisks + 0) > 1 )); }; do
         exit 1
     fi
 done
-
-if [[ $kegs ]]; then
-    emulatorName="KEGS"
-    emulatorStart="kegs"
-    emulatorSetup="kegs-setup"
-    romFileName="rom.kegs"
-    configFileName="config.kegs"
-fi
 
 echo
 if [[ ! -f /usr/local/lib/$romFileName ]]; then
@@ -206,22 +245,117 @@ cd "$tempDir"
 echo "Updating package lists..."
 sudo apt-get -y update > /dev/null
 
-if [[ ! -f /usr/local/bin/unar ]]; then
-    echo "Installing The Unarchiver..."
-    sudo apt-get -y install libgnustep-base1.22
+# http://wakaba.c3.cx/s/apps/unarchiver.html
+if ! hash unar 2> /dev/null; then
+
+    ### ArchiveTools: Install unar package
+    echo "A2CLOUD: Installing The Unarchiver..."
+
+    # jessie and later: Just use the unar package
+    if [[ $debianMajor -ge 8 ]]; then
+        sudo apt-get -y install unar
+        sudo apt-get clean
+    fi
+
+    if ! hash unar 2> /dev/null; then
+        if [[ $downloadBinaries && "$(apt-cache search '^libgnustep-base1.22$')" ]]; then
+            # Dependencies: for unar
+            sudo apt-get -y install libgnustep-base1.22
+            sudo apt-get clean
+            wget -qO- "${binaryURL}precompiled/unar-${arch}_${debianName}.tgz" | sudo tar Pzx &> /dev/null
+        fi
+
+        # If all else fails, compile from source.
+
+        if ! hash unar 2> /dev/null; then
+            # Dependencies: build-deps for unar
+            sudo apt-get -y install build-essential libgnustep-base-dev libz-dev libbz2-dev libssl-dev libicu-dev unzip
+            sudo apt-get clean
+
+            rm -rf /tmp/unar &> /dev/null
+            mkdir /tmp/unar
+            cd /tmp/unar
+            if [[ $useExternalURL ]]; then
+                wget -O unar-1.8.1.zip https://github.com/incbee/Unarchiver/archive/unar-1.8.1.zip
+                unzip -o unar-1.8.1.zip &> /dev/null
+            fi
+            if [ ! -d *Unarchiver*/XADMaster ]; then # need single bracket for glob
+                wget -O unar-1.8.1.zip ${binaryURL}external/source/unar-1.8.1.zip
+                unzip -o unar-1.8.1.zip &> /dev/null
+            fi
+            cd *Unarchiver*/XADMaster
+            make -f Makefile.linux
+            sudo mv lsar unar /usr/local/bin
+            cd ../Extra
+            sudo mkdir -p /usr/local/man/man1
+            sudo mv lsar.1 unar.1 /usr/local/man/man1
+            cd
+            rm -rf /tmp/unar
+        fi
+        sudo mandb &> /dev/null
+    fi
+else
+    echo "A2CLOUD: The Unarchiver has already been installed."
+fi
+
+echo "A2CLOUD: Setting up mkpo command..."
+sudo wget -qO /usr/local/bin/mkpo ${scriptURL}setup/mkpo.txt
+sudo chmod ugo+x /usr/local/bin/mkpo
+
+if ! hash nulib2 2> /dev/null; then
+
+    echo "A2CLOUD: Installing nulib2..."
+
+    cd /tmp/a2cloud-install
+    if [[ $downloadBinaries ]]; then
+        ### ArchiveTools: Install nulib2 binaries
+        wget -qO- "${binaryURL}precompiled/nulib2-${arch}_${debianName}.tgz" | sudo tar Pzx
+    fi
+
+    if ! hash nulib2 2> /dev/null; then
+        ### ArchiveTools: Install nulib2 from source
+        sudo apt-get -y install build-essential
+        sudo apt-get -y install zlib1g-dev
+        sudo apt-get -y clean
+
+        # install nulib2
+        rm -rf nulib &> /dev/null
+        mkdir -p nulib
+        cd nulib
+        wget -qO nulib.tgz http://web.archive.org/web/20131031160750/http://www.nulib.com/downloads/nulibdist.tar.gz
+        tar zxf nulib.tgz
+        cd nufxlib*
+        ./configure
+        make
+        sudo make install
+        cd ../nulib2*
+        ./configure
+        make
+        sudo make install
+        cd /tmp/a2cloud-install
+        rm -rf nulib
+    fi
+else
+    echo "A2CLOUD: nulib2 is already installed."
+fi
+
+if ! hash sciibin 2> /dev/null; then
+    ### ArchiveTools: Install undoit (sciibin, etc.)
+    echo "A2CLOUD: Installing sciibin, unblu, unbit, unexec, usq..."
+
+    sudo apt-get -y install build-essential
     sudo apt-get -y clean
-    wget -qO- appleii.ivanx.com/a2cloud/setup/unar.tgz | sudo tar Pzx
-fi
-
-if [[ ! -f /usr/local/bin/mkpo ]]; then
-    echo "Installing mkpo..."
-    sudo wget -qO /usr/local/bin/mkpo appleii.ivanx.com/a2cloud/setup/mkpo.txt
-    sudo chmod ugo+x /usr/local/bin/mkpo
-fi
-
-if [[ ! -f /usr/local/bin/nulib2 ]]; then
-    echo "Installing nulib2..."
-    wget -qO- appleii.ivanx.com/a2cloud/setup/nulib2.tgz | sudo tar Pzx
+    rm -rf undoit &> /dev/null
+    mkdir -p undoit
+    cd undoit
+    wget -q http://web.archive.org/web/20110619163030/http://fadden.com/dl-apple2/undoit.zip
+    unzip undoit.zip
+    make
+    sudo mv sciibin unbit unblu unexec usq /usr/local/bin
+    cd /tmp/a2cloud-install
+    rm -rf undoit
+else
+    echo "A2CLOUD: sciibin, unblu, unbit, unexec, usq are already installed."
 fi
 
 if [[ ! -f $imagesDir/ROM1 ]]; then
@@ -253,58 +387,56 @@ if [[ $slot6 ]]; then
     sudo sed -i 's@^s6d1.*$@s6d1 = $imagesDir/slot6drive1.po@' /usr/local/lib/$configFileName       
     sudo sed -i 's@^s6d2.*$@s6d2 = $imagesDir/slot6drive2.po@' /usr/local/lib/$configFileName
     if [[ ! -f $imagesDir/slot6drive1.po || ! -f $imagesDir/slot6drive2.po ]]; then
-        wget -qO- ivanx.com/a2cloud/files/slot6.tgz | sudo tar Pzx 2> /dev/null
+        wget -qO- ${binaryURL}slot6.tgz | sudo tar Pzx 2> /dev/null
     fi
 fi
 
-if [[ ! $kegs ]]; then
-    # set AppleTalk to turbo (works more reliably than Normal)
-    echo "Setting AppleTalk to turbo..."
-    if ! grep -q 'g_appletalk_turbo' /usr/local/lib/$configFileName; then
-        if grep -q 'bram1\[00\]' /usr/local/lib/$configFileName; then
-            sudo sed -i 's/^\(bram1\[00\]\)/g_appletalk_turbo = 1\n\n\1/' /usr/local/lib/$configFileName
-        else
-            echo -e '\ng_appletalk_turbo = 1' | sudo tee -a /usr/local/lib/$configFileName > /dev/null
-        fi
+# set AppleTalk to turbo (works more reliably than Normal)
+echo "Setting AppleTalk to turbo..."
+if ! grep -q 'g_appletalk_turbo' /usr/local/lib/$configFileName; then
+    if grep -q 'bram1\[00\]' /usr/local/lib/$configFileName; then
+        sudo sed -i 's/^\(bram1\[00\]\)/g_appletalk_turbo = 1\n\n\1/' /usr/local/lib/$configFileName
+    else
+        echo -e '\ng_appletalk_turbo = 1' | sudo tee -a /usr/local/lib/$configFileName > /dev/null
     fi
-    sudo sed -i 's/g_appletalk_turbo = 0/g_appletalk_turbo = 1/' /usr/local/lib/$configFileName
+fi
+sudo sed -i 's/g_appletalk_turbo = 0/g_appletalk_turbo = 1/' /usr/local/lib/$configFileName
 
-    # enable Uthernet
-    echo "Enabling Uthernet card emulation..."
-    if ! grep -q 'g_ethernet[^_]' /usr/local/lib/$configFileName; then
-        if grep -q 'bram1\[00\]' /usr/local/lib/$configFileName; then
-            sudo sed -i 's/^\(bram1\[00\]\)/g_ethernet = 1\n\n\1/' /usr/local/lib/$configFileName
-        else
-            echo -e '\ng_ethernet = 1' | sudo tee -a /usr/local/lib/$configFileName > /dev/null
-        fi
+# enable Uthernet
+echo "Enabling Uthernet card emulation..."
+if ! grep -q 'g_ethernet[^_]' /usr/local/lib/$configFileName; then
+    if grep -q 'bram1\[00\]' /usr/local/lib/$configFileName; then
+        sudo sed -i 's/^\(bram1\[00\]\)/g_ethernet = 1\n\n\1/' /usr/local/lib/$configFileName
+    else
+        echo -e '\ng_ethernet = 1' | sudo tee -a /usr/local/lib/$configFileName > /dev/null
     fi
-    sudo sed -i 's/g_ethernet = 0/g_ethernet = 1/' /usr/local/lib/$configFileName
-    
-    # GISK
-    if [[ $gisk ]]; then
-        echo "Getting GSport Internet Starter Kit..."
-        wget -O /tmp/GSport_Internet_Starter_Kit.zip http://sourceforge.net/projects/gsport/files/Emulator%20Software%20Images/GSport_Internet_Starter_Kit.zip
-        unzip -d /tmp /tmp/GSport_Internet_Starter_Kit.zip "GSport Internet Starter Kit/GSport Internet Starter Kit.2mg"
-        sudo mv "/tmp/GSport Internet Starter Kit/GSport Internet Starter Kit.2mg" $imagesDir
-        rm -r /tmp/GSport*
-        if [[ $(grep ^s7d1 /usr/local/lib/$configFileName) ]]; then
-            sudo sed -i "s:^s7d1.*$:s7d1 = $imagesDir/GSport Internet Starter Kit.2mg:" /usr/local/lib/$configFileName
-        else
-            echo "s7d1 = $imagesDir/GSport Internet Starter Kit.2mg" | tee -a /usr/local/lib/$configFileName > /dev/null
-        fi
-        noDisks=1
+fi
+sudo sed -i 's/g_ethernet = 0/g_ethernet = 1/' /usr/local/lib/$configFileName
+
+# GISK
+if [[ $gisk ]]; then
+    echo "Getting GSport Internet Starter Kit..."
+    wget -O /tmp/GSport_Internet_Starter_Kit.zip http://sourceforge.net/projects/gsport/files/Emulator%20Software%20Images/GSport_Internet_Starter_Kit.zip
+    unzip -d /tmp /tmp/GSport_Internet_Starter_Kit.zip "GSport Internet Starter Kit/GSport Internet Starter Kit.2mg"
+    sudo mv "/tmp/GSport Internet Starter Kit/GSport Internet Starter Kit.2mg" $imagesDir
+    rm -r /tmp/GSport*
+    if [[ $(grep ^s7d1 /usr/local/lib/$configFileName) ]]; then
+        sudo sed -i "s:^s7d1.*$:s7d1 = $imagesDir/GSport Internet Starter Kit.2mg:" /usr/local/lib/$configFileName
+    else
+        echo "s7d1 = $imagesDir/GSport Internet Starter Kit.2mg" | tee -a /usr/local/lib/$configFileName > /dev/null
     fi
-    if [[ $noDisks ]]; then
-        echo
-        echo
-        echo "Setup complete. You can now start $emulatorName."
-        echo
-        if [[ ! $autoAnswerYes ]]; then
-            echo -n "Press return to continue..."
-            read
-        fi
-        exit 0
+    noDisks=1
+fi
+if [[ $noDisks ]]; then
+    echo
+    echo
+    echo "Setup complete. You can now start $emulatorName."
+    echo
+    if [[ ! $autoAnswerYes ]]; then
+        echo -n "Press return to continue..."
+        read
     fi
+    exit 0
 fi
 
 # non-GISK; get installer disks
@@ -329,7 +461,6 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
 #         echo -n "? "
 #         read
 #     fi
-
     REPLY="y"
     if [[ $autoAnswerYes || ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]]; then
 
@@ -380,7 +511,7 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
                 echo "Copying ProDOS..."
                 acmd -g "$imagesDir/INSTALL.HDV" PRODOS "PRODOS#ff0000"
                 #writecharsHex "PRODOS#ff0000" 0 "4C.00.C5.00"
-                wget -qO- ivanx.com/a2cloud/files/${emulatorName}SPLASH.SYS | dd of="PRODOS#ff0000" conv=notrunc &> /dev/null
+                wget -qO- ${binaryURL}${emulatorName}SPLASH.SYS | dd of="PRODOS#ff0000" conv=notrunc &> /dev/null
                 echo "Copying Teach..."
                 cppo -e $imagesDir/SYSTEMTOOLS2.HDV /SYSTEMTOOLS2/TEACH . &> /dev/null
                 echo "Downloading GS-ShrinkIt..."

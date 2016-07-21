@@ -52,36 +52,6 @@ else
             if [[ $REPLY == "ok" || $REPLY == "ok" || $REPLY == "Ok" ]]; then
                 sudo touch /usr/local/etc/gsportconsolewarningoff
             fi
-            # FIXME: Should this block just be deleted at this point?
-#             echo "If you wish to run GSport in the console window, the mouse will not work"
-#             echo "unless you uninstall VirtualBox Guest Additions. If you don't want to do"
-#             echo "this, you can instead run GSport in an X window (e.g. by typing 'startx')."
-#             echo "If you're not sure, just uninstall it now. Nothing terrible will happen."
-#             echo
-#             echo -n "Do you want to uninstall VirtualBox Guest Additions now? "
-#             read
-#             if [[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]]; then
-#                 echo "Ok, on the case..."
-#                 sudo /etc/init.d/vboxadd-service stop 2> /dev/null
-#                 sudo /etc/init.d/virtualbox-guest-utils stop &> /dev/null
-#                 sudo rmmod vboxvideo 2> /dev/null
-#                 sudo rmmod vboxsf 2> /dev/null
-#                 sudo rmmod vboxguest 2> /dev/null
-#                 while { lsmod | grep -q vbox; }; do
-#                     sleep 1
-#                     sudo rmmod vboxvideo 2> /dev/null
-#                     sudo rmmod vboxsf 2> /dev/null
-#                     sudo rmmod vboxguest 2> /dev/null
-#                 done
-#                 if [ -f /opt/VBoxGuestAdditions*/uninstall.sh ]; then
-#                     sudo /opt/VBoxGuestAdditions*/uninstall.sh &> /dev/null
-#                     sudo rmdir /opt/VBoxGuestAdditions* 2> /dev/null
-#                 fi
-#                 if { dpkg -l 2> /dev/null | grep -q -i virtualbox; }; then
-#                     sudo apt-get -y purge $(dpkg -l 2> /dev/null | grep -i virtualbox | cut -f 3 -d ' ' | tr '\n' ' ') &> /dev/null
-#                 fi
-#                 touch /tmp/gsport-consolesetup
-#             fi
         fi
 
         if [[ ! $(grep 'input' <<< $(groups) ) ]]; then
@@ -112,9 +82,9 @@ else
         echo "You can restart now by typing 'system-restart'."
     elif [[ $displayOK ]]; then
         if [[ $(xdpyinfo 2> /dev/null) ]]; then
-            exec gsportx
+            exec /usr/local/bin/gsportx
         else
-            exec gsportfb
+            exec /usr/local/bin/gsportfb
         fi
     else
         echo "GSport has a problem. Please try updating A2CLOUD by"
