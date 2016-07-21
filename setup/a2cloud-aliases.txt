@@ -1,6 +1,3 @@
-#! /bin/bash
-# vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
-
 # A2CLOUD aliases:
 
 alias a2cloud-setup='wget -qO /tmp/a2cloud-setup ivanx.com/a2cloud/setup/; source /tmp/a2cloud-setup'
@@ -30,11 +27,6 @@ alias adtpro-stop='sudo pkill -f [A]DTPro'
 
 
 alias adtpro-restart='sudo pkill -f [A]DTPro; while [[ $(ps aux | grep [A]DTPro) ]]; do sleep 1; done; adtpro-start'
-
-alias usblogin-off='sudo sed -i "s/^\(.*-scanttyUSB\)/#\1/" /etc/inittab; sudo init q; sudo pkill -f [g]etty'
-alias usblogin-on='sudo sed -i "s/^#\(.*-scanttyUSB\)/\1/" /etc/inittab; sudo init q'
-
-
 
 alias term='source term'
 

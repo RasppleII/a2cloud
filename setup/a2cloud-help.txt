@@ -28,11 +28,6 @@ adtpro-start : start the ADTPro service
   (note: autostarts on appearance of eligible USB-to-serial adapter)
 adtpro-restart : restart the ADTPro service
 
-usblogin-off : disable shell login for USB-to-serial adapter
-usblogin-on : enable shell login with USB-to-serial adapter on upper
-    USB port or hub attached to it, or highest-numbered port on hub
-    attached to lower USB port
-
 term [-d] mono : use VT-100 (mostly monochrome) emulation in serial
     shell login for ProTERM, Spectrum, Z-Link, etc. (-d sets default)
 term [-d] color : use ANSI color and PC graphic text in serial shell
