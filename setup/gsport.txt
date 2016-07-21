@@ -1,6 +1,17 @@
 #! /bin/bash
 # vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
 
+if [[ -f /tmp/no-gsport ]]; then
+    echo
+    echo "Your system needs to be rebooted before you can use GSport."
+    echo -n "Do you want to reboot now? "
+    read
+    if [[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]]; then
+        sudo shutdown -r now
+    fi
+    exit 0
+fi
+
 if [[ ( $(grep USB <<< $myTTY) || $(grep AMA <<< $myTTY) || $SSH_CLIENT || $REMOTEHOST ) && ! $DISPLAY ]]; then
     echo "Please run GSport on the console, or in an X Window."
 else

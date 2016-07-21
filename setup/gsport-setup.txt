@@ -272,9 +272,9 @@ if ! hash unar 2> /dev/null; then
             sudo apt-get -y install build-essential libgnustep-base-dev libz-dev libbz2-dev libssl-dev libicu-dev unzip
             sudo apt-get clean
 
-            rm -rf /tmp/unar &> /dev/null
-            mkdir /tmp/unar
-            cd /tmp/unar
+            rm -rf $tempDir/unar &> /dev/null
+            mkdir $tempDir/unar
+            cd $tempDir/unar
             if [[ $useExternalURL ]]; then
                 wget -O unar-1.8.1.zip https://github.com/incbee/Unarchiver/archive/unar-1.8.1.zip
                 unzip -o unar-1.8.1.zip &> /dev/null
@@ -290,13 +290,14 @@ if ! hash unar 2> /dev/null; then
             sudo mkdir -p /usr/local/man/man1
             sudo mv lsar.1 unar.1 /usr/local/man/man1
             cd
-            rm -rf /tmp/unar
+            rm -rf $tempDir/unar
         fi
         sudo mandb &> /dev/null
     fi
 else
     echo "A2CLOUD: The Unarchiver has already been installed."
 fi
+cd $tempDir
 
 echo "A2CLOUD: Setting up mkpo command..."
 sudo wget -qO /usr/local/bin/mkpo ${scriptURL}setup/mkpo.txt
@@ -306,7 +307,7 @@ if ! hash nulib2 2> /dev/null; then
 
     echo "A2CLOUD: Installing nulib2..."
 
-    cd /tmp/a2cloud-install
+    cd $tempDir
     if [[ $downloadBinaries ]]; then
         ### ArchiveTools: Install nulib2 binaries
         wget -qO- "${binaryURL}precompiled/nulib2-${arch}_${debianName}.tgz" | sudo tar Pzx
@@ -332,12 +333,13 @@ if ! hash nulib2 2> /dev/null; then
         ./configure
         make
         sudo make install
-        cd /tmp/a2cloud-install
+        cd $tempDir
         rm -rf nulib
     fi
 else
     echo "A2CLOUD: nulib2 is already installed."
 fi
+cd $tempDir
 
 if ! hash sciibin 2> /dev/null; then
     ### ArchiveTools: Install undoit (sciibin, etc.)
@@ -352,11 +354,12 @@ if ! hash sciibin 2> /dev/null; then
     unzip undoit.zip
     make
     sudo mv sciibin unbit unblu unexec usq /usr/local/bin
-    cd /tmp/a2cloud-install
+    cd $tempDir
     rm -rf undoit
 else
     echo "A2CLOUD: sciibin, unblu, unbit, unexec, usq are already installed."
 fi
+cd $tempDir
 
 if [[ ! -f $imagesDir/ROM1 ]]; then
     echo "Getting GS ROM 01..."
@@ -416,10 +419,10 @@ sudo sed -i 's/g_ethernet = 0/g_ethernet = 1/' /usr/local/lib/$configFileName
 # GISK
 if [[ $gisk ]]; then
     echo "Getting GSport Internet Starter Kit..."
-    wget -O /tmp/GSport_Internet_Starter_Kit.zip http://sourceforge.net/projects/gsport/files/Emulator%20Software%20Images/GSport_Internet_Starter_Kit.zip
-    unzip -d /tmp /tmp/GSport_Internet_Starter_Kit.zip "GSport Internet Starter Kit/GSport Internet Starter Kit.2mg"
-    sudo mv "/tmp/GSport Internet Starter Kit/GSport Internet Starter Kit.2mg" $imagesDir
-    rm -r /tmp/GSport*
+    wget -O $tempDir/GSport_Internet_Starter_Kit.zip http://sourceforge.net/projects/gsport/files/Emulator%20Software%20Images/GSport_Internet_Starter_Kit.zip
+    unzip -d $tempDir $tempDir/GSport_Internet_Starter_Kit.zip "GSport Internet Starter Kit/GSport Internet Starter Kit.2mg"
+    sudo mv "$tempDir/GSport Internet Starter Kit/GSport Internet Starter Kit.2mg" $imagesDir
+    rm -r $tempDir/GSport*
     if [[ $(grep ^s7d1 /usr/local/lib/$configFileName) ]]; then
         sudo sed -i "s:^s7d1.*$:s7d1 = $imagesDir/GSport Internet Starter Kit.2mg:" /usr/local/lib/$configFileName
     else
@@ -513,11 +516,14 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
                 #writecharsHex "PRODOS#ff0000" 0 "4C.00.C5.00"
                 wget -qO- ${binaryURL}${emulatorName}SPLASH.SYS | dd of="PRODOS#ff0000" conv=notrunc &> /dev/null
                 echo "Copying Teach..."
-                cppo -e $imagesDir/SYSTEMTOOLS2.HDV /SYSTEMTOOLS2/TEACH . &> /dev/null
+                cppo -uc -e $imagesDir/SYSTEMTOOLS2.HDV /SYSTEMTOOLS2/TEACH . &> /dev/null
                 echo "Downloading GS-ShrinkIt..."
                 wget -qO- http://web.archive.org/web/20131031160750/http://nulib.com/library/gshk11.sea | nulib2 -x -e - GSHK &> /dev/null
+                echo 1
                 nulib2 -a -e $gsosHD.shk "PRODOS#"* "GSHK#"* "TEACH#"* &> /dev/null
+                echo 2
                 acmd -convert $gsosHD.shk $imagesDir/"$gsosHD" 65535
+                echo 3
                 rm "PRODOS#"* "GSHK#"* "TEACH#"* $gsosHD.shk  &> /dev/null
                 
                 acmd -n $imagesDir/"$gsosHD" $gsosHDvolName
@@ -526,6 +532,7 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
                 #acmd -p "$imagesDir/$gsosHD" PRODOS SYS < $tempDir/PRODOS
                 #rm $tempDir/PRODOS
             fi
+            echo 4
             if [[ $(grep ^s7d1 /usr/local/lib/$configFileName) ]]; then
                 sudo sed -i "s:^s7d1.*$:s7d1 = $imagesDir/$gsosHD:" /usr/local/lib/$configFileName
             else
@@ -550,12 +557,12 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
  
         if [[ ! $kegs ]]; then
  
-            mkdir -p /tmp/spectrum
-            cd /tmp/spectrum
+            mkdir -p $tempDir/spectrum
+            cd $tempDir/spectrum
             
-            imageName="/tmp/spectrum/spectrum.dmg"
-            hfsName="/tmp/spectrum/spectrumH.dmg"
-            ullName="/tmp/spectrum/uthernet.bxy"
+            imageName="$tempDir/spectrum/spectrum.dmg"
+            hfsName="$tempDir/spectrum/spectrumH.dmg"
+            ullName="$tempDir/spectrum/uthernet.bxy"
             
             if [[ ! -f /usr/bin/hcopy || ! -f /usr/bin/macsave ]]; then
                 echo "Installing HFS utilities..."
@@ -587,9 +594,9 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
             hmount "$hfsName"
             
             IFS=''
-            cd /tmp/spectrum/mnt
+            cd $tempDir/spectrum/mnt
             find Spectrum.2.5.3 -type d | while read thisDirPath; do
-                mkdir -p /tmp/spectrum/shkstage/"$thisDirPath"
+                mkdir -p $tempDir/spectrum/shkstage/"$thisDirPath"
                 hcd
                 IFS='/'
                 for thisDir in $thisDirPath; do
@@ -597,7 +604,7 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
                 done
                 echo "  Copying: $(hpwd)"
                 IFS=''
-                cd /tmp/spectrum/extract
+                cd $tempDir/spectrum/extract
                 hls -1 | while read thisFile; do
                     hcopy -m "$thisFile" - 2> /dev/null | macsave -f 2> /dev/null
                     if [[ -f "$thisFile".info ]]; then
@@ -625,27 +632,27 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
                                 echo "WARNING: unknown file type '$fMac' found for file $thisFile"
                             fi
                         fi
-                        [[ -f "$thisFile".rsrc ]] && mv "$thisFile".rsrc /tmp/spectrum/shkstage/"$thisDirPath"/"${thisFile}#${fileType}${auxType}r"
-                        [[ -f "$thisFile".data ]] && mv "$thisFile".data /tmp/spectrum/shkstage/"$thisDirPath"/"${thisFile}#${fileType}${auxType}"
+                        [[ -f "$thisFile".rsrc ]] && mv "$thisFile".rsrc $tempDir/spectrum/shkstage/"$thisDirPath"/"${thisFile}#${fileType}${auxType}r"
+                        [[ -f "$thisFile".data ]] && mv "$thisFile".data $tempDir/spectrum/shkstage/"$thisDirPath"/"${thisFile}#${fileType}${auxType}"
                         rm "$thisFile".info 2> /dev/null
                     fi
                 done
-                cd /tmp/spectrum/mnt
+                cd $tempDir/spectrum/mnt
             done
             
-            cd /tmp/spectrum/shkstage/Spectrum*
+            cd $tempDir/spectrum/shkstage/Spectrum*
             humount
-            sudo umount /tmp/spectrum/mnt
+            sudo umount $tempDir/spectrum/mnt
     
             mkdir -p Marinetti/Uthernet
             cp SAFE2.Archive/Link.Layers/"Uthernet#bc4083" Marinetti/Uthernet
             echo -n "After installing Marinetti, put Uthernet in the TCPIP folder of your System folder, and restart GS/OS. Then open Control Panels, choose TCP/IP, and choose Setup Connection. Choose Uthernet for the link layer. Under Primary Domain Name Server, enter 8.8.8.8, then click Configure and select Slot 3 and DHCP. Then click Save." > Marinetti/Uthernet/"Uthernet.README#040000"
     
             echo "Making archive for conversion to disk image..."
-            rm /tmp/spectrum/spectrum.shk 2> /dev/null
-            nulib2 -a -r -0 -e /tmp/spectrum/spectrum.shk * &> /dev/null
+            rm $tempDir/spectrum/spectrum.shk 2> /dev/null
+            nulib2 -a -r -0 -e $tempDir/spectrum/spectrum.shk * &> /dev/null
             echo "Converting archive to disk image..."
-            acmd -convert /tmp/spectrum/spectrum.shk $imagesDir/spectrum.hdv 20480
+            acmd -convert $tempDir/spectrum/spectrum.shk $imagesDir/spectrum.hdv 20480
             acmd -n $imagesDir/spectrum.hdv SPECTRUM.DELUXE
             
             if [[ $(grep ^s7d7 /usr/local/lib/$configFileName) ]]; then
@@ -654,9 +661,9 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
                 echo "s7d7 = $imagesDir/spectrum.hdv" | tee -a /usr/local/lib/$configFileName > /dev/null
             fi
     
-            cd /tmp
+            cd $tempDir
             
-            rm -rf /tmp/spectrum/extract /tmp/spectrum/shkstage /tmp/spectrum/spectrum.shk /tmp/spectrum/mnt &> /dev/null
+            rm -rf $tempDir/spectrum/extract $tempDir/spectrum/shkstage $tempDir/spectrum/spectrum.shk $tempDir/spectrum/mnt &> /dev/null
         fi
         # Spectrum ends here
     fi
