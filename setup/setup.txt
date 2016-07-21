@@ -7,7 +7,7 @@ adtProVersion="2.0.1"
 # Ensure URL we'll use ends in a /
 case "$A2CLOUD_SCRIPT_URL" in
     */) scriptURL="$A2CLOUD_SCRIPT_URL" ;;
-    *) scriptURL="${A2CLOUD_SCRIPT_URL:-https://rawgit.com/RasppleII/a2cloud/master}/" ;;
+    *) scriptURL="${A2CLOUD_SCRIPT_URL:-https://raw.githubusercontent.com/RasppleII/a2cloud/master}/" ;;
 esac
 case "$A2CLOUD_BINARY_URL" in
     */) binaryURL="$A2CLOUD_BINARY_URL" ;;
@@ -16,7 +16,7 @@ esac
 useExternalURL=1
 [[ $A2CLOUD_NO_EXTERNAL ]] && useExternalURL=
 
-debianVersion=$(cat /etc/debian_version 2>/dev/null)
+debianVersion=$(cat /etc/debian_version 2> /dev/null)
 isRpi=
 isDebian=
 arch=
@@ -25,7 +25,7 @@ if [[ -f /usr/bin/raspi-config ]]; then
     arch='rpi'
     me="Pi"
     fullme="Raspberry Pi"
-elif lsb_release -a 2>/dev/null | grep -q 'Distributor ID:.Debian' && [[ $(cut -d . -f 1 <<< $debianVersion) -ge "7" ]]; then
+elif lsb_release -a 2> /dev/null | grep -q 'Distributor ID:.Debian' && [[ $(cut -d . -f 1 <<< $debianVersion) -ge "7" ]]; then
     isDebian=1
     uname_m="$(uname -m)"
     if [[ $uname_m == "i686" ]]; then
@@ -57,7 +57,6 @@ if command -v systemctl > /dev/null && systemctl | grep -q '\-\.mount'; then
 elif [[ -f /etc/inittab ]]; then
     isSysVInit=1
 fi
-
 
 if [[ -f /usr/local/etc/A2CLOUD-version ]]; then
     installedVersion="$(cat /usr/local/etc/A2CLOUD-version)"
@@ -96,9 +95,9 @@ while [[ $1 ]]; do
     elif [[ $1 == "-6" ]]; then
         shift
         slot6=1
-    elif [[ $1 == "-os" || $1 == "os" ]]; then
-        shift
-        updateRasppleII=1
+    # elif [[ $1 == "-os" || $1 == "os" ]]; then
+    #    shift
+    #    updateRasppleII=1
     elif [[ $1 == "-v" ]]; then
         shift
         # Version was already printed
@@ -123,19 +122,16 @@ while [[ $1 ]]; do
 done
 
 ### RaspbianUpdate
-if [[ $updateRasppleII ]]; then
-    echo "A2CLOUD: Updating Raspple II (takes up to an hour)..."
-    wget -qO /tmp/raspbian-update ${scriptURL}setup/raspbian-update.txt
-    source /tmp/raspbian-update a2cloud a2server $autoAnswerYes $skipRepoUpdate
-    [[ $0 == "-bash" ]] && return 0 || exit 0
-fi
+#if [[ $updateRasppleII ]]; then
+#    echo "A2CLOUD: Updating Raspple II (takes up to an hour)..."
+#    wget -qO /tmp/raspbian-update ${scriptURL}setup/raspbian-update.txt
+#    source /tmp/raspbian-update a2cloud a2server $autoAnswerYes $skipRepoUpdate
+#    [[ $0 == "-bash" ]] && return 0 || exit 0
+#fi
 
 echo
 echo "Your $fullme will be set up for A2CLOUD, providing you"
 echo "  with mass storage and online access for your Apple II!"
-echo
-echo "Answer yes to all prompts if you want to be able to do all the"
-echo "  stuff mentioned on the A2CLOUD web site."
 echo
 echo "If you already have A2CLOUD installed, you will be updated to the"
 echo "  latest version. Check out http://ivanx.com/a2cloud for details."
@@ -153,15 +149,16 @@ if [[ ! $autoAnswerYes ]]; then
     fi
 fi
 
-echo
-installAllFeatures=
-if [[ ! $autoAnswerYes ]]; then
-    ### Q: Install all features?
-    echo
-    echo -n "Do you want to install all A2CLOUD features? "
-    read
-fi
-[[ $autoAnswerYes || ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]] && installAllFeatures=1
+#echo
+#installAllFeatures=
+#if [[ ! $autoAnswerYes ]]; then
+#    ### Q: Install all features?
+#    echo
+#    echo -n "Do you want to install all A2CLOUD features? "
+#    read
+#fi
+#[[ $autoAnswerYes || ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]] && installAllFeatures=1
+installAllFeatures=1 # as of 1.9.0
 
 if [[ $installAllFeatures ]]; then
     installADTPro=1
@@ -175,7 +172,7 @@ else
     installADTPro=
     echo
     echo -n "Install ADTPro server, for virtual drives and floppy disk transfers"
-    if ! hash X 2>/dev/null; then
+    if ! hash X 2> /dev/null; then
         echo
         echo -n "(the X Window System and LXDE desktop environment will be installed)"
     fi
@@ -299,7 +296,7 @@ fi
 
 
 origDir="$PWD"
-rm -rf /tmp/a2cloud-install &>/dev/null
+rm -rf /tmp/a2cloud-install &> /dev/null
 mkdir -p /tmp/a2cloud-install
 cd /tmp/a2cloud-install
 
@@ -307,7 +304,7 @@ cd /tmp/a2cloud-install
 echo
 if [[ ! $skipRepoUpdate ]]; then
     echo "A2CLOUD: Updating package lists..."
-    sudo apt-get -y update >/dev/null
+    sudo apt-get -y update > /dev/null
 else
     echo "A2CLOUD: Not updating package lists..."
 fi
@@ -317,13 +314,14 @@ fi
 
 ### A2CLOUD: Install udev trigger
 echo "A2CLOUD: Adding udev trigger to /etc/rc.local..."
-grep udevadm /etc/rc.local >/dev/null || sudo sed -i 's/^exit 0$/[ -e \/dev\/ttyUSBupper ] \&\& ! [ -f \/tmp\/udev-ttyUSBupper-added ] \&\& udevadm trigger --action=change\n[ -e \/dev\/ttyUSBlower ] \&\& ! [ -f \/tmp\/udev-ttyUSBlower-added ] \&\& udevadm trigger --action=change\n\nexit 0/' /etc/rc.local
+grep udevadm /etc/rc.local > /dev/null || sudo sed -i 's/^exit 0$/[ -e \/dev\/ttyUSBupper ] \&\& ! [ -f \/tmp\/udev-ttyUSBupper-added ] \&\& udevadm trigger --action=change\n[ -e \/dev\/ttyUSBlower ] \&\& ! [ -f \/tmp\/udev-ttyUSBlower-added ] \&\& udevadm trigger --action=change\n\nexit 0/' /etc/rc.local
 
-### A2CLOUD: Install cppo/dopo
+### A2CLOUD: Install dopo
 echo "A2CLOUD: Setting up dopo command..."
 sudo wget -qO /usr/local/bin/dopo ${scriptURL}setup/dopo.txt
 sudo chmod ugo+x /usr/local/bin/dopo
 
+### A2CLOUD: Install cppo
 echo "A2CLOUD: Setting up cppo command..."
 sudo wget -qO /usr/local/bin/cppo ${scriptURL}setup/cppo.txt
 sudo chmod ugo+x /usr/local/bin/cppo
@@ -342,20 +340,20 @@ fi
 # FIXME#2: All of these MOTDs live in the A2CLOUD tree, so we'll get them from there.
 echo "A2CLOUD: Setting up motd..."
 if [[ $(grep Raspple /etc/motd) ]]; then
-    wget -qO- "${scriptURL}setup/motd-rasppleii.txt" | sudo tee /etc/motd >/dev/null
+    wget -qO- "${scriptURL}setup/motd-rasppleii.txt" | sudo tee /etc/motd > /dev/null
 elif [[ $(grep A2SERVER /etc/motd) ]]; then
-    wget -qO- "${scriptURL}setup/motd-vm.txt" | sudo tee /etc/motd >/dev/null
+    wget -qO- "${scriptURL}setup/motd-vm.txt" | sudo tee /etc/motd > /dev/null
 else
-    wget -qO- "${scriptURL}setup/motd.txt" | sudo tee /etc/motd >/dev/null
+    wget -qO- "${scriptURL}setup/motd.txt" | sudo tee /etc/motd > /dev/null
 fi
 
-if lspci 2>/dev/null | grep -q VirtualBox; then
+if lspci 2> /dev/null | grep -q VirtualBox; then
     ### A2CLOUD: Disable screen blanking on vbox
     echo "A2CLOUD: Disabling VirtualBox console screen blanking..."
     sudo sed -i 's/^BLANK_DPMS=off/BLANK_DPMS=on/' /etc/kbd/config
     sudo sed -i 's/^BLANK_TIME=[^0].$/BLANK_TIME=0/' /etc/kbd/config
-    sudo /etc/init.d/kbd restart &>/dev/null
-    sudo /etc/init.d/console-setup restart &>/dev/null
+    sudo /etc/init.d/kbd restart &> /dev/null
+    sudo /etc/init.d/console-setup restart &> /dev/null
 fi
 
 ### A2CLOUD: Install aliases and make bash use them by default
@@ -364,36 +362,47 @@ sudo wget -qO /usr/local/etc/a2cloud-aliases ${scriptURL}setup/a2cloud-aliases.t
 echo "A2CLOUD: Setting up login script..."
 sudo sed -i "s/a2cloud-aliases/a2cloudrc/" /etc/bash.bashrc
 sudo sed -i '/ttyUSB/d' /etc/bash.bashrc
-[[ ! $(grep a2cloudrc /etc/bash.bashrc) ]] && echo "source /usr/local/etc/a2cloudrc" | sudo tee -a /etc/bash.bashrc >/dev/null
+[[ ! $(grep a2cloudrc /etc/bash.bashrc) ]] && echo "source /usr/local/etc/a2cloudrc" | sudo tee -a /etc/bash.bashrc > /dev/null
 sudo wget -qO /usr/local/etc/a2cloudrc ${scriptURL}setup/a2cloudrc.txt
 source /usr/local/etc/a2cloudrc
 
 ### A2CLOUD: Record the version we're installing
 echo "A2CLOUD: Saving installer version..."
-echo "$version" | sudo tee /usr/local/etc/A2CLOUD-version &>/dev/null
+echo "$version" | sudo tee /usr/local/etc/A2CLOUD-version &> /dev/null
 
 ### A2CLOUD: Install avahi (Bonjour)
-if ! dpkg-query -l avahi-daemon &>/dev/null || ! dpkg-query -l libnss-mdns &>/dev/null; then
+if ! dpkg-query -l avahi-daemon &> /dev/null || ! dpkg-query -l libnss-mdns &> /dev/null; then
     echo "A2CLOUD: Installing avahi-daemon (mDNS)..."
-    sudo apt-get -y install avahi-daemon &>/dev/null
+    sudo apt-get -y install avahi-daemon &> /dev/null
     sudo apt-get -y clean
     sudo sed -i 's/^\(hosts.*\)$/\1 mdns/' /etc/nsswitch.conf
 else
     echo "A2CLOUD: avahi-daemon (mDNS) is already installed."
 fi
 
+### A2CLOUD: Install "at"
+if ! hash at 2> /dev/null; then
+    echo 'A2CLOUD: Installing "at"...'
+    sudo apt-get -y install at
+    sudo apt-get clean
+else
+    echo 'A2CLOUD: "at" is already installed.'
+fi
+
 ### A2CLOUD: Install xdg-utils (FreeDesktop menus/icon tools)
-if ! hash xdg-desktop-menu; then
+if ! hash xdg-desktop-menu 2> /dev/null; then
     echo "A2CLOUD: Installing xdg-utils..."
     sudo apt-get -y install xdg-utils
     sudo apt-get clean
+else
+    echo "A2CLOUD: xdg-utils are already installed."
 fi
 
 if [[ $installADTPro ]]; then
 
     ### ADTPro: Make sure we have enough free space
     freeSpace=$(df / | tail -1 | awk '{ print $4 }')
-    java -version &>/dev/null
+    java -version &> /dev/null
     if (( $? == 127 && $freeSpace < 350000 )); then
         echo "You do not have enough free space to install"
         echo "Java, which is needed for ADTPro server."
@@ -410,40 +419,48 @@ if [[ $installADTPro ]]; then
     fi
 
     ### ADTPro: Install X and LXDE
-    ###      Well, you need _something_ for ADTPro, and LXDE is as good as anything
-    if ! hash X 2>/dev/null; then
+    ###      Well, you need _something_ for ADTPro, and LXDE is the default on Raspbian
+    if ! hash X 2> /dev/null; then
         echo "A2CLOUD: Installing X Window System and LXDE..."
         sudo apt-get -y install xorg lxde
         sudo apt-get -y clean
-        # prevent automatically running at startup
-        sudo sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="text"/' /etc/default/grub
-        sudo update-grub
     else
         echo "A2CLOUD: X Window System and LXDE are already installed."
     fi
 
-    ### A2CLOUD: Setup VirtualBox resolution
-    if lspci 2>/dev/null | grep -q VirtualBox; then
-        if ! grep -q default /etc/xdg/lxsession/LXDE/autostart; then
-            echo "A2CLOUD: Setting desktop to 800x600 in VirtualBox console (no Additions)..."
-            echo -e "\nxrandr --output default --mode 800x600" | sudo tee -a /etc/xdg/lxsession/LXDE/autostart >/dev/null
-        else
-            echo "A2CLOUD: Desktop already set to 800x600 in VirtualBox console (no Additions)."
-        fi
-        if ! grep -q VBOX0 /etc/xdg/lxsession/LXDE/autostart; then
-            echo "A2CLOUD: Setting desktop to 800x600 in VirtualBox console (with Additions)..."
-            echo -e "\nxrandr --output VBOX0 --mode 800x600" | sudo tee -a /etc/xdg/lxsession/LXDE/autostart >/dev/null
-        else
-            echo "A2CLOUD: Desktop already set to 800x600 in VirtualBox console (with Additions)."
-        fi
-        echo "A2CLOUD: Disabling screensaver and screen blanking in VirtualBox LXDE..."
-        sudo sed -i 's/^\(@xscreensaver.*\)$/#\1\n\nxset s noblank\nxset s off\nxset -dpms\n/' /etc/xdg/lxsession/LXDE/autostart
+    ### A2CLOUD: prevent automatically running LXDE at startup
+    if [[ -n "$isSystemd" ]]; then
+        sudo systemctl set-default multi-user.target &> /dev/null
+    elif [[ -n "$isSysVInit" ]]; then
+        sudo sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT=.*$/GRUB_CMDLINE_LINUX_DEFAULT="text"/' /etc/default/grub
+        sudo update-grub
+    else
+        echo "A2CLOUD: can't disable GUI at startup: unrecognized init system."
     fi
-    ### A2CLOUD: Clean up after old version on RPi
-    if [[ $isRpi ]]; then
-        sudo sed -i 's/^.*VBOX0.*$//' /etc/xdg/lxsession/LXDE/autostart 2>/dev/null
-        sudo sed -i 's/^.*VBOX0.*$//' /etc/xdg/lxsession/LXDE-pi/autostart 2>/dev/null
-    fi
+
+#    ### A2CLOUD: Setup VirtualBox resolution
+#    ### FIXME: This doesn't appear to work in Jessie
+#    if lspci 2> /dev/null | grep -q VirtualBox; then
+#        if ! grep -q default /etc/xdg/lxsession/LXDE/autostart; then
+#            echo "A2CLOUD: Setting desktop to 800x600 in VirtualBox console (no Additions)..."
+#            echo -e "\nxrandr --output default --mode 800x600" | sudo tee -a /etc/xdg/lxsession/LXDE/autostart > /dev/null
+#        else
+#            echo "A2CLOUD: Desktop already set to 800x600 in VirtualBox console (no Additions)."
+#        fi
+#        if ! grep -q VBOX0 /etc/xdg/lxsession/LXDE/autostart; then
+#            echo "A2CLOUD: Setting desktop to 800x600 in VirtualBox console (with Additions)..."
+#            echo -e "\nxrandr --output VBOX0 --mode 800x600" | sudo tee -a /etc/xdg/lxsession/LXDE/autostart > /dev/null
+#        else
+#            echo "A2CLOUD: Desktop already set to 800x600 in VirtualBox console (with Additions)."
+#        fi
+#        echo "A2CLOUD: Disabling screensaver and screen blanking in VirtualBox LXDE..."
+#        sudo sed -i 's/^\(@xscreensaver.*\)$/#\1\n\nxset s noblank\nxset s off\nxset -dpms\n/' /etc/xdg/lxsession/LXDE/autostart
+#    fi
+#    ### A2CLOUD: Clean up after old version on RPi
+#    if [[ $isRpi ]]; then
+#        sudo sed -i 's/^.*VBOX0.*$//' /etc/xdg/lxsession/LXDE/autostart 2> /dev/null
+#        sudo sed -i 's/^.*VBOX0.*$//' /etc/xdg/lxsession/LXDE-pi/autostart 2> /dev/null
+#    fi
 
     # install or update java
     javaVersion=$(java -version 2>&1)
@@ -464,7 +481,7 @@ if [[ $installADTPro ]]; then
                     echo "# Oracle Java JDK";
                     echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu precise main";
                     echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu precise main";
-                } | sudo tee -a /etc/apt/sources.list >/dev/null
+                } | sudo tee -a /etc/apt/sources.list > /dev/null
             fi
             sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886
             sudo apt-get -y update
@@ -491,10 +508,10 @@ if [[ $installADTPro ]]; then
                 updateADTPro=1
                 echo "A2CLOUD: removing old version of ADTPro server..."
                 sudo pkill -f ADTPro
-                sudo rm /usr/local/adtpro/disks/ADTPRO*.DSK &>/dev/null
-                sudo rm /usr/local/adtpro/disks/ADTPRO*.PO &>/dev/null
-                sudo rm /usr/local/adtpro/disks/VDRIVE*.DSK &>/dev/null
-                sudo rm -r /tmp/a2cloud-install/disks &>/dev/null
+                sudo rm /usr/local/adtpro/disks/ADTPRO*.DSK &> /dev/null
+                sudo rm /usr/local/adtpro/disks/ADTPRO*.PO &> /dev/null
+                sudo rm /usr/local/adtpro/disks/VDRIVE*.DSK &> /dev/null
+                sudo rm -r /tmp/a2cloud-install/disks &> /dev/null
                 sudo mv /usr/local/adtpro/disks /tmp/a2cloud-install
                 sudo rm -r /usr/local/adtpro/ac.bat \
                            /usr/local/adtpro/ac.sh \
@@ -505,7 +522,7 @@ if [[ $installADTPro ]]; then
                            /usr/local/adtpro/lib \
                            /usr/local/adtpro/LICENSE \
                            /usr/local/adtpro/README \
-                           &>/dev/null
+                           &> /dev/null
             fi
         else
             echo "A2CLOUD: ADTPro server does not need updating."
@@ -522,7 +539,7 @@ if [[ $installADTPro ]]; then
         sudo chmod -R ugo+w /usr/local/adtpro
         sudo ln -s /usr/local/adtpro/lib/ADTPro*jar /usr/local/adtpro/lib/ADTPro.jar
         sudo ln -s /usr/local/adtpro/lib/AppleCommander/AppleCommander*ac.jar /usr/local/adtpro/lib/AppleCommander/AppleCommander-ac.jar
-        echo "sudo /usr/local/adtpro/adtpro.sh \$@" | sudo tee /usr/local/bin/adtpro.sh >/dev/null
+        echo "sudo /usr/local/adtpro/adtpro.sh \$@" | sudo tee /usr/local/bin/adtpro.sh > /dev/null
         sudo chmod ugo+x /usr/local/bin/adtpro.sh
         sudo usermod -a -G uucp $USER
         sudo usermod -a -G uucp root
@@ -534,8 +551,8 @@ if [[ $installADTPro ]]; then
     if [[ ! -f /usr/local/adtpro/lib/AppleCommander/AppleCommander-1.3.5.13id-ac.jar ]]; then
         echo "A2CLOUD: Installing AppleCommander-1.3.5.13id..."
         sudo mkdir -p /usr/local/adtpro/lib/AppleCommander
-        wget -qO /usr/local/adtpro/lib/AppleCommander/AppleCommander-1.3.5.13id-ac.jar http://downloads.sourceforge.net/project/applecommander/AppleCommander%20-%20Interim/testcase/AppleCommander-1.3.5.13id-ac.jar
-        rm /usr/local/adtpro/lib/AppleCommander/AppleCommander-ac.jar &>/dev/null
+        sudo wget -qO /usr/local/adtpro/lib/AppleCommander/AppleCommander-1.3.5.13id-ac.jar http://downloads.sourceforge.net/project/applecommander/AppleCommander%20-%20Interim/testcase/AppleCommander-1.3.5.13id-ac.jar
+        rm /usr/local/adtpro/lib/AppleCommander/AppleCommander-ac.jar &> /dev/null
         ln -s AppleCommander-1.3.5.13id-ac.jar /usr/local/adtpro/lib/AppleCommander/AppleCommander-ac.jar
     else
         echo "A2CLOUD: AppleCommander-1.3.5.13id is already installed."
@@ -562,10 +579,10 @@ if [[ $installADTPro ]]; then
     else
         echo "A2CLOUD: Serial port libraries are already installed."
     fi
-    [[ ! -f /usr/lib/RXTXcomm.jar ]] && sudo ln -s /usr/share/java/RXTXcomm.jar /usr/lib &>/dev/null
-    [[ ! -d /usr/local/adtpro/lib/rxtx/rxtx-2.2pre2-local/arm ]] && ln -s /usr/lib/jni /usr/local/adtpro/lib/rxtx/rxtx-2.2pre2-local/arm &>/dev/null
+    [[ ! -f /usr/lib/RXTXcomm.jar ]] && sudo ln -s /usr/share/java/RXTXcomm.jar /usr/lib &> /dev/null
+    [[ ! -d /usr/local/adtpro/lib/rxtx/rxtx-2.2pre2-local/arm ]] && ln -s /usr/lib/jni /usr/local/adtpro/lib/rxtx/rxtx-2.2pre2-local/arm &> /dev/null
 
-    if ! hash xvfb-run 2>/dev/null; then
+    if ! hash xvfb-run 2> /dev/null; then
         echo "A2CLOUD: Installing xvfb for headless operation..."
         sudo apt-get -y install xvfb
         sudo apt-get -y clean
@@ -574,14 +591,23 @@ if [[ $installADTPro ]]; then
     fi
 
     ### A2CLOUD: Enable netatalk sharing for A2CLOUD if it's installed
-    if hash afpd 2>/dev/null; then # A2SERVER/netatalk installed
-        if [[ ! -d /srv/A2SERVER/ADTDISKS || ! $(grep ADTDISKS /usr/local/etc/netatalk/AppleVolumes.default) ]]; then
+    if hash afpd 2> /dev/null; then # A2SERVER/netatalk installed
+        if [[ -d /srv/A2SERVER ]]; then
+            sharePath=/srv/A2SERVER
+        else
+            sharePath=/media/A2SHARED
+        fi
+        
+        if [[ ! -d ${sharePath}/ADTDISKS || ! $(grep ADTDISKS /usr/local/etc/netatalk/AppleVolumes.default) ]]; then
             echo "A2CLOUD: Setting up /usr/local/adtpro/disks for Apple file sharing..."
-            if [[ ! -d /srv/A2SERVER/ADTDISKS ]]; then
-                ln -s /usr/local/adtpro/disks /srv/A2SERVER/ADTDISKS 2>/dev/null
+            if [[ ! -d ${sharePath}/ADTDISKS ]]; then
+                ln -s /usr/local/adtpro/disks ${sharePath}/ADTDISKS 2> /dev/null
+            fi
+            if [[ $sharePath == "/srv/A2SERVER" ]] && grep '/media/A2SHARED/ADTDISKS' /usr/local/etc/netatalk/AppleVolumes.default; then
+                sudo sed -i 's@/media/A2SHARED/ADTDISKS@/srv/A2SERVER/ADTDISKS@' /usr/local/etc/netatalk/AppleVolumes.default
             fi
             if [[ ! $(grep ADTDISKS /usr/local/etc/netatalk/AppleVolumes.default) ]]; then
-                sudo sed -i 's@^# End of File@/srv/A2SERVER/ADTDISKS ADTDISKS ea:ad\n\n# End of File@' /usr/local/etc/netatalk/AppleVolumes.default
+                sudo sed -i 's@^# End of File@${sharePath}/ADTDISKS ADTDISKS ea:ad\n\n# End of File@' /usr/local/etc/netatalk/AppleVolumes.default
             fi
             sudo /etc/init.d/netatalk restart
         else
@@ -589,19 +615,22 @@ if [[ $installADTPro ]]; then
         fi
 
         ### A2CLOUD: Enable samba sharing for A2CLOUD, if A2SERVER installed it
-        if grep -q A2SHARED /etc/samba/smb.conf 2>/dev/null; then
+        if [[ $sharePath == "/srv/A2SERVER" ]] && grep '/media/A2SHARED/ADTDISKS' /etc/samba/smb.conf; then
+            sudo sed -i 's@/media/A2SHARED/ADTDISKS@/srv/A2SERVER/ADTDISKS@' /etc/samba/smb.conf
+        fi
+        if grep -q "$sharePath" /etc/samba/smb.conf 2> /dev/null; then
             # SMB already enabled by A2SERVER
-            if grep -q ADTDISKS /etc/samba/smb.conf 2>/dev/null; then
+            if grep -q ADTDISKS /etc/samba/smb.conf 2> /dev/null; then
                 echo "A2CLOUD: /usr/local/adtpro/disks is already set up for Windows file sharing."
             else
                 echo "A2CLOUD: Setting up /usr/local/adtpro/disks for Windows file sharing..."
-                echo "[ADTDISKS]" | sudo tee -a /etc/samba/smb.conf >/dev/null
-                echo "    path = /srv/A2SERVER/ADTDISKS" | sudo tee -a /etc/samba/smb.conf >/dev/null
-                echo "    browsable = yes" | sudo tee -a /etc/samba/smb.conf >/dev/null
-                echo "    guest ok = yes" | sudo tee -a /etc/samba/smb.conf >/dev/null
-                echo "    read only = no" | sudo tee -a /etc/samba/smb.conf >/dev/null
-                echo "    create mask = 0666" | sudo tee -a /etc/samba/smb.conf >/dev/null
-                echo "    force user = $(whoami)" | sudo tee -a /etc/samba/smb.conf >/dev/null
+                echo "[ADTDISKS]" | sudo tee -a /etc/samba/smb.conf > /dev/null
+                echo "    path = ${sharePath}/ADTDISKS" | sudo tee -a /etc/samba/smb.conf > /dev/null
+                echo "    browsable = yes" | sudo tee -a /etc/samba/smb.conf > /dev/null
+                echo "    guest ok = yes" | sudo tee -a /etc/samba/smb.conf > /dev/null
+                echo "    read only = no" | sudo tee -a /etc/samba/smb.conf > /dev/null
+                echo "    create mask = 0666" | sudo tee -a /etc/samba/smb.conf > /dev/null
+                echo "    force user = $(whoami)" | sudo tee -a /etc/samba/smb.conf > /dev/null
             fi
         else
             echo "A2CLOUD: Windows file sharing not in use."
@@ -632,8 +661,8 @@ if [[ $installADTPro ]]; then
 fi
 
 ### ADTPro: Install xrdp
-if hash X 2>/dev/null; then
-    if dpkg-query -l xrdp; then
+if hash X 2> /dev/null; then
+    if ! dpkg-query -l xrdp &> /dev/null; then
         echo "A2CLOUD: Installing xrdp/tightvncserver..."
         sudo apt-get -y install xrdp
         sudo apt-get -y clean
@@ -643,95 +672,6 @@ if hash X 2>/dev/null; then
 else
     echo "A2CLOUD: X11 not found; not installing xrdp/tightvncserver."
 fi
-
-if [[ $setupSerialPortLogin ]]; then
-
-    ### SerialCon: Begin setting up serial console
-    echo "A2CLOUD: Setting GPIO serial login to 4800 bps, and disabling..."
-    # set console port login to 4800 bps (using RPi console cable) and comment it out
-    if [[ -n "$isSystemd" ]]; then
-        sudo sed -i 's/ttyAMA0,[0-9]*/ttyAMA0,4800/g' /boot/cmdline.txt 2>/dev/null
-    elif [[ -n "$isSysVInit" ]]; then
-        sudo sed -i 's/^\(T.*\)ttyAMA0 .* /#\1ttyAMA0 4800 /' /etc/inittab
-        sudo sed -i 's/ttyAMA0,[0-9]*/ttyAMA0,4800/g' /boot/cmdline.txt 2>/dev/null
-    else
-        echo "A2CLOUD: Cannot set baudrate: Unrecognized init system"
-    fi
-
-    if ! hash screen 2>/dev/null; then
-        echo "A2CLOUD: Installing Screen for multiple terminals..."
-        sudo apt-get -y install screen
-        sudo apt-get -y clean
-    else
-        echo "A2CLOUD: Screen is already installed."
-    fi
-    echo "A2CLOUD: Disabling Screen welcome message..."
-    sudo sed -i 's/^#startup_message/startup_message/' /etc/screenrc
-
-    ### SerialCon: Set up a single byte character set locale
-    ###      TODO: Figure out how to make this ASCII or CP437.
-    # use 8-bit (non-Unicode) character set for proper emulation in Apple II term programs
-    IFS='' defaultLang=$(grep ^LANG= /etc/default/locale | cut -f 2 -d '=')
-    langLatin1=${defaultLang%%.*}
-    if [[ ! $(grep "^$langLatin1.ISO" /usr/share/i18n/SUPPORTED) ]]; then
-        langLatin1="en_US"
-    fi
-    if [[ $(cat /usr/local/etc/a2cloud-lang 2>/dev/null) != $langLatin1 ]]; then
-        echo "A2CLOUD: Setting serial port login to use 8-bit character set..."
-        if [[ ! $(grep "^$langLatin1.ISO" /etc/locale.gen) ]]; then
-            echo "A2CLOUD: Generating locales..."
-            locs=$(IFS='' grep "^[^#]" /etc/locale.gen | while read -r thisLoc; do echo -n "$thisLoc, " ; done)
-            locISO=$(grep "$langLatin1.ISO" /usr/share/i18n/SUPPORTED | sort | head -1)
-            echo "locales locales/locales_to_be_generated multiselect $locs$locISO" | sudo debconf-set-selections
-            sudo rm /etc/locale.gen &>/dev/null
-            sudo dpkg-reconfigure -f noninteractive locales
-        else
-            echo "A2CLOUD: Locales have already been generated."
-        fi
-        # set LANG to ISO-8859 (8-bit) character set on TTY login
-        echo "${locISO%% *}" | sudo tee /usr/local/etc/a2cloud-lang >/dev/null
-        source /usr/local/etc/a2cloudrc
-    else
-        echo "A2CLOUD: Serial port login is already using 8-bit character set."
-    fi
-
-    ### SerialCon: Install serial login command scripts
-    echo "A2CLOUD: Setting up baud command..."
-    sudo wget -qO /usr/local/bin/baud ${scriptURL}setup/baud.txt
-    sudo chmod ugo+x /usr/local/bin/baud
-
-    echo "A2CLOUD: Setting up term command..."
-    sudo wget -qO /usr/local/bin/term ${scriptURL}setup/term.txt
-    sudo chmod ugo+x /usr/local/bin/term
-
-    echo "A2CLOUD: Setting up usbgetty command..."
-    sudo wget -qO /usr/local/sbin/usbgetty ${scriptURL}setup/usbgetty.txt
-    sudo chmod ugo+x /usr/local/sbin/usbgetty
-
-    ### SerialCon: Install inittab serial port login
-    echo "A2CLOUD: Removing ttyUSB0 shell login..."
-    if [[ -n "$isSystemd" ]]; then
-        # FIXME: Okay, the way we need to fix this is that we need to do the
-        # -scanttyUSB behavior and create a symlink in udev here.  If we have
-        # a /dev/ttySerialConsole link, it's real easy to do this here with
-        # systemd, and it actually makes the script below not necessary.<F10><F12><F12>
-        echo "A2CLOUD: systemd not yet supported here"
-    elif [[ -n "$isSysVInit" ]]; then
-        sudo sed -i "s/^\([^#].*ttyUSB0.*\)$//" /etc/inittab
-
-        if [[ ! $(grep -e '-scanttyUSB' /etc/inittab) ]]; then
-            echo "A2CLOUD: Adding USB port shell login at 4800 bps..."
-            echo -e "\n\n#for USB-to-serial adapter\nT1:23:respawn:/usr/local/sbin/usbgetty -h -L -scanttyUSB 4800 vt100" | sudo tee -a /etc/inittab >/dev/null
-            sudo init q
-            sudo pkill -f "getty.*ttyUSB"
-        else
-            echo "A2CLOUD: USB port shell login already added."
-        fi
-    else
-        echo "A2CLOUD: Cannot set baudrate: Unrecognized init system"
-    fi
-fi
-
 
 ### A2CLOUD: Install serial port rules/scripts
 echo "A2CLOUD: Setting up USB port serial adapter handler..."
@@ -766,15 +706,120 @@ if [[ ! -f /etc/udev/rules.d/50-usb.rules ]]; then
         udevLines+='KERNEL=="ttyUSB1", SYMLINK+="ttyUSBlower", RUN+="/usr/local/sbin/ttyusbhandler add ttyUSBlower"\n'
         udevLines+='ACTION=="remove",  ENV{DEVPATH}=="*ttyUSB1*", RUN+="/usr/local/sbin/ttyusbhandler remove ttyUSBlower"\n'
     fi
-    echo -e "$udevLines" | sudo tee /etc/udev/rules.d/50-usb.rules >/dev/null
+    echo -e "$udevLines" | sudo tee /etc/udev/rules.d/50-usb.rules > /dev/null
+    sudo udevadm control --reload-rules
 else
     echo "A2CLOUD: Device rules for USB ports already exist."
 fi
 
+if [[ $setupSerialPortLogin ]]; then
+
+    ### SerialCon: Begin setting up serial console
+    echo "A2CLOUD: Setting GPIO serial login to 4800 bps, and disabling..."
+    # set console port login to 4800 bps (using RPi console cable) and comment it out
+    if [[ -n "$isSystemd" ]]; then
+        sudo sed -i 's/ttyAMA0,[0-9]*/ttyAMA0,4800/g' /boot/cmdline.txt 2> /dev/null
+    elif [[ -n "$isSysVInit" ]]; then
+        sudo sed -i 's/^\(T.*\)ttyAMA0 .* /#\1ttyAMA0 4800 /' /etc/inittab
+        sudo sed -i 's/ttyAMA0,[0-9]*/ttyAMA0,4800/g' /boot/cmdline.txt 2> /dev/null
+    else
+        echo "A2CLOUD: Cannot set console baud rate: Unrecognized init system"
+    fi
+
+    if ! hash screen 2> /dev/null; then
+        echo "A2CLOUD: Installing Screen for multiple terminals..."
+        sudo apt-get -y install screen
+        sudo apt-get -y clean
+    else
+        echo "A2CLOUD: Screen is already installed."
+    fi
+    echo "A2CLOUD: Disabling Screen welcome message..."
+    sudo sed -i 's/^#startup_message/startup_message/' /etc/screenrc
+
+    ### SerialCon: Set up a single byte character set locale
+    ###      TODO: Figure out how to make this ASCII or CP437.
+    # use 8-bit (non-Unicode) character set for proper emulation in Apple II term programs
+    IFS='' defaultLang=$(grep ^LANG= /etc/default/locale | cut -f 2 -d '=')
+    langLatin1=${defaultLang%%.*}
+    if [[ ! $(grep "^$langLatin1.ISO" /usr/share/i18n/SUPPORTED) ]]; then
+        langLatin1="en_US"
+    fi
+    if [[ $(cat /usr/local/etc/a2cloud-lang 2> /dev/null) != $langLatin1 ]]; then
+        echo "A2CLOUD: Setting serial port login to use 8-bit character set..."
+        locISO=$(grep "$langLatin1.ISO" /usr/share/i18n/SUPPORTED | sort | head -1)
+        if [[ ! $(grep "^$langLatin1.ISO" /etc/locale.gen) ]]; then
+            echo "A2CLOUD: Generating locales..."
+            locs=$(IFS='' grep "^[^#]" /etc/locale.gen | while read -r thisLoc; do echo -n "$thisLoc, " ; done)
+            echo "locales locales/locales_to_be_generated multiselect $locs$locISO" | sudo debconf-set-selections
+            sudo rm /etc/locale.gen &> /dev/null
+            sudo dpkg-reconfigure -f noninteractive locales
+        else
+            echo "A2CLOUD: Locales have already been generated."
+        fi
+        # set LANG to ISO-8859 (8-bit) character set on TTY login
+        echo "${locISO%% *}" | sudo tee /usr/local/etc/a2cloud-lang > /dev/null
+        source /usr/local/etc/a2cloudrc
+    else
+        echo "A2CLOUD: Serial port login is already using 8-bit character set."
+    fi
+
+    ### SerialCon: Install serial login command scripts
+    echo "A2CLOUD: Setting up baud command..."
+    sudo wget -qO /usr/local/bin/baud ${scriptURL}setup/baud.txt
+    sudo chmod ugo+x /usr/local/bin/baud
+
+    echo "A2CLOUD: Setting up term command..."
+    sudo wget -qO /usr/local/bin/term ${scriptURL}setup/term.txt
+    sudo chmod ugo+x /usr/local/bin/term
+
+    ### SerialCon: Install USB serial port login
+    echo "A2CLOUD: Setting up USB shell login..."
+    sudo wget -qO /usr/local/sbin/usbgetty ${scriptURL}setup/usbgetty.txt
+    sudo chmod ugo+x /usr/local/sbin/usbgetty
+    if [[ -n "$isSystemd" ]]; then
+        # FIXME: Okay, the way we need to fix this is that we need to do the
+        # -scanttyUSB behavior and create a symlink in udev here.  If we have
+        # a /dev/ttySerialConsole link, it's real easy to do this here with
+        # systemd, and it actually makes the script below not necessary.<F10><F12><F12>
+
+        # ID: I bandaided this by simply calling /usr/local/sbin/usbgetty from a getty
+        # service, just as it used to be called from /etc/inittab. However,
+        # the service doesn't automatically respawn when it dies, so ttyusbhandler
+        # (called by udev, as before) now restarts the service upon adapter insertion.
+        # This might not be the best way to do it, but it works for now,
+        # apart from a 30 second delay before the getty becomes available.
+        sudo wget -qO /etc/systemd/system/getty.target.wants/usbgetty@.service ${scriptURL}setup/usbgetty-systemd.service.txt
+        pwd=$PWD
+        cd /etc/systemd/system/getty.target.wants
+        grep -o 'SYMLINK+="ttyUSB.*,' /etc/udev/rules.d/50-usb.rules | cut -d '"' -f 2 | \
+          while read ttyUSB; do
+            sudo rm usbgetty@${ttyUSB}.service 2> /dev/null
+            sudo ln -s usbgetty@.service usbgetty@${ttyUSB}.service
+          done
+        cd "$pwd"
+        sudo systemctl daemon-reload
+    elif [[ -n "$isSysVInit" ]]; then
+        echo "A2CLOUD: Removing ttyUSB0 shell login..."
+        sudo sed -i "s/^\([^#].*ttyUSB0.*\)$//" /etc/inittab
+
+        if [[ ! $(grep -e '-scanttyUSB' /etc/inittab) ]]; then
+            echo "A2CLOUD: Adding USB port shell login at 4800 bps..."
+            echo -e "\n\n#for USB-to-serial adapter\nT1:23:respawn:/usr/local/sbin/usbgetty -h -L -scanttyUSB 4800 vt100" | sudo tee -a /etc/inittab > /dev/null
+            sudo init q
+            sudo pkill -f "getty.*ttyUSB"
+        else
+            echo "A2CLOUD: USB port shell login already added."
+        fi
+    else
+        echo "A2CLOUD: Cannot set up USB shell login: Unrecognized init system"
+    fi
+fi
+
+
 
 if [[ $installCommTools ]]; then
 
-    if ! hash curl 2>/dev/null; then
+    if ! hash curl 2> /dev/null; then
         ### CommTools: Install curl
         echo "A2CLOUD: Installing curl..."
         sudo apt-get -y install curl
@@ -783,7 +828,7 @@ if [[ $installCommTools ]]; then
         echo "A2CLOUD: curl is already installed."
     fi
 
-    if ! hash sz 2>/dev/null; then
+    if ! hash sz 2> /dev/null; then
         ### CommTools: Install lrzsz
         echo "A2CLOUD: Installing rzsz for X/Y/Zmodem transfers..."
         sudo apt-get -y install lrzsz
@@ -792,7 +837,7 @@ if [[ $installCommTools ]]; then
         echo "A2CLOUD: rzsz is already installed."
     fi
 
-    if ! hash ftp 2>/dev/null; then
+    if ! hash ftp 2> /dev/null; then
         ### CommTools: Install ftp
         echo "A2CLOUD: Installing ftp..."
         sudo apt-get -y install ftp
@@ -801,22 +846,22 @@ if [[ $installCommTools ]]; then
         echo "A2CLOUD: ftp is already installed."
     fi
 
-    if ! hash cftp 2>/dev/null; then
+    if ! hash cftp 2> /dev/null; then
         ### CommTools: Install cftp
         echo "A2CLOUD: Installing cftp..."
         cd /tmp/a2cloud-install
         if [[ $downloadBinaries ]]; then
             wget -qO- "${binaryURL}precompiled/cftp-${arch}_${debianName}.tgz" | sudo tar Pzx
         fi
-        if ! hash cftp 2>/dev/null; then
+        if ! hash cftp 2> /dev/null; then
             sudo apt-get -y install build-essential
             sudo apt-get -y install ncurses-dev
             sudo apt-get -y clean
-            rm -rf /tmp/a2cloud-install/cftp* &>/dev/null
+            rm -rf /tmp/a2cloud-install/cftp* &> /dev/null
             mkdir -p /tmp/a2cloud-install/cftp
             cd /tmp/a2cloud-install/cftp
-            wget -q -O cftp.tgz http://nih.at/cftp/cftp-0.12.tar.gz
-            tar zxf cftp.tgz
+            wget -q -O cftp-0.12.tar.gz http://nih.at/cftp/cftp-0.12.tar.gz
+            tar zxf cftp-0.12.tar.gz
             cd cftp-0.12
             ./configure
             make
@@ -828,7 +873,7 @@ if [[ $installCommTools ]]; then
         echo "A2CLOUD: cftp is already installed."
     fi
 
-    if ! hash lynx 2>/dev/null; then
+    if ! hash lynx 2> /dev/null; then
         ### CommTools: Install lynx
         echo "A2CLOUD: Installing lynx..."
         sudo apt-get -y install lynx
@@ -837,7 +882,7 @@ if [[ $installCommTools ]]; then
         echo "A2CLOUD: lynx is already installed."
     fi
 
-    if ! hash links 2>/dev/null; then
+    if ! hash links 2> /dev/null; then
         ### CommTools: Install links
         echo "A2CLOUD: Installing links..."
         sudo apt-get -y --force-yes install links
@@ -849,7 +894,7 @@ if [[ $installCommTools ]]; then
     ### CommTools: Install tin + a2news script
     sudo wget -qO /usr/local/bin/a2news ${scriptURL}setup/a2news.txt
     sudo chmod ugo+x /usr/local/bin/a2news
-    if ! hash tin 2>/dev/null; then
+    if ! hash tin 2> /dev/null; then
         echo "A2CLOUD: Installing a2news/tin..."
         sudo apt-get -y install tin
         sudo apt-get -y clean
@@ -862,7 +907,7 @@ if [[ $installCommTools ]]; then
         echo "A2CLOUD: Setting exim4 to use only IPv4 to prevent startup error messages..."
         sudo sed -i 's/ ; ::1//' /etc/exim4/update-exim4.conf.conf
         sudo update-exim4.conf
-        sudo rm /var/log/exim4/mainlog /var/log/exim4/paniclog &>/dev/null
+        sudo rm /var/log/exim4/mainlog /var/log/exim4/paniclog &> /dev/null
     fi
     # restore exim4 log directory if occupied by a file put there by earlier A2CLOUD versions
     if [[ -f /var/log/exim4 ]]; then
@@ -876,7 +921,7 @@ if [[ $installCommTools ]]; then
     ### CommTools: Install irssi + a2chat script
     sudo wget -qO /usr/local/bin/a2chat ${scriptURL}setup/a2chat.txt
     sudo chmod ugo+x /usr/local/bin/a2chat
-    if ! hash irssi 2>/dev/null; then
+    if ! hash irssi 2> /dev/null; then
         echo "A2CLOUD: Installing a2chat/irssi..."
         sudo apt-get -y install irssi
         sudo apt-get -y clean
@@ -885,7 +930,7 @@ if [[ $installCommTools ]]; then
     fi
 
     ### CommTools: Install telnet
-    if ! hash telnet 2>/dev/null; then
+    if ! hash telnet 2> /dev/null; then
         echo "A2CLOUD: Installing telnet..."
         sudo apt-get -y install telnet
         sudo apt-get -y clean
@@ -893,38 +938,50 @@ if [[ $installCommTools ]]; then
         echo "A2CLOUD: telnet is already installed."
     fi
 
-    ### CommTools: Install TTYtter
+    ### CommTools: Install Oysttyer (formerly TTYtter)
     # Do we need to check for the readline module here as well?
-    #if [[ ( ! -f /usr/bin/ttytter && ! -f /usr/local/bin/ttytter ) || ! -f "/usr/local/share/perl/5.14.2/Term/ReadLine/TTYtter.pm" ]]; then
-    if ! hash ttyter 2>/dev/null; then
-        echo "A2CLOUD: Installing TTYtter..."
-        sudo wget -qO /usr/local/bin/ttytter http://www.floodgap.com/software/ttytter/dist2/2.1.00.txt
-        sudo chmod ugo+x /usr/local/bin/ttytter
+    # if [[ ( ! -f /usr/bin/ttytter && ! -f /usr/local/bin/ttytter ) || ! -f "/usr/local/share/perl/5.14.2/Term/ReadLine/TTYtter.pm" ]]; then
+    perlVersion=$(perl -e 'print $^V' | cut -c 2-)
+    if ! hash ttytter 2> /dev/null || [[ ! -f /usr/local/share/perl/${perlVersion}/Term/ReadLine/TTYtter.pm ]]; then
+        echo "A2CLOUD: Installing Oysttyer..."
+        # sudo wget -qO /usr/local/bin/ttytter http://www.floodgap.com/software/ttytter/dist2/2.1.00.txt
+        # sudo chmod ugo+x /usr/local/bin/ttytter
+        wget -qO- https://github.com/oysttyer/oysttyer/archive/2.7.2.tar.gz | sudo tar -zxP --transform 's|oysttyer-2.7.2/oysttyer.pl|/usr/local/bin/oysttyer|' oysttyer-2.7.2/oysttyer.pl
+        sudo rm /usr/local/bin/ttytter 2> /dev/null
+        sudo ln -s /usr/local/bin/oysttyer /usr/local/bin/ttytter
         perlVersion=$(perl -e 'print $^V' | cut -c 2-)
         if [[ ! -f "/usr/local/share/perl/$perlVersion/Term/ReadLine/TTYtter.pm" ]]; then
             echo "A2CLOUD: Installing TTYtter readline module..."
-            if [[ $downloadBinaries && $perlVersion == "5.14.2" ]]; then
-                wget -qO- "${binaryURL}precompiled/ttytter_readline-${arch}_${debianName}.tgz" | sudo tar Pzx
+            if [[ $downloadBinaries ]] && [[ $perlVersion == "5.14.2" || $perlVersion == "5.20.2" ]]; then
+                wget -qO- ${binaryURL}precompiled/ttytter_readline-rpi.tgz | sudo tar Pzx
             fi
             if [[ ! -f "/usr/local/share/perl/$perlVersion/Term/ReadLine/TTYtter.pm" ]]; then
                 if [[ ! -f "/usr/local/lib/perl/$perlVersion/Term/ReadKey.pm" ]]; then
                     cd /tmp/a2cloud-install
-                    wget -qO TermReadKey-2.31.tar.gz http://www.cpan.org/authors/id/J/JS/JSTOWE/TermReadKey-2.31.tar.gz
-                    tar zxf TermReadKey-2.31.tar.gz
-                    cd TermReadKey-2.31
-                    perl Makefile.PL &>/dev/null
-                    make &>/dev/null
-                    sudo make install &>/dev/null
+                    wget -qO TermReadKey-2.33.tar.gz http://www.cpan.org/authors/id/J/JS/JSTOWE/TermReadKey-2.33.tar.gz
+                    tar zxf TermReadKey-2.33.tar.gz
+                    cd TermReadKey-2.33
+                    perl Makefile.PL &> /dev/null
+                    if ! hash make 2> /dev/null; then
+                        sudo apt-get -y install build-essential
+                        sudo apt-get -y clean
+                    fi
+                    make &> /dev/null
+                    sudo make install &> /dev/null
                     cd /tmp/a2cloud-install
-                    rm -rf TermReadKey-2.31
+                    rm -rf TermReadKey-2.33
                 fi
                 cd /tmp/a2cloud-install
                 wget -qO Term-ReadLine-TTYtter-1.4.tar.gz http://www.cpan.org/authors/id/C/CK/CKAISER/Term-ReadLine-TTYtter-1.4.tar.gz
                 tar zxf Term-ReadLine-TTYtter-1.4.tar.gz
                 cd Term-ReadLine-TTYtter-1.4
-                perl Makefile.PL &>/dev/null
-                make &>/dev/null
-                sudo make install &>/dev/null
+                perl Makefile.PL &> /dev/null
+                if ! hash make 2> /dev/null; then
+                    sudo apt-get -y install build-essential
+                    sudo apt-get -y clean
+                fi
+                make &> /dev/null
+                sudo make install &> /dev/null
                 cd /tmp/a2cloud-install
                 rm -rf Term-ReadLine-TTYtter-1.4
             fi
@@ -932,14 +989,14 @@ if [[ $installCommTools ]]; then
             echo "A2CLOUD: TTYtter readline module is already installed."
         fi
     else
-        echo "A2CLOUD: TTYtter is already installed."
+        echo "A2CLOUD: Oysttyer is already installed."
     fi
 fi
 
 if [[ $installEmulators ]]; then
 
     ### Emulators: GSport
-    if ! hash gsport 2>/dev/null; then
+    if ! hash gsport 2> /dev/null || ! hash gsportx 2> /dev/null || ! hash gsportfb 2> /dev/null; then
         # FIXME: This is a _TERRIBLE_ name/place for this...
         gsportConfigFile='/usr/local/lib/config.txt'
 
@@ -947,39 +1004,60 @@ if [[ $installEmulators ]]; then
         cd /tmp/a2cloud-install
         if [[ $downloadBinaries ]]; then
             ### Emulators: GSport: Install pre-built binaries
-            sudo apt-get -y install libpcap0.8 &>/dev/null
+            sudo apt-get -y install libpcap0.8 &> /dev/null
             sudo apt-get -y clean
-            wget -qO- "${binaryURL}precompiled/gsport-${arch}_${debianName}.tgz" | sudo tar Pzx 2>/dev/null
+            wget -qO- "${binaryURL}precompiled/gsport-${arch}_${debianName}.tgz" | sudo tar Pzx 2> /dev/null
         fi
-        if ! hash gsport 2>/dev/null; then
+        if ! hash gsport 2> /dev/null || ! hash gsportx 2> /dev/null || ! hash gsportfb 2> /dev/null; then
             ### Emulators: GSport: Install from source
             echo "A2CLOUD: Building GSport from source..."
-            sudo apt-get -y install build-essential &>/dev/null
-            sudo apt-get -y install libx11-dev libxext-dev xfonts-base libpcap0.8-dev &>/dev/null
-            sudo apt-get -y clean >/dev/null
+            sudo apt-get -y install build-essential &> /dev/null
+            sudo apt-get -y install libx11-dev libxext-dev xfonts-base libpcap0.8-dev &> /dev/null
+            sudo apt-get -y clean > /dev/null
+
             mkdir -p /tmp/a2cloud-install/gsport
             cd /tmp/a2cloud-install/gsport
             wget -q -O gsport.tgz http://downloads.sourceforge.net/project/gsport/GSport-0.31/gsport_0.31.tar.gz
             tar zxf gsport.tgz
             cd gsport*/src
-            rm vars 2>/dev/null
-            ln -s vars_x86linux vars
-            make &>/dev/null
-            gcc -o ../to_pro to_pro.c &>/dev/null
-            gcc -o ../partls partls.c &>/dev/null
-            sudo cp -P ../gsportx ../to_pro ../partls /usr/local/bin
-            sudo cp ../config.txt /usr/local/lib
-            sudo chmod ugo+w "$gsportConfigFile"
-            make clean &>/dev/null
-            rm vars
-            cp vars_fbrpilinux vars
-            sed -i 's/-march=armv6/-march=i686/' vars
-            make &>/dev/null
-            sudo cp -P ../gsportfb /usr/local/bin
-            cd /usr/local/lib
-            sudo ln -s config.txt gsport_config.txt 2>/dev/null
-            cd /tmp/a2cloud-install
-            rm -rf gsport
+            rm vars 2> /dev/null
+
+            buildGSport=1
+            cp vars_fbrpilinux vars_fb
+            if [[ -n $isRpi ]]; then
+                cp vars_pi vars_x
+            else
+                cp vars_x86linux vars_x
+                if [[ $arch == "debian_x86" ]]; then
+                    sed -i 's/-march=armv6/-march=i686/' vars_fb
+                elif [[ $arch == "debian_x64" ]]; then
+                    sed -i 's/-march=i686/-march=x86-64/' vars_x
+                    sed -i 's/-march=armv6/-march=x86-64/' vars_fb
+                else
+                    buildGSport=
+                    echo "A2CLOUD: cannot build GSport; unknown machine architecture."
+                fi
+            fi
+            sed -i 's/^LDFLAGS =.*$/LDFLAGS = -ldl/' vars_x
+            sed -i 's/^LDFLAGS =.*$/LDFLAGS = -ldl/' vars_fb
+            if [[ -n $buildGSport ]]; then
+                for varsFile in vars_x vars_fb; do
+                    rm vars 2> /dev/null
+                    cp $varsFile vars
+                    make clean &> /dev/null
+                    make &> /dev/null
+                    sudo cp -P ../gsport${varsFile:5:2} /usr/local/bin
+                done
+                gcc -o ../to_pro to_pro.c &> /dev/null
+                gcc -o ../partls partls.c &> /dev/null
+                sudo cp -P ../to_pro ../partls /usr/local/bin
+                sudo cp ../config.txt "$gsportConfigFile"
+                sudo chmod ugo+w "$gsportConfigFile"
+                cd "${gsportConfigFile%/*}"
+                sudo ln -s "${gsportConfigFile##*/}" gsport_config.txt 2> /dev/null
+            fi
+            cd /tmp/a2cloud-install 2> /dev/null
+            rm -rf gsport 2> /dev/null
         fi
 
         if [[ $slot6 ]]; then
@@ -988,7 +1066,7 @@ if [[ $installEmulators ]]; then
             sudo sed -i 's@^s6d1.*$@s6d1 = /usr/local/share/gsdisks/slot6drive1.po@' "$gsportConfigFile"
             sudo sed -i 's@^s6d2.*$@s6d2 = /usr/local/share/gsdisks/slot6drive2.po@' "$gsportConfigFile"
             if [[ ! -f /usr/local/share/gsdisks/slot6drive1.po || ! -f /usr/local/share/gsdisks/slot6drive2.po ]]; then
-                wget -qO- "${binaryURL}slot6.tgz" | sudo tar Pzx 2>/dev/null
+                wget -qO- "${binaryURL}slot6.tgz" | sudo tar Pzx 2> /dev/null
             fi
         fi
 
@@ -997,7 +1075,7 @@ if [[ $installEmulators ]]; then
             if grep -q 'bram1[00]' "$gsportConfigFile"; then
                 sudo sed -i 's/^\(bram1\[00\]\)/g_appletalk_turbo = 1\n\n\1/' "$gsportConfigFile"
             else
-                echo -e '\ng_appletalk_turbo = 1' | sudo tee -a "$gsportConfigFile" >/dev/null
+                echo -e '\ng_appletalk_turbo = 1' | sudo tee -a "$gsportConfigFile" > /dev/null
             fi
         fi
         sudo sed -i 's/^g_appletalk_turbo = 0/g_appletalk_turbo = 1/' "$gsportConfigFile"
@@ -1007,7 +1085,7 @@ if [[ $installEmulators ]]; then
             if grep -q 'bram1[00]' "$gsportConfigFile"; then
                 sudo sed -i 's/^\(bram1\[00\]\)/g_ethernet = 1\n\n\1/' "$gsportConfigFile"
             else
-                echo -e '\ng_ethernet = 1' | sudo tee -a "$gsportConfigFile" >/dev/null
+                echo -e '\ng_ethernet = 1' | sudo tee -a "$gsportConfigFile" > /dev/null
             fi
         fi
         sudo sed -i 's/g_ethernet = 0/g_ethernet = 1/' "$gsportConfigFile"
@@ -1015,7 +1093,7 @@ if [[ $installEmulators ]]; then
         ### Emulators: GSport: Setup groups and wrapper scripts
         echo "A2CLOUD: Updating GSport launch and setup files..."
 
-        sudo addgroup gsport &>/dev/null
+        sudo addgroup gsport &> /dev/null
         sudo chgrp gsport /usr/local/bin/gsportfb
         sudo chmod u+s /usr/local/bin/gsportfb
         sudo chgrp gsport /usr/local/bin/gsportx
@@ -1030,32 +1108,32 @@ if [[ $installEmulators ]]; then
         echo "A2CLOUD: GSport is already installed."
     fi
 
-
     ### Emulators: LinApple
-    if ! hash linapple 2>/dev/null; then
+    if ! hash linapple 2> /dev/null; then
         echo "A2CLOUD: Installing LinApple..."
         cd /tmp/a2cloud-install
         if [[ $downloadBinaries ]]; then
             ### Emulators: LinApple: Install pre-built binaries
             wget -qO- "${binaryURL}linapple-${arch}_${debianName}.tgz" | sudo tar Pzx
         fi
-        if ! hash linapple 2>/dev/null; then
+        if ! hash linapple 2> /dev/null; then
             ### Emulators: LinApple: Install from source
+            echo "A2CLOUD: Building LinApple from source..."
             sudo apt-get -y install build-essential
             sudo apt-get -y install libsdl1.2-dev libcurl4-openssl-dev zlib1g-dev libzip-dev
             sudo apt-get -y clean
-            rm -rf /tmp/a2cloud-install/linapple* &>/dev/null
+            rm -rf /tmp/a2cloud-install/linapple* &> /dev/null
             mkdir -p /tmp/a2cloud-install/linapple
             cd /tmp/a2cloud-install/linapple
-            wget -q -O linapple.tar.bz2 http://downloads.sourceforge.net/project/linapple/linapple/linapple-2a/linapple-src_2a.tar.bz2
-            tar jxf linapple.tar.bz2
-            cd linapple-src_2a/src
-            # doesn't compile with gcc 4.7, so use older version
-            if (( $(g++ --version | head -1 | rev | cut -f 1 -d ' ' | rev | tr -d '.') >= 470 )); then
-                sudo apt-get -y install g++-4.6
-                sudo apt-get -y clean
-                sed -i 's@CXX ?= c++@CXX = /usr/bin/g++-4.6@' Makefile
-            fi
+            wget -q -O linapple_src-2b.tar.bz2 http://downloads.sourceforge.net/project/linapple/linapple/linapple_2b/linapple_src-2b.tar.bz2
+            tar jxf linapple_src-2b.tar.bz2
+            cd linapple_src-2b/src
+            # doesn't compile with gcc 4.7, so use 4.6 -- needed for linapple 2a
+            #if (( $(g++ --version | head -1 | rev | cut -f 1 -d ' ' | rev | tr -d '.') >= 470 )); then
+            #    sudo apt-get -y install g++-4.6
+            #    sudo apt-get -y clean
+            #    sed -i 's@CXX ?= c++@CXX = /usr/bin/g++-4.6@' Makefile
+            #fi
             make
             sudo make install
             cd /tmp/a2cloud-install
@@ -1069,14 +1147,14 @@ if [[ $installEmulators ]]; then
     sudo chmod ugo+x /usr/local/bin/linapple
 
     ### Emulators: Set Groups
-    sudo usermod -a -G audio,video,netdev,fuse,gsport,plugdev $USER &>/dev/null
-    [[ ! $noSetGroups ]] && { groups | grep -q 'gsport' || exec sudo su -l $USER; }
+    sudo addgroup gsport &> /dev/null
+    sudo usermod -a -G audio,video,netdev,gsport,plugdev $USER &> /dev/null
 
 fi
 
 if [[ $installArchiveTools ]]; then
 
-    if ! hash nulib2 2>/dev/null; then
+    if ! hash nulib2 2> /dev/null; then
 
         echo "A2CLOUD: Installing nulib2..."
 
@@ -1086,14 +1164,14 @@ if [[ $installArchiveTools ]]; then
             wget -qO- "${binaryURL}precompiled/nulib2-${arch}_${debianName}.tgz" | sudo tar Pzx
         fi
 
-        if ! hash nulib2 2>/dev/null; then
+        if ! hash nulib2 2> /dev/null; then
             ### ArchiveTools: Install nulib2 from source
             sudo apt-get -y install build-essential
             sudo apt-get -y install zlib1g-dev
             sudo apt-get -y clean
 
             # install nulib2
-            rm -rf nulib &>/dev/null
+            rm -rf nulib &> /dev/null
             mkdir -p nulib
             cd nulib
             wget -qO nulib.tgz http://web.archive.org/web/20131031160750/http://www.nulib.com/downloads/nulibdist.tar.gz
@@ -1113,13 +1191,13 @@ if [[ $installArchiveTools ]]; then
         echo "A2CLOUD: nulib2 is already installed."
     fi
 
-    if ! hash sciibin 2>/dev/null; then
+    if ! hash sciibin 2> /dev/null; then
         ### ArchiveTools: Install undoit (sciibin, etc.)
         echo "A2CLOUD: Installing sciibin, unblu, unbit, unexec, usq..."
 
         sudo apt-get -y install build-essential
         sudo apt-get -y clean
-        rm -rf undoit &>/dev/null
+        rm -rf undoit &> /dev/null
         mkdir -p undoit
         cd undoit
         wget -q http://web.archive.org/web/20110619163030/http://fadden.com/dl-apple2/undoit.zip
@@ -1138,7 +1216,7 @@ if [[ $installArchiveTools ]]; then
     sudo chmod ugo+x /usr/local/bin/shk2image
 
     # http://wakaba.c3.cx/s/apps/unarchiver.html
-    if ! hash unar 2>/dev/null; then
+    if ! hash unar 2> /dev/null; then
 
         ### ArchiveTools: Install unar package
         echo "A2CLOUD: Installing The Unarchiver..."
@@ -1149,31 +1227,31 @@ if [[ $installArchiveTools ]]; then
             sudo apt-get clean
         fi
 
-        if ! hash unar 2>/dev/null; then
+        if ! hash unar 2> /dev/null; then
             if [[ $downloadBinaries && "$(apt-cache search '^libgnustep-base1.22$')" ]]; then
                 # Dependencies: for unar
                 sudo apt-get -y install libgnustep-base1.22
                 sudo apt-get clean
-                wget -qO- "${binaryURL}precompiled/unar-${arch}_${debianName}.tgz" | sudo tar Pzx &>/dev/null
+                wget -qO- "${binaryURL}precompiled/unar-${arch}_${debianName}.tgz" | sudo tar Pzx &> /dev/null
             fi
 
             # If all else fails, compile from source.
 
-            if ! hash unar 2>/dev/null; then
+            if ! hash unar 2> /dev/null; then
                 # Dependencies: build-deps for unar
                 sudo apt-get -y install build-essential libgnustep-base-dev libz-dev libbz2-dev libssl-dev libicu-dev unzip
                 sudo apt-get clean
 
-                rm -rf /tmp/unar &>/dev/null
+                rm -rf /tmp/unar &> /dev/null
                 mkdir /tmp/unar
                 cd /tmp/unar
                 if [[ $useExternalURL ]]; then
                     wget -O unar-1.8.1.zip https://github.com/incbee/Unarchiver/archive/unar-1.8.1.zip
-                    unzip -o unar-1.8.1.zip &>/dev/null
+                    unzip -o unar-1.8.1.zip &> /dev/null
                 fi
                 if [ ! -d *Unarchiver*/XADMaster ]; then # need single bracket for glob
                     wget -O unar-1.8.1.zip ${binaryURL}external/source/unar-1.8.1.zip
-                    unzip -o unar-1.8.1.zip &>/dev/null
+                    unzip -o unar-1.8.1.zip &> /dev/null
                 fi
                 cd *Unarchiver*/XADMaster
                 make -f Makefile.linux
@@ -1184,99 +1262,52 @@ if [[ $installArchiveTools ]]; then
                 cd
                 rm -rf /tmp/unar
             fi
-            sudo mandb &>/dev/null
+            sudo mandb &> /dev/null
         fi
     else
         echo "A2CLOUD: The Unarchiver has already been installed."
     fi
 fi
 
-
-if hash xdg-install-menu 2>/dev/null; then
-    ### A2CLOUD: Add XDG desktop files
+# add shortcuts to LXDE desktop
+if [[ -f /usr/bin/X ]]; then
 
     [[ -d /etc/xdg/lxsession/LXDE-pi ]] && lxde="lxde-pi" || lxde="lxde"
     echo "A2CLOUD: Creating LXDE desktop and menu shortcuts..."
 
     # remove auto-open Terminal window from pre-1.8.0
     echo "A2CLOUD: removing auto-open LXDE terminal window (if present)..."
-    sudo rm -f /etc/xdg/autostart/lxterminal.desktop 2>/dev/null
+    sudo rm /etc/xdg/autostart/lxterminal.desktop 2> /dev/null
 
-    # remove manual futzing with menus from pre-1.9.0
-    sudo rm -f /usr/local/share/desktop-directories/lxde-appleii.directory ~/Desktop/gsport.desktop /usr/local/share/applications/gsport.desktop /usr/local/share/applications/linapple.desktop /usr/local/share/applications/adtproserver.desktop
-
-    # create "Apple II" directory entry
-    cd /tmp/a2cloud-install
-    cat >rasppleii-appleii.directory << EOF
-[Desktop Entry]
-Encoding=UTF-8
-Type=Directory
-Name=Apple II
-Comment=Programs and utilities related to the Apple II
-Icon=/usr/local/linapple/icon.bmp
-EOF
+    mkdir -p ~/Desktop
     # GSport:
-    GSPORT_PATH="$(command -v gsport)"
-    if [ "$GSPORT_PATH" != "" ]; then
-        cat >rasppleii-gsport.desktop << EOF
-[Desktop Entry]
-Encoding=UTF-8
-Name=GSport
-Comment=Apple IIgs Emulator
-Exec=x-terminal-emulator -e "$GSPORT_PATH"
-Icon=/usr/local/share/gsport32.ico
-Terminal=false
-Type=Application
-EOF
-        sudo xdg-desktop-menu install --mode system ./rasppleii-appleii.directory ./rasppleii-gsport.desktop
-        xdg-desktop-icon install ./rasppleii-gsport.desktop
+    if [[ -f /usr/bin/gsport ]]; then
+        echo -e "[Desktop Entry]\nName=GSport\nComment=Apple IIgs Emulator\nExec=lxterminal -e /usr/bin/gsport\nIcon=/usr/local/share/gsport32.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/gsport.desktop > ~/Desktop/gsport.desktop
+    elif [[ -f /usr/local/bin/gsport ]]; then
+        echo -e "[Desktop Entry]\nName=GSport\nComment=Apple IIgs Emulator\nExec=lxterminal -e /usr/local/bin/gsport\nIcon=/usr/local/share/gsport32.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/gsport.desktop > ~/Desktop/gsport.desktop
     fi
     if [[ ! -f /usr/local/share/gsport32.ico ]]; then
-        sudo wget -qO /usr/local/share/gsport32.ico "${binaryURL}gsport32.ico"
-    fi
+        sudo wget -qO /usr/local/share/gsport32.ico ${binaryURL}gsport32.ico
+    fi        
     # LinApple:
-    LINAPPLE_PATH="$(command -v linapple)"
-    if [ "LINAPPLE_PATH" != "" ]; then
-        cat >rasppleii-linapple.desktop << EOF
-[Desktop Entry]
-Encoding=UTF-8
-Name=LinApple
-Comment=Apple IIe Emulator
-Exec=x-terminal-emulator -e "$LINAPPLE_PATH"
-Icon=/usr/local/linapple/icon.bmp
-Terminal=false
-Type=Application
-EOF
-        sudo xdg-desktop-menu install --mode system ./rasppleii-appleii.directory ./rasppleii-linapple.desktop
+    if [[ -f /usr/local/bin/linapple ]]; then
+        echo -e "[Desktop Entry]\nName=LinApple\nComment=Apple IIe Emulator\nExec=lxterminal -e /usr/local/bin/linapple\nIcon=/usr/local/linapple/icon.bmp\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/linapple.desktop > ~/Desktop/linapple.desktop
     fi
     # ADTPro Server:
-    ADTPRO_PATH="$(command -v adtpro.sh)"
-    if [ "ADTPRO_PATH" != "" ]; then
-        cat >rasppleii-adtpro.desktop << EOF
-[Desktop Entry]
-Encoding=UTF-8
-Name=ADTPro Server
-Comment=Floppy Transfer Utility
-Exec=$ADTPRO_PATH
-Icon=/usr/local/adtpro/lib/ADTPro.ico
-Terminal=false
-Type=Application
-EOF
-        sudo xdg-desktop-menu --mode install ./rasppleii-appleii.directory ./rasppleii-adtpro.desktop
+    if [[ -f /usr/local/bin/adtpro.sh ]]; then
+        echo -e "[Desktop Entry]\nName=ADTPro Server\nComment=Floppy Transfer Utility\nExec=/usr/local/bin/adtpro.sh\nIcon=/usr/local/adtpro/lib/ADTPro.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/local/share/applications/adtproserver.desktop > ~/Desktop/adtproserver.desktop
     fi
     # LXTerminal:
-    if [[ ! $(grep lxterminal.desktop /etc/xdg/lxpanel/profile/LXDE-pi/panels/panel 2>/dev/null) && ! -f ~/Desktop/lxterminal.desktop ]]; then
-        xdg-desktop-icon install --novendor /usr/share/applications/lxterminal.desktop
+    if [[ ! $(grep lxterminal.desktop /etc/xdg/lxpanel/profile/LXDE-pi/panels/panel 2> /dev/null) && ! -f ~/Desktop/lxterminal.desktop ]]; then
+        cp $(grep -o '/.*lxterminal.desktop.*$' panel) ~/Desktop/lxterminal.desktop
     fi
-    # prevent PolicyKit error on GUI startup
-    sudo sed -i 's/^NotShowIn=GNOME;KDE;\?$/NotShowIn=GNOME;KDE;LXDE/' /etc/xdg/autostart/lxpolkit.desktop 2>/dev/null
-    sed -i 's/^NotShowIn=GNOME;KDE;\?$/NotShowIn=GNOME;KDE;LXDE/' /home/$USER/.config/autostart/lxpolkit.desktop 2>/dev/null
+
 fi
 
 
 ### DiskImage: Make/update A2CLOUD disks
 
-if [[ $updateADTPro || $createBootDisk ]] && hash acmd 2>/dev/null; then
+if [[ $updateADTPro || $createBootDisk ]] && hash acmd 2> /dev/null; then
     a2CloudDisk=/usr/local/adtpro/disks/A2CLOUD.PO
 else
     a2CloudDisk=
@@ -1366,13 +1397,13 @@ if [[ $a2CloudDisk ]]; then
             if (( $? != 0 )); then
                 wget -qO Disk_3_of_7-SystemTools1.sea.bin ${gsosBackupURL}Disk_3_of_7-SystemTools1.sea.bin
             fi
-            unar -k skip Disk_3_of_7-SystemTools1.sea.bin &>/dev/null
+            unar -k skip Disk_3_of_7-SystemTools1.sea.bin &> /dev/null
             mv 'Disk 3 of 7-SystemTools1.sea' SystemTools1.dc42
             acmd -g SystemTools1.dc42 BASIC.SYSTEM - | acmd -p "$a2CloudDisk" BASIC.SYSTEM SYS
             # use our startup program
             wget -qO- "${binaryURL}STARTUP.BAS" | acmd -p "$a2CloudDisk" STARTUP BAS
 
-            ### DiskImage: Add VEDRIVE to A2CLOULD disk
+            ### DiskImage: Add VEDRIVE to A2CLOUD disk
             echo "A2CLOUD: Copying VEDRIVE..."
             acmd -g /usr/local/adtpro/disks/VDRIVE-*DSK VEDRIVE -        | acmd -p "$a2CloudDisk" VEDRIVE SYS
             acmd -g /usr/local/adtpro/disks/VDRIVE-*DSK VEDRIVE.CONFIG - | acmd -p "$a2CloudDisk" VEDRIVE.CONFIG BAS
@@ -1380,16 +1411,16 @@ if [[ $a2CloudDisk ]]; then
             sysutilsURL="http://download.info.apple.com/Apple_Support_Area/Apple_Software_Updates/English-North_American/Apple_II/Apple_II_Supplemental/"
             sysutilsBackupURL="http://archive.org/download/download.info.apple.com.2012.11/download.info.apple.com.2012.11.zip/download.info.apple.com%2FApple_Support_Area%2FApple_Software_Updates%2FEnglish-North_American%2FApple_II%2FApple_II_Supplemental%2F"
 
-            ### DiskImage: Add Apple System Utilities 3.1 support files to A2CLOULD disk
-            if hash unar 2>/dev/null; then
+            ### DiskImage: Add Apple System Utilities 3.1 support files to A2CLOUD disk
+            if hash unar 2> /dev/null; then
                 echo "A2CLOUD: Downloading and copying System Utilities support files..."
                 cd /tmp/a2cloud-install
                 wget --max-redirect 0 -qO Apple_II_System_Disk_3.2.sea.bin ${sysutilsURL}Apple_II_System_Disk_3.2.sea.bin
                 if (( $? != 0 )); then
                     wget -qO Apple_II_System_Disk_3.2.sea.bin ${sysutilsBackupURL}Apple_II_System_Disk_3.2.sea.bin
                 fi
-                unar -k skip Apple_II_System_Disk_3.2.sea.bin &>/dev/null
-                dd if='Apple II System Disk 3.2.sea' of=A2SYSDISK32.PO bs=1 skip=84 count=819200 2>/dev/null
+                unar -k skip Apple_II_System_Disk_3.2.sea.bin &> /dev/null
+                dd if='Apple II System Disk 3.2.sea' of=A2SYSDISK32.PO bs=1 skip=84 count=819200 2> /dev/null
                 acmd -g A2SYSDISK32.PO UTIL.0 - | acmd -p "$a2CloudDisk" UTIL.0 BIN \$0900
                 acmd -g A2SYSDISK32.PO UTIL.1 - | acmd -p "$a2CloudDisk" UTIL.1 BIN \$0E00
                 acmd -g A2SYSDISK32.PO UTIL.2 - | acmd -p "$a2CloudDisk" UTIL.2 BIN \$B400
@@ -1397,15 +1428,16 @@ if [[ $a2CloudDisk ]]; then
                 echo "A2CLOUD: unar is not available; not installing System Utilities support files."
             fi
 
-            ### DiskImage: Add ProTERM 3.1 to A2CLOULD disk
+            ### DiskImage: Add ProTERM 3.1 to A2CLOUD disk
             echo "A2CLOUD: Downloading ProTERM..."
             wget --user-agent="Mozilla/5.0 (wget_A2CLOUD; rv:1.13.4) Gecko/20100101 Firefox/4.0.1" -qO /tmp/a2cloud-install/pt31.shk http://lostclassics.apple2.info/download/InTrec/PT31A2GM2K9.SHK
             mkdir -p /tmp/a2cloud-install/pt31
             cd /tmp/a2cloud-install/pt31
-            nulib2 -xse ../pt31.shk >/dev/null
+            nulib2 -xse ../pt31.shk > /dev/null
             # IIc slot 1 patch for ProTERM from Hugh Hood
             echo "A2CLOUD: Patching ProTERM for IIc printer port use..."
-            echo -n -e "\x41\x70\x70\x6C\x65\x20\x49\x49\x63\x2F\x49\x49\x63\x2B\x20\x50\x72\x69\x6E\x74\x65\x72\x20\x50\x6F\x72\x74\x20\x20\x20\x20\x20\x06\x07\x10\x41\x70\x70\x6C\x65\x20\x49\x49\x63\x2F\x49\x49\x63\x2B\x20\x4D\x6F\x64\x65\x6D\x20\x50\x6F\x72\x74\x20\x20\x20\x20\x20\x20\x20\x06\x07\x20" | dd of="PT3.CODE0#060000" seek=1638 bs=1 conv=notrunc
+            echo -n -e "\x41\x70\x70\x6C\x65\x20\x49\x49\x63\x2F\x49\x49\x63\x2B\x20\x50\x72\x69\x6E\x74\x65\x72\x20\x50\x6F\x72\x74\x20\x20\x20\x20\x20\x06\x07\x10\x41\x70\x70\x6C\x65\x20\x49\x49\x63\x2F\x49\x49\x63\x2B\x20\x4D\x6F\x64\x65\x6D\x20\x50\x6F\x72\x74\x20\x20\x20\x20\x20\x20\x20\x06\x07\x20" | \
+                dd of="PT3.CODE0#060000" seek=1638 bs=1 conv=notrunc 2> /dev/null
             echo "A2CLOUD: Copying ProTERM..."
             for thisFile in /tmp/a2cloud-install/pt31/*; do
                 filenameUnix="${thisFile##*/}"
@@ -1427,51 +1459,51 @@ if [[ $a2CloudDisk ]]; then
             cd /tmp/a2cloud-install
             rm -rf /tmp/a2cloud-install/pt31
 
-            ### DiskImage: Add Z-Link to A2CLOULD disk
+            ### DiskImage: Add Z-Link to A2CLOUD disk
             echo "A2CLOUD: Downloading and copying Z-Link..."
             cd /tmp/a2cloud-install
             wget -qO /tmp/a2cloud-install/zlink.shk "ftp://ftp.gno.org/pub/apple2/prodos/comm/term/zLink91.shk"
             nulib2 -p zlink.shk z.link.system | acmd -p "$a2CloudDisk" Z.LINK SYS
 
-            ### DiskImage: Add ShrinkIt to A2CLOULD disk
+            ### DiskImage: Add ShrinkIt to A2CLOUD disk
             echo "A2CLOUD: Downloading and copying ShrinkIt..."
             cd /tmp/a2cloud-install
             wget -qO shrinkit.sdk http://web.archive.org/web/20131031160750/http://www.nulib.com/library/shrinkit.sdk
             [[ ! -f shrinkit.sdk ]] && wget -qO shrinkit.sdk "${binaryURL}shrinkit.sdk"
-            nulib2 -xs shrinkit.sdk >/dev/null
+            nulib2 -xs shrinkit.sdk > /dev/null
             acmd -g /tmp/a2cloud-install/SHRINKIT SHRINKIT -        | acmd -p "$a2CloudDisk" SHRINKIT SYS
             acmd -g /tmp/a2cloud-install/SHRINKIT SHRINKIT.SYSTEM - | acmd -p "$a2CloudDisk" SHRINKIT.SYS SYS
             acmd -g /tmp/a2cloud-install/SHRINKIT IIPLUS.SHRINKIT - | acmd -p "$a2CloudDisk" IIPLUS.SHRINKIT SYS
             acmd -g /tmp/a2cloud-install/SHRINKIT IIPLUS.UNSHRINK - | acmd -p "$a2CloudDisk" IIPLUS.UNSHRINK SYS
 
-            ### DiskImage: Add DSK2FILE to A2CLOULD disk
+            ### DiskImage: Add DSK2FILE to A2CLOUD disk
             echo "A2CLOUD: Downloading and copying DSK2FILE..."
             cd /tmp/a2cloud-install
             wget -q -O dsk2file.shk http://www.dwheeler.com/6502/oneelkruns/dsk2file.zip
             nulib2 -p dsk2file.shk dsk2file58 | acmd -p "$a2CloudDisk" DSK2FILE SYS
 
-            ### DiskImage: Add Apple System Utilities 3.1 to A2CLOULD disk
+            ### DiskImage: Add Apple System Utilities 3.1 to A2CLOUD disk
             ###      Required unar to unpack above (see ## ArchiveTools: Install unar package)
             ###      Apple_II_System_Disk_3.2.sea.bin
-            if hash unar 2>/dev/null; then
+            if hash unar 2> /dev/null; then
                 echo "A2CLOUD: Copying System Utilities launch file..."
                 acmd -g A2SYSDISK32.PO SYSUTIL.SYSTEM - | acmd -p "$a2CloudDisk" SYSUTIL SYS
             else
                 echo "A2CLOUD: unar is not available; not installing System Utilities."
             fi
 
-            ### DiskImage: Add Filer to A2CLOULD disk
+            ### DiskImage: Add Filer to A2CLOUD disk
             echo "A2CLOUD: Downloading and copying Filer..."
             wget -qO /tmp/a2cloud-install/mmgr.prutil.sdk ftp://ftp.gno.org/pub/apple2/prodos/comm/term/modem.mgr/mmgr.prutil.sdk
             cd /tmp/a2cloud-install
-            nulib2 -xs mmgr.prutil.sdk >/dev/null
+            nulib2 -xs mmgr.prutil.sdk > /dev/null
             acmd -g /tmp/a2cloud-install/MMGR FILER - | acmd -p "$a2CloudDisk" FILER SYS
 
-            ### DiskImage: Add ADTPro client to A2CLOULD disk
+            ### DiskImage: Add ADTPro client to A2CLOUD disk
             echo "A2CLOUD: Copying ADTPro launch file..."
             acmd -g /usr/local/adtpro/disks/ADTPRO-*DSK ADTPRO - | acmd -p "$a2CloudDisk" ADTPRO SYS
 
-            ### DiskImage: Add VSDRIVE to A2CLOULD disk
+            ### DiskImage: Add VSDRIVE to A2CLOUD disk
             if [[ ! $(acmd -ls "$a2CloudDisk" | grep '^VSDRIVE BIN') ]]; then
                 echo "A2CLOUD: Copying VSDRIVE..."
                 acmd -g /usr/local/adtpro/disks/VDRIVE-*DSK VSDRIVE - | acmd -p "$a2CloudDisk" VSDRIVE SYS
@@ -1487,8 +1519,8 @@ if [[ $a2CloudDisk ]]; then
             ### DiskImage: Create 140k disk image
             echo "A2CLOUD: Creating 140K disk image..."
             mkpo "$a2CloudDisk140" A2CLOUD
-            dd bs=256 count=1 of="$a2CloudDisk140" conv=notrunc 2>/dev/null < /usr/local/adtpro/disks/ADTPRO-*DSK
-            dd bs=256 count=1 of="$a2CloudDisk140" skip=14 seek=14 conv=notrunc 2>/dev/null < /usr/local/adtpro/disks/ADTPRO-*DSK
+            dd bs=256 count=1 of="$a2CloudDisk140" conv=notrunc 2> /dev/null < /usr/local/adtpro/disks/ADTPRO-*DSK
+            dd bs=256 count=1 of="$a2CloudDisk140" skip=14 seek=14 conv=notrunc 2> /dev/null < /usr/local/adtpro/disks/ADTPRO-*DSK
 
             acmd -g $a2CloudDisk BASIC.SYSTEM    - | acmd -p $a2CloudDisk140 BASIC.SYSTEM SYS
             acmd -g $a2CloudDisk PRODOS          - | acmd -p $a2CloudDisk140 PRODOS SYS
@@ -1507,7 +1539,7 @@ if [[ $a2CloudDisk ]]; then
         if [[ -f /usr/local/adtpro/disks/Virtual.po && ! -L /usr/local/adtpro/disks/Virtual.po ]]; then
             ### DiskImage: Virtual.po exists and is not a symlink
             ###      Move it and link it back into place
-            mv /usr/local/adtpro/disks/Virtual.po /usr/local/adtpro/disks/defaultVirtual.po &>/dev/null
+            mv /usr/local/adtpro/disks/Virtual.po /usr/local/adtpro/disks/defaultVirtual.po &> /dev/null
             vsd1 -f /usr/local/adtpro/disks/defaultVirtual.po
         fi
         if [[ -f /usr/local/adtpro/disks/Virtual2.po && ! -L /usr/local/adtpro/disks/Virtual2.po ]]; then
@@ -1518,13 +1550,13 @@ if [[ $a2CloudDisk ]]; then
             else
                 ### DiskImage: We do NOT recognize this Virtual2.po file
                 ###      ...just move it out of the way
-                mv /usr/local/adtpro/disks/Virtual2.po /usr/local/adtpro/disks/defaultVirtual2.po &>/dev/null
+                mv /usr/local/adtpro/disks/Virtual2.po /usr/local/adtpro/disks/defaultVirtual2.po &> /dev/null
             fi
         fi
         vsd2 -f $a2CloudDisk
 
         ### DiskImage: Create pre 1.6.7 A2CLOUD.HDV compatibility symlink
-        ###      Do we still need this?
+        ###      Do we still need this? ID sez: not sure, but I think so
         # for compatibility with pre-1.6.7
         ln -s /usr/local/adtpro/disks/A2CLOUD.PO /usr/local/adtpro/disks/A2CLOUD.HDV
 
@@ -1548,13 +1580,13 @@ if [[ $newImageName ]]; then
     echo "A2CLOUD: Creating new ${imageSize}K image for virtual drive 1 at"
     echo "  /usr/local/adtpro/disks/$newImageName..."
     sudo pkill -f ADTPro
-    rm /usr/local/adtpro/disks/Virtual.po &>/dev/null
+    rm /usr/local/adtpro/disks/Virtual.po &> /dev/null
     mkpo -b $(( $imageSize * 2 )) /usr/local/adtpro/disks/"$newImageName" $prodosVolName
     vsd1 -f /usr/local/adtpro/disks/"$newImageName"
 fi
 
 ### A2CLOUD: Setup the a2cloud-setup command
-echo 'wget -q -O /tmp/a2cloud-setup ${A2CLOUD_SCRIPT_URL:-https://rawgit.com/RasppleII/a2cloud/current/}setup/setup.txt || { echo "Can'"'"'t download A2CLOUD setup scripts. Do you has internet?"; false; } && source /tmp/a2cloud-setup' | sudo tee /usr/local/bin/a2cloud-setup >/dev/null
+echo 'wget -q -O /tmp/a2cloud-setup ${A2CLOUD_SCRIPT_URL:-https://raw.githubusercontent.com/RasppleII/a2cloud/current/}setup/setup.txt || { echo "Can'"'"'t download A2CLOUD setup scripts. Do you has internet?"; false; } && source /tmp/a2cloud-setup' | sudo tee /usr/local/bin/a2cloud-setup > /dev/null
 sudo chmod ugo+x /usr/local/bin/a2cloud-setup
 
 
@@ -1562,7 +1594,7 @@ if [[ ! $restartPrompt ]]; then
     ### A2CLOUD: Start ADTPro
     ###     If we're not going to just reboot the system, ADTPro
     ###     should not be running yet.  We'll start it here.
-    adtpro-start 2>/dev/null #start ADTPro if not running and USB adapter attached
+    adtpro-start 2> /dev/null #start ADTPro if not running and USB adapter attached
 fi
 
 echo
@@ -1584,11 +1616,21 @@ fi
 
 ### A2CLOUD: Clean up temp files
 cd "$origDir"
-rm setup &>/dev/null
-rm a2cloud-setup &>/dev/null
-rm -rf /tmp/a2cloud-install &>/dev/null
+rm setup &> /dev/null
+rm a2cloud-setup &> /dev/null
+rm -rf /tmp/a2cloud-install &> /dev/null
 
-### A2CLOUD: Finally restart the computer
+### A2CLOUD: in case not restarting, make groups take effect immediately
+if hash gsport 2> /dev/null; then
+    if [[ ! $noSetGroups ]]; then
+        if ! groups | grep -q 'gsport'; then
+            touch /tmp/no-gsport
+            exec sudo su -l $USER;
+        fi
+    fi
+fi
+
+### A2CLOUD: If restarting, restart
 [[ $doRestart ]] && sudo shutdown -r now
 
 # version history:
@@ -1598,6 +1640,11 @@ rm -rf /tmp/a2cloud-install &>/dev/null
 #            chromium
 
 # version history:
+
+# 1.8.3 -  fix bug where language isn't properly selected for A2 login
+#          download from Apple first, then Internet Archive as fallback
+
+# 1.8.2 -- download from Internet Archive
 
 # 1.8.1 -- set JAVA_HOME correctly for Java 8 (Pi, webupd8, Ubuntu for Pi 2B)
 #          A2PI 1.5 (PiDrive update) on A2CLOUD disk
@@ -1944,6 +1991,7 @@ rm -rf /tmp/a2cloud-install &>/dev/null
 #         adds DSK2FILE to A2CLOUD disk
 
 # FIXME: Redo this as its own top-level project later
+#        pending updated Apple II Pi release
 #= APPLE2PI BEGIN
 #noA2PiExtras=
 #while [[ $1 ]]; do
@@ -1966,12 +2014,12 @@ rm -rf /tmp/a2cloud-install &>/dev/null
 #    [[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]] && installA2Pi=1
 #fi
 #if [[ $installA2Pi ]]; then
-#    if dpkg-query -l a2pi &>/dev/null; then
+#    if dpkg-query -l a2pi &> /dev/null; then
 #        echo "A2CLOUD: Installing Apple II Pi..."
 #        cd /tmp/a2cloud-install
 #        if ! grep 'schmenk.is-a-geek.com' /etc/apt/sources.list; then
-#            echo "deb http://schmenk.is-a-geek.com/raspbian wheezy contrib" | sudo tee -a /etc/apt/sources.list >/dev/null
-#            sudo apt-get -y update >/dev/null
+#            echo "deb http://schmenk.is-a-geek.com/raspbian wheezy contrib" | sudo tee -a /etc/apt/sources.list > /dev/null
+#            sudo apt-get -y update > /dev/null
 #        fi
 #        sudo apt-get -y --force-yes install a2pi
 #        sudo apt-get -y clean
@@ -1983,9 +2031,9 @@ rm -rf /tmp/a2cloud-install &>/dev/null
 #            sudo apt-get -y install libpcap0.8-dev
 #            sudo apt-get -y clean
 #        fi
-#        if ! command -v gsport >/dev/null; then
+#        if ! command -v gsport > /dev/null; then
 #            # echo "A2CLOUD: Updating package repositories to include Apple II Pi..."
-#            # sudo apt-get -y update >/dev/null
+#            # sudo apt-get -y update > /dev/null
 #            echo "A2CLOUD: Installing Apple II Pi extras (GSport)..."
 #            sudo apt-get -y --force-yes install apple2user
 #            sudo apt-get -y clean
@@ -2001,7 +2049,7 @@ rm -rf /tmp/a2cloud-install &>/dev/null
 #        sudo sed -i 's@^s6d1.*$@s6d1 = /usr/share/gsport/disks/slot6drive1.po@' /home/apple2/config.txt
 #        sudo sed -i 's@^s6d2.*$@s6d2 = /usr/share/gsport/disks/slot6drive2.po@' /home/apple2/config.txt
 #        if [[ ! -f /usr/share/gsport/disks/slot6drive1.po || ! -f /usr/share/gsport/disks/slot6drive2.po ]]; then
-#            wget -qO- "${binaryURL}slot6-gsport-rpi.tgz" | sudo tar Pzx 2>/dev/null
+#            wget -qO- "${binaryURL}slot6-gsport-rpi.tgz" | sudo tar Pzx 2> /dev/null
 #        fi
 #    fi
 #
@@ -2010,7 +2058,7 @@ rm -rf /tmp/a2cloud-install &>/dev/null
 #        if grep -q 'bram1[00]' /usr/share/gsport/config.txt; then
 #            sudo sed -i 's/^\(bram1\[00\]\)/g_appletalk_turbo = 1\n\n\1/' /usr/share/gsport/config.txt
 #        else
-#            echo -e '\ng_appletalk_turbo = 1' | sudo tee -a /usr/share/gsport/config.txt >/dev/null
+#            echo -e '\ng_appletalk_turbo = 1' | sudo tee -a /usr/share/gsport/config.txt > /dev/null
 #        fi
 #    fi
 #    sudo sed -i 's/^g_appletalk_turbo = 0/g_appletalk_turbo = 1/' /usr/share/gsport/config.txt
@@ -2020,7 +2068,7 @@ rm -rf /tmp/a2cloud-install &>/dev/null
 #        if grep -q 'bram1[00]' /usr/share/gsport/config.txt; then
 #            sudo sed -i 's/^\(bram1\[00\]\)/g_ethernet = 1\n\n\1/' /usr/share/gsport/config.txt
 #        else
-#            echo -e '\ng_ethernet = 1' | sudo tee -a /usr/share/gsport/config.txt >/dev/null
+#            echo -e '\ng_ethernet = 1' | sudo tee -a /usr/share/gsport/config.txt > /dev/null
 #        fi
 #    fi
 #    sudo sed -i 's/^g_ethernet = 0/g_ethernet = 1/' /usr/share/gsport/config.txt
@@ -2039,15 +2087,15 @@ rm -rf /tmp/a2cloud-install &>/dev/null
 #            dpkg-deb --fsys-tarfile a2pi.deb | tar --strip-components=4 --wildcards -x ./usr/share/a2pi/A2PI*.PO
 #            a2piImage=$(ls -1r A2PI*.PO | head -1)
 #            mkdir a2pidisk
-#            cppo -e "$a2piImage" a2pidisk &>/dev/null
+#            cppo -e "$a2piImage" a2pidisk &> /dev/null
 #            mv a2pidisk/A2PI* a2pidisk/A2PI
 #            cd a2pidisk/A2PI
 #            rm PRODOS* *A3* BASIC.SYSTEM*
 #            cd ..
-#            nulib2 -a -r -e ../a2pi.shk A2PI &>/dev/null
+#            nulib2 -a -r -e ../a2pi.shk A2PI &> /dev/null
 #            cd ..
-#            shk2image a2pi.shk $a2CloudDisk &>/dev/null
-#            shk2image a2pi.shk $a2CloudDisk140 &>/dev/null
+#            shk2image a2pi.shk $a2CloudDisk &> /dev/null
+#            shk2image a2pi.shk $a2CloudDisk140 &> /dev/null
 #            cd /tmp/a2cloud-install
 #            rm -rf a2pi
 #        else
