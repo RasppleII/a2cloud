@@ -1,6 +1,15 @@
 #! /bin/bash
 # vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
 
+isSystemd=
+isSysVInit=
+# If you really want something else, *you* maintain it!
+if command -v systemctl > /dev/null && systemctl | grep -q '\-\.mount'; then
+    gettyFile="/etc/systemd/system/getty.target.wants/usbgetty@.service"
+elif [[ -f /etc/inittab ]]; then
+    gettyFile="/etc/inittab"
+fi
+
 if [[ $1 == "-d" ]]; then
     shift
     setgetty=1
@@ -14,9 +23,9 @@ if [[ $1 -ne 300 && $1 -ne 1200 && $1 -ne 2400 && $1 -ne 4800 && $1 -ne 9600 && 
     echo '  omitting -d makes change temporary and immediate'
 else
     if [[ $setgetty ]]; then
-        sudo sed -i "s/ttyAMA0 .* /ttyAMA0 $1 /" /etc/inittab;
+        sudo sed -i "s/ttyAMA0 .* /ttyAMA0 $1 /" $gettyFile;
         sudo sed -i "s/ttyAMA0,[0-9]*/ttyAMA0,$1/g" /boot/cmdline.txt;
-        sudo sed -i "s/\(ttyUSB.*\) .* /\1 $1 /g" /etc/inittab;
+        sudo sed -i "s/\(ttyUSB.*\) .* /\1 $1 /g" $gettyFile;
         sudo init q;
         sudo pkill -f "/sbin/getty"
     else
@@ -27,4 +36,4 @@ else
 fi
 
 echo -e "$(tput bold)$(tty) current $(stty -a -F $(tty) | grep -o 'speed .* baud')$(tput sgr0)"
-echo -e "$(tput bold)default speed at login: $(grep ttyUSB /etc/inittab | sed 's/^.*ttyUSB[^ ]* \(.*\) .*$/\1/') baud$(tput sgr0)"
+echo -e "$(tput bold)default speed at login: $(grep scanttyUSB $gettyFile | sed 's/^.*scanttyUSB[^ ]* \(.*\) .*$/\1/') baud$(tput sgr0)"
