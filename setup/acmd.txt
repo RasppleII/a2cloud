@@ -218,7 +218,7 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" ) && $2
         [[ $3 && $3 != "-" ]] && outFile="$3"
         [[ ! $3 ]] && outFile="${2##*/}"
         $ac $getArg "$imageArg" "$fileArg" $outFile 2> $acmdStdErr
-    
+
     else # put file
 
         # test ProDOS name validity
@@ -256,7 +256,7 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" ) && $2
             else
                 ft="$ftArg"
             fi
-    
+
             # set auxtype to $0801 for Applesoft programs if not specified
             [[ $ft == "BAS" && ! $auxType ]] && auxType="\$0801"
 
@@ -268,9 +268,9 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" ) && $2
             else
                 $ac -d "$imageArg" $prodosPath &> /dev/null
                 $ac -p "$imageArg" $prodosPath $ft $auxType 2> $acmdStdErr
-            fi            
+            fi
         else # AppleDouble or nulib extended, get resource fork and file metadata from header file
-        
+
             [[ ! -f $prodosArg ]] && { echoerr "$prodosArg not found."; exit 1; }
             [[ $AD && ! -f $rFile ]] && { echoerr "Not an AppleDouble file: $rFile"; exit 1; }
 
@@ -372,20 +372,20 @@ if [[ ( $arg1 == "-p" || $arg1 == "-c" || $arg1 == "-g" || $arg1 == "-e" ) && $2
                   | dd of="$imageArg" conv=notrunc bs=1 seek=$((parentDirKeyBlockOffset+4+33)) 2> /dev/null
 
                 # update extended file metadata
-                
+
                 # storage type (5), name length, name
                 name="${prodosPath##*/}"
                 nameLen=${#name}
                 nameHeader=$(printf %02X $((nameLen + 80)) )
                 nameField=$(echo -n $name | xxd -p | tr -d '\n' | sed -e :a -e 's/^.\{1,29\}$/&00/;ta')
-    
+
                 # blocks used
                 blocksUsed=$(( dfBlocksUsed + rfBlocksUsed + 1 ))
-    
+
                 # store updated metadata
                 fileEntry=${nameHeader}${nameField}${fileEntry:32}
             fi
-            
+
             # put creation and modified date in file entry
             fileEntry=${fileEntry:0:48}${cDateTimeHex}${fileEntry:56:10}${mDateTimeHex}${fileEntry:74:4}
 

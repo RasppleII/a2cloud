@@ -387,7 +387,7 @@ fi
 
 if [[ $slot6 ]]; then
     echo "Putting blank disks in slot 6..."
-    sudo sed -i 's@^s6d1.*$@s6d1 = $imagesDir/slot6drive1.po@' /usr/local/lib/$configFileName       
+    sudo sed -i 's@^s6d1.*$@s6d1 = $imagesDir/slot6drive1.po@' /usr/local/lib/$configFileName
     sudo sed -i 's@^s6d2.*$@s6d2 = $imagesDir/slot6drive2.po@' /usr/local/lib/$configFileName
     if [[ ! -f $imagesDir/slot6drive1.po || ! -f $imagesDir/slot6drive2.po ]]; then
         wget -qO- ${binaryURL}slot6.tgz | sudo tar Pzx 2> /dev/null
@@ -467,7 +467,7 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
     REPLY="y"
     if [[ $autoAnswerYes || ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]]; then
 
-        echo        
+        echo
         activeDisk=0
         for diskname in Install System.Disk SystemTools1 SystemTools2 Fonts synthLAB; do
             (( activeDisk++ ))
@@ -497,7 +497,7 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
             fi
         done
         rm *.sea* &> /dev/null
-        
+
         if [[ ! -f $imagesDir/"$gsosHD" ]]; then
             echo "Creating 32 MB blank image at $imagesDir/$gsosHD..."
             if [[ -f /usr/local/bin/acmd ]]; then
@@ -525,7 +525,7 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
                 acmd -convert $gsosHD.shk $imagesDir/"$gsosHD" 65535
                 echo 3
                 rm "PRODOS#"* "GSHK#"* "TEACH#"* $gsosHD.shk  &> /dev/null
-                
+
                 acmd -n $imagesDir/"$gsosHD" $gsosHDvolName
                 dd bs=512 count=1 conv=notrunc if="$imagesDir/INSTALL.HDV" of="$imagesDir/$gsosHD" 2> /dev/null
                 sudo chmod ugo+rw $imagesDir/"$gsosHD"
@@ -539,7 +539,7 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
                 echo "s7d1 = $imagesDir/$gsosHD" | tee -a /usr/local/lib/$configFileName > /dev/null
             fi
         fi
-        
+
         if [[ $(grep ^g_limit_speed /usr/local/lib/$configFileName) ]]; then
             sudo sed -i "s:^g_limit_speed.*$:g_limit_speed = 0:" /usr/local/lib/$configFileName
         else
@@ -551,26 +551,26 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
             echo "Downloading GS-ShrinkIt..."
             wget -qO- http://web.archive.org/web/20131031160750/http://nulib.com/library/gshk11.sea | acmd -p $imagesDir/$gsosHD GS.SHRINKIT.SEA S16
         fi
-        
-        
+
+
         # Spectrum starts here
- 
+
         if [[ ! $kegs ]]; then
- 
+
             mkdir -p $tempDir/spectrum
             cd $tempDir/spectrum
-            
+
             imageName="$tempDir/spectrum/spectrum.dmg"
             hfsName="$tempDir/spectrum/spectrumH.dmg"
             ullName="$tempDir/spectrum/uthernet.bxy"
-            
+
             if [[ ! -f /usr/bin/hcopy || ! -f /usr/bin/macsave ]]; then
                 echo "Installing HFS utilities..."
                 sudo apt-get -y install hfsutils macutils &> /dev/null
             else
                 echo "HFS utilities are already installed."
             fi
-            
+
             if [[ ! -f /usr/local/adtpro/lib/AppleCommander/AppleCommander-1.3.5.13id-ac.jar ]]; then
                 echo "Installing AppleCommander..."
                 sudo mkdir -p /usr/local/adtpro/lib/AppleCommander
@@ -578,21 +578,21 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
                 rm /usr/local/adtpro/lib/AppleCommander/AppleCommander-ac.jar &> /dev/null
                 ln -s AppleCommander-1.3.5.13id-ac.jar /usr/local/adtpro/lib/AppleCommander/AppleCommander-ac.jar
             fi
-            
+
             if [[ ! -f "$imageName" ]]; then
                 echo "Downloading Spectrum Deluxe..."
                 wget -qO spectrum.dmg http://www.wannop.info/speccie/software/spectrum_2.5.3_deluxe.dmg
             else
                 echo "Spectrum Deluxe has already been downloaded."
             fi
-            
+
             mkdir -p mnt
             mkdir -p extract
             mkdir -p shkstage
             cp "$imageName" "$hfsName"
             sudo mount -r -t hfs "$imageName" mnt
             hmount "$hfsName"
-            
+
             IFS=''
             cd $tempDir/spectrum/mnt
             find Spectrum.2.5.3 -type d | while read thisDirPath; do
@@ -639,30 +639,30 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
                 done
                 cd $tempDir/spectrum/mnt
             done
-            
+
             cd $tempDir/spectrum/shkstage/Spectrum*
             humount
             sudo umount $tempDir/spectrum/mnt
-    
+
             mkdir -p Marinetti/Uthernet
             cp SAFE2.Archive/Link.Layers/"Uthernet#bc4083" Marinetti/Uthernet
             echo -n "After installing Marinetti, put Uthernet in the TCPIP folder of your System folder, and restart GS/OS. Then open Control Panels, choose TCP/IP, and choose Setup Connection. Choose Uthernet for the link layer. Under Primary Domain Name Server, enter 8.8.8.8, then click Configure and select Slot 3 and DHCP. Then click Save." > Marinetti/Uthernet/"Uthernet.README#040000"
-    
+
             echo "Making archive for conversion to disk image..."
             rm $tempDir/spectrum/spectrum.shk 2> /dev/null
             nulib2 -a -r -0 -e $tempDir/spectrum/spectrum.shk * &> /dev/null
             echo "Converting archive to disk image..."
             acmd -convert $tempDir/spectrum/spectrum.shk $imagesDir/spectrum.hdv 20480
             acmd -n $imagesDir/spectrum.hdv SPECTRUM.DELUXE
-            
+
             if [[ $(grep ^s7d7 /usr/local/lib/$configFileName) ]]; then
                 sudo sed -i "s:^s7d7.*$:s7d7 = $imagesDir/spectrum.hdv:" /usr/local/lib/$configFileName
             else
                 echo "s7d7 = $imagesDir/spectrum.hdv" | tee -a /usr/local/lib/$configFileName > /dev/null
             fi
-    
+
             cd $tempDir
-            
+
             rm -rf $tempDir/spectrum/extract $tempDir/spectrum/shkstage $tempDir/spectrum/spectrum.shk $tempDir/spectrum/mnt &> /dev/null
         fi
         # Spectrum ends here
@@ -698,7 +698,7 @@ fi
 echo "When it's done, reboot."
 echo "(Use Shut Down, ctrl-F12, or ctrl-solidapple-equals.)"
 if [[ -f "$imagesDir/spectrum.hdv" ]]; then
-    echo 
+    echo
     echo "Then on the Spectrum disk, optionally install:"
     echo "Marinetti (plus update): TCP/IP driver for GS/OS"
     echo "Uthernet: Ethernet driver for Marinetti"

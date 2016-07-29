@@ -563,7 +563,7 @@ if [[ $installADTPro ]]; then
     wget -qO /usr/local/adtpro/adtpro.sh "${scriptURL}setup/adtpro.sh.txt"
     sudo chmod ugo+rwx /usr/local/adtpro/adtpro.sh
 
-    ### ADTPro: Replace A2CLOUD's disks with the ones ... 
+    ### ADTPro: Replace A2CLOUD's disks with the ones ...
     ###     FIXME: where are these created/downloaded to move?
     if [[ $updateADTPro ]]; then
         echo "A2CLOUD: Replacing disks folder..."
@@ -597,7 +597,7 @@ if [[ $installADTPro ]]; then
         else
             sharePath=/media/A2SHARED
         fi
-        
+
         if [[ ! -d ${sharePath}/ADTDISKS || ! $(grep ADTDISKS /usr/local/etc/netatalk/AppleVolumes.default) ]]; then
             echo "A2CLOUD: Setting up /usr/local/adtpro/disks for Apple file sharing..."
             if [[ ! -d ${sharePath}/ADTDISKS ]]; then
@@ -1288,7 +1288,7 @@ if [[ -f /usr/bin/X ]]; then
     fi
     if [[ ! -f /usr/local/share/gsport32.ico ]]; then
         sudo wget -qO /usr/local/share/gsport32.ico ${binaryURL}gsport32.ico
-    fi        
+    fi
     # LinApple:
     if [[ -f /usr/local/bin/linapple ]]; then
         echo -e "[Desktop Entry]\nName=LinApple\nComment=Apple IIe Emulator\nExec=lxterminal -e /usr/local/bin/linapple\nIcon=/usr/local/linapple/icon.bmp\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/share/raspi-ui-overrides/linapple.desktop > ~/Desktop/linapple.desktop
