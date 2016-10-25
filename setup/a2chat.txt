@@ -1,65 +1,65 @@
 #! /bin/bash
-# vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
+# vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
 
 if [[ ! $(dpkg -l irssi 2> /dev/null | grep '^ii') ]]; then
-    echo "Installing irssi..."
-    supo apt-get -y update
-    sudo apt-get -y install irssi &> /dev/null
-    sudo apt-get -y clean
+	echo "Installing irssi..."
+	supo apt-get -y update
+	sudo apt-get -y install irssi &> /dev/null
+	sudo apt-get -y clean
 fi
 
 if [[ $1 == "-n" && $2 ]]; then
-    nickname=$2
+	nickname=$2
 elif [[ $1 == "-n" ]]; then
-    nickname="0"
+	nickname="0"
 elif [[ -f ~/.irssi/a2c.nickname ]]; then
-    nickname=$(cat ~/.irssi/a2c.nickname)
+	nickname=$(cat ~/.irssi/a2c.nickname)
 else
-    nickname=
+	nickname=
 fi
 
 while [[ ! $nickname || ! $(grep -i '^[a-z_\-\\^{}|`][a-z0-9_\-\\^{}|`]*$' <<< $nickname) ]]; do
-    echo "Choosing a nickname"
-    echo
-    echo "A nickname on irc is how you are known to other people.  It can"
-    echo "consist of letters, numbers, and punctuation symbols such as -, _, and ^."
-    echo "Some older IRC servers will cut your nickname to eight characters, but"
-    echo "more modern ones like A2Central do not."
-    echo
-    echo "Aliases are fine on irc, but really common names like James or Mark or"
-    echo "AppleIIGuy are likely to be used by someone else already.  A guy named"
-    echo "Joseph might use some variation of their name (such as JosephC or"
-    echo "tjcarter) or come up with something else entirely."
-    echo
-    echo "You can change your nickname once you're online by typing a command"
-    echo "like \"/nick <newnick>\", and you can rerun this script with the -n"
-    echo "parameter to have this script save your choice for future use."
-    echo
-    echo -n "Enter a nickname (use 'a2chat -n' to change it later): "
-    read
-    nickname=$REPLY
+	echo "Choosing a nickname"
+	echo
+	echo "A nickname on irc is how you are known to other people.  It can"
+	echo "consist of letters, numbers, and punctuation symbols such as -, _, and ^."
+	echo "Some older IRC servers will cut your nickname to eight characters, but"
+	echo "more modern ones like A2Central do not."
+	echo
+	echo "Aliases are fine on irc, but really common names like James or Mark or"
+	echo "AppleIIGuy are likely to be used by someone else already.  A guy named"
+	echo "Joseph might use some variation of their name (such as JosephC or"
+	echo "tjcarter) or come up with something else entirely."
+	echo
+	echo "You can change your nickname once you're online by typing a command"
+	echo "like \"/nick <newnick>\", and you can rerun this script with the -n"
+	echo "parameter to have this script save your choice for future use."
+	echo
+	echo -n "Enter a nickname (use 'a2chat -n' to change it later): "
+	read
+	nickname=$REPLY
 done
 
 mkdir -p ~/.irssi
 echo $nickname > ~/.irssi/a2c.nickname
 
 if [[ -f ~/.irssi/startup ]]; then
-    mv ~/.irssi/startup ~/.irssi/startup.orig
+	mv ~/.irssi/startup ~/.irssi/startup.orig
 fi
 echo -e "/network add -autosendcmd '/join #a2c.chat' Palomino.A2\n/server add -auto -network Palomino.A2 irc.a2central.com\n" > ~/.irssi/startup
 
 if [[ -f ~/.irssi/config ]]; then
-    cp ~/.irssi/config ~/.irssi/config.orig
+	cp ~/.irssi/config ~/.irssi/config.orig
 fi
 
 irssi -n $nickname
 
 rm ~/.irssi/startup &> /dev/null
 if [[ -f ~/.irssi/startup.orig ]]; then
-    mv ~/.irssi/startup.orig ~/.irssi/startup
+	mv ~/.irssi/startup.orig ~/.irssi/startup
 fi
 
 rm ~/.irssi/config &> /dev/null
 if [[ -f ~/.irssi/config.orig ]]; then
-    mv ~/.irssi/config.orig ~/.irssi/config
+	mv ~/.irssi/config.orig ~/.irssi/config
 fi

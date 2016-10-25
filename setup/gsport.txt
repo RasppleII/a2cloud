@@ -1,105 +1,105 @@
 #! /bin/bash
-# vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
+# vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
 
 if [[ -f /tmp/no-gsport ]]; then
-    echo
-    echo "Your system needs to be rebooted before you can use GSport."
-    echo -n "Do you want to reboot now? "
-    read
-    if [[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]]; then
-        sudo shutdown -r now
-    fi
-    exit 0
+	echo
+	echo "Your system needs to be rebooted before you can use GSport."
+	echo -n "Do you want to reboot now? "
+	read
+	if [[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]]; then
+		sudo shutdown -r now
+	fi
+	exit 0
 fi
 
 if [[ ( $(grep USB <<< $myTTY) || $(grep AMA <<< $myTTY) || $SSH_CLIENT || $REMOTEHOST ) && ! $DISPLAY ]]; then
-    echo "Please run GSport on the console, or in an X Window."
+	echo "Please run GSport on the console, or in an X Window."
 else
 
-    if [[ -f /usr/local/lib/ROM ]]; then
-        if [[ ! $(grep snd-pcm-oss /etc/modules) ]]; then
-            echo "Configuring GSport sound..."
-            echo "snd-pcm-oss" | sudo tee -a /etc/modules > /dev/null
-            [[ ! $(lsmod | grep snd_pcm_oss) ]] && sudo modprobe snd-pcm-oss
-        fi
+	if [[ -f /usr/local/lib/ROM ]]; then
+		if [[ ! $(grep snd-pcm-oss /etc/modules) ]]; then
+			echo "Configuring GSport sound..."
+			echo "snd-pcm-oss" | sudo tee -a /etc/modules > /dev/null
+			[[ ! $(lsmod | grep snd_pcm_oss) ]] && sudo modprobe snd-pcm-oss
+		fi
 
-        if [[ ! $(dpkg -l xfonts-base 2> /dev/null | grep '^ii') ]]; then
-            echo "Configuring GSport fonts..."
-            sudo apt-get -y update
-            touch /tmp/updated
-            sudo apt-get -y install xfonts-base &> /dev/null
-            sudo apt-get -y clean
-        fi
+		if [[ ! $(dpkg -l xfonts-base 2> /dev/null | grep '^ii') ]]; then
+			echo "Configuring GSport fonts..."
+			sudo apt-get -y update
+			touch /tmp/updated
+			sudo apt-get -y install xfonts-base &> /dev/null
+			sudo apt-get -y clean
+		fi
 
-        if [[ ! $(dpkg -l libpcap0.8-dev 2> /dev/null | grep '^ii') ]]; then
-            echo "Configuring GSport networking..."
-            [[ ! -f /tmp/updated ]] && sudo apt-get -y update
-            sudo apt-get -y install libpcap0.8-dev &> /dev/null
-            sudo apt-get -y clean
-        fi
+		if [[ ! $(dpkg -l libpcap0.8-dev 2> /dev/null | grep '^ii') ]]; then
+			echo "Configuring GSport networking..."
+			[[ ! -f /tmp/updated ]] && sudo apt-get -y update
+			sudo apt-get -y install libpcap0.8-dev &> /dev/null
+			sudo apt-get -y clean
+		fi
 
-        rm /tmp/updated &> /dev/null
-    else
-        gsport-setup
-        [[ $? -ne 0 ]] && exit 1
-    fi
+		rm /tmp/updated &> /dev/null
+	else
+		gsport-setup
+		[[ $? -ne 0 ]] && exit 1
+	fi
 
-    displayOK=
-    if [[ $DISPLAY ]]; then # X Window
-        displayOK=1
-    else # console/framebuffer
-        if [[ ! -f /usr/local/etc/gsportconsolewarningoff ]] && { dpkg -l | grep -q -i virtualbox; }; then
-            echo
-            echo "If you have difficulties moving the mouse in GS/OS, choose"
-            echo "'Disable Mouse Integration' from the Machine menu. To free the mouse"
-            echo "from the virtual machine, press the Host key (shown in the lower right"
-            echo "corner of the virtual machine window)."
-            echo
-            echo "Press alt-F4 to exit GSport."
-            echo
-            echo "Press return to continue,"
-            echo -n "  or type 'OK' if you want to stop seeing this message: "
-            read
-            if [[ $REPLY == "ok" || $REPLY == "ok" || $REPLY == "Ok" ]]; then
-                sudo touch /usr/local/etc/gsportconsolewarningoff
-            fi
-        fi
+	displayOK=
+	if [[ $DISPLAY ]]; then # X Window
+		displayOK=1
+	else # console/framebuffer
+		if [[ ! -f /usr/local/etc/gsportconsolewarningoff ]] && { dpkg -l | grep -q -i virtualbox; }; then
+			echo
+			echo "If you have difficulties moving the mouse in GS/OS, choose"
+			echo "'Disable Mouse Integration' from the Machine menu. To free the mouse"
+			echo "from the virtual machine, press the Host key (shown in the lower right"
+			echo "corner of the virtual machine window)."
+			echo
+			echo "Press alt-F4 to exit GSport."
+			echo
+			echo "Press return to continue,"
+			echo -n "  or type 'OK' if you want to stop seeing this message: "
+			read
+			if [[ $REPLY == "ok" || $REPLY == "ok" || $REPLY == "Ok" ]]; then
+				sudo touch /usr/local/etc/gsportconsolewarningoff
+			fi
+		fi
 
-        if [[ ! $(grep 'input' <<< $(groups) ) ]]; then
-            sudo groupadd input &> /dev/null
-            sudo usermod -a -G input $USER
-            echo 'SUBSYSTEM=="input", GROUP="input", MODE="0660"' | sudo tee /etc/udev/rules.d/99-input.rules > /dev/null
-            touch /tmp/gsport-consolesetup
-        fi
+		if [[ ! $(grep 'input' <<< $(groups) ) ]]; then
+			sudo groupadd input &> /dev/null
+			sudo usermod -a -G input $USER
+			echo 'SUBSYSTEM=="input", GROUP="input", MODE="0660"' | sudo tee /etc/udev/rules.d/99-input.rules > /dev/null
+			touch /tmp/gsport-consolesetup
+		fi
 
-        if [[ -c /dev/fb0 ]]; then
-            [[ ! -f /tmp/gsport-consolesetup ]] && displayOK=1
-        else
-            if [[ -f /etc/default/grub ]]; then
-                if [[ ! $(grep 'GRUB_GFXPAYLOAD_LINUX' /etc/default/grub) ]]; then
-                    echo "Preparing GSport for console use..."
-                    sudo sed -i 's/^\(GRUB_CMDLINE_LINUX=.*\)$/\1\nGRUB_GFXPAYLOAD_LINUX=640x480/' /etc/default/grub
-                    sudo update-grub &> /dev/null
-                    touch /tmp/gsport-consolesetup
-                fi
-            else
-                echo "No framebuffer available. Please run GSport in an X window."
-            fi
-        fi
-    fi
+		if [[ -c /dev/fb0 ]]; then
+			[[ ! -f /tmp/gsport-consolesetup ]] && displayOK=1
+		else
+			if [[ -f /etc/default/grub ]]; then
+				if [[ ! $(grep 'GRUB_GFXPAYLOAD_LINUX' /etc/default/grub) ]]; then
+					echo "Preparing GSport for console use..."
+					sudo sed -i 's/^\(GRUB_CMDLINE_LINUX=.*\)$/\1\nGRUB_GFXPAYLOAD_LINUX=640x480/' /etc/default/grub
+					sudo update-grub &> /dev/null
+					touch /tmp/gsport-consolesetup
+				fi
+			else
+				echo "No framebuffer available. Please run GSport in an X window."
+			fi
+		fi
+	fi
 
-    if [[ ! $DISPLAY && -f /tmp/gsport-consolesetup ]]; then
-        echo "GSport will be ready for console use after you restart your system."
-        echo "You can restart now by typing 'system-restart'."
-    elif [[ $displayOK ]]; then
-        if [[ $(xdpyinfo 2> /dev/null) ]]; then
-            exec /usr/local/bin/gsportx
-        else
-            exec /usr/local/bin/gsportfb
-        fi
-    else
-        echo "GSport has a problem. Please try updating A2CLOUD by"
-        echo "typing 'a2cloud-setup'."
-    fi
+	if [[ ! $DISPLAY && -f /tmp/gsport-consolesetup ]]; then
+		echo "GSport will be ready for console use after you restart your system."
+		echo "You can restart now by typing 'system-restart'."
+	elif [[ $displayOK ]]; then
+		if [[ $(xdpyinfo 2> /dev/null) ]]; then
+			exec /usr/local/bin/gsportx
+		else
+			exec /usr/local/bin/gsportfb
+		fi
+	else
+		echo "GSport has a problem. Please try updating A2CLOUD by"
+		echo "typing 'a2cloud-setup'."
+	fi
 
 fi

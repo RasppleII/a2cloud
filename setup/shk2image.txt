@@ -1,5 +1,5 @@
 #! /bin/bash
-# vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
+# vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
 
 origDir="$PWD"
 [[ ! -n $1 || ! -n $2 ]] && { echo "Usage: shk2image archiveFileName imageFileName [PRODOS.DIR.NAME]"; exit 1; };
@@ -15,11 +15,11 @@ cd /tmp/shk2image_temp
 shkFiles=$(nulib2 -xse "$archiveFile" | tr "\r" "~" | cut -d "~" -f 2 | cut -c 18-);
 cd "$origDir"
 while read thisFile; do
-    fileName=${thisFile%%#*};
-    fileType=${thisFile##*#};
-    echo "extracting  $fileName...";
-    acmd -d "$imageFileName" $dirName$fileName &>/dev/null;
-    acmd -p "$imageFileName" $dirName$fileName \$${fileType:0:2} \$${fileType:2:4} < /tmp/shk2image_temp/"$thisFile"
-    rm /tmp/shk2image_temp/"$thisFile"
+	fileName=${thisFile%%#*};
+	fileType=${thisFile##*#};
+	echo "extracting  $fileName...";
+	acmd -d "$imageFileName" $dirName$fileName &>/dev/null;
+	acmd -p "$imageFileName" $dirName$fileName \$${fileType:0:2} \$${fileType:2:4} < /tmp/shk2image_temp/"$thisFile"
+	rm /tmp/shk2image_temp/"$thisFile"
 done <<< $shkFiles
 rm -r /tmp/shk2image_temp

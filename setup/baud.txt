@@ -1,38 +1,38 @@
 #! /bin/bash
-# vim: set tabstop=4 shiftwidth=4 expandtab filetype=sh:
+# vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
 
 isSystemd=
 isSysVInit=
 # If you really want something else, *you* maintain it!
 if command -v systemctl > /dev/null && systemctl | grep -q '\-\.mount'; then
-    gettyFile="/etc/systemd/system/getty.target.wants/usbgetty@.service"
+	gettyFile="/etc/systemd/system/getty.target.wants/usbgetty@.service"
 elif [[ -f /etc/inittab ]]; then
-    gettyFile="/etc/inittab"
+	gettyFile="/etc/inittab"
 fi
 
 if [[ $1 == "-d" ]]; then
-    shift
-    setgetty=1
+	shift
+	setgetty=1
 else
-    setgetty=
+	setgetty=
 fi
 
 if [[ $1 -ne 300 && $1 -ne 1200 && $1 -ne 2400 && $1 -ne 4800 && $1 -ne 9600 && $1 -ne 19200 && $1 -ne 38400 && $1 -ne 57600 && $1 -ne 115200 ]]; then
-    echo 'Usage: baud [-d] 300|1200|2400|4800|9600|19200|38400|57600|115200';
-    echo '  -d sets default speed for all serial port shells (takes effect on logout)'
-    echo '  omitting -d makes change temporary and immediate'
+	echo 'Usage: baud [-d] 300|1200|2400|4800|9600|19200|38400|57600|115200';
+	echo '  -d sets default speed for all serial port shells (takes effect on logout)'
+	echo '  omitting -d makes change temporary and immediate'
 else
-    if [[ $setgetty ]]; then
-        sudo sed -i "s/ttyAMA0 .* /ttyAMA0 $1 /" $gettyFile;
-        sudo sed -i "s/ttyAMA0,[0-9]*/ttyAMA0,$1/g" /boot/cmdline.txt;
-        sudo sed -i "s/\(ttyUSB.*\) .* /\1 $1 /g" $gettyFile;
-        sudo init q;
-        sudo pkill -f "/sbin/getty"
-    else
-        if [[ $(tty | grep tty) ]]; then
-            stty -F $(tty) $1
-        fi
-    fi
+	if [[ $setgetty ]]; then
+		sudo sed -i "s/ttyAMA0 .* /ttyAMA0 $1 /" $gettyFile;
+		sudo sed -i "s/ttyAMA0,[0-9]*/ttyAMA0,$1/g" /boot/cmdline.txt;
+		sudo sed -i "s/\(ttyUSB.*\) .* /\1 $1 /g" $gettyFile;
+		sudo init q;
+		sudo pkill -f "/sbin/getty"
+	else
+		if [[ $(tty | grep tty) ]]; then
+			stty -F $(tty) $1
+		fi
+	fi
 fi
 
 echo -e "$(tput bold)$(tty) current $(stty -a -F $(tty) | grep -o 'speed .* baud')$(tput sgr0)"
