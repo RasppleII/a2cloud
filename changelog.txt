@@ -1,3 +1,19 @@
+a2cloud (1.9.1) UNRELEASED; urgency=medium
+
+  [ Joseph Carter ]
+  * [78d247a] *.txt: Trailing whitespace removal
+  * [1824c4a] Re-indent scripts (tabs)
+
+ -- T. Joseph Carter <tjcarter@rem>  Tue, 25 Oct 2016 10:40:29 -0700
+
+a2cloud (1.9.0) stable; urgency=low
+
+  [ Ivan Drucker ]
+  * [40b55a5] fix motd, and icon creation error messages in setup
+  * [83a40d7] make "baud" command compatible with systemd
+
+ -- Ivan Drucker <ivan@ivanx.com>  Sat, 23 Jul 2016 06:59:22 -0500
+
 a2cloud (1.8.3) oldstable; urgency=low
 
   * Does NOT support Raspbian jessie yet (thus the oldstable).
