@@ -27,10 +27,6 @@ helpExit () {
 			fi
 			echoerr "-c  <filename> <imagename> [[$|0x]<type>] [[$|0x]<auxtype>] synonym for -p"
 			echoerr "    with filename and imagename reversed."
-			#echoerr "-cd <imagename> <filename> <dateTimeString>|<dateTimeStamp>"
-			#echoerr "     set creation date and time of file in ProDOS disk image"
-			#echoerr "-md <imagename> <filename> <dateTimeString>|<dateTimeStamp>"
-			#echoerr "     set modified date and time of file in ProDOS disk image"
 		else
 			cat $acmdStdErr
 		fi

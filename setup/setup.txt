@@ -95,9 +95,6 @@ while [[ $1 ]]; do
 	elif [[ $1 == "-6" ]]; then
 		shift
 		slot6=1
-	# elif [[ $1 == "-os" || $1 == "os" ]]; then
-	# 	shift
-	# 	updateRasppleII=1
 	elif [[ $1 == "-v" ]]; then
 		shift
 		# Version was already printed
@@ -121,14 +118,6 @@ while [[ $1 ]]; do
 	fi
 done
 
-### RaspbianUpdate
-#if [[ $updateRasppleII ]]; then
-#	echo "A2CLOUD: Updating Raspple II (takes up to an hour)..."
-#	wget -qO /tmp/raspbian-update ${scriptURL}setup/raspbian-update.txt
-#	source /tmp/raspbian-update a2cloud a2server $autoAnswerYes $skipRepoUpdate
-#	[[ $0 == "-bash" ]] && return 0 || exit 0
-#fi
-
 echo
 echo "Your $fullme will be set up for A2CLOUD, providing you"
 echo "  with mass storage and online access for your Apple II!"
@@ -149,15 +138,6 @@ if [[ ! $autoAnswerYes ]]; then
 	fi
 fi
 
-#echo
-#installAllFeatures=
-#if [[ ! $autoAnswerYes ]]; then
-#	### Q: Install all features?
-#	echo
-#	echo -n "Do you want to install all A2CLOUD features? "
-#	read
-#fi
-#[[ $autoAnswerYes || ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]] && installAllFeatures=1
 installAllFeatures=1 # as of 1.9.0
 
 if [[ $installAllFeatures ]]; then
@@ -438,30 +418,6 @@ if [[ $installADTPro ]]; then
 		echo "A2CLOUD: can't disable GUI at startup: unrecognized init system."
 	fi
 
-#	### A2CLOUD: Setup VirtualBox resolution
-#	### FIXME: This doesn't appear to work in Jessie
-#	if lspci 2> /dev/null | grep -q VirtualBox; then
-#		if ! grep -q default /etc/xdg/lxsession/LXDE/autostart; then
-#			echo "A2CLOUD: Setting desktop to 800x600 in VirtualBox console (no Additions)..."
-#			echo -e "\nxrandr --output default --mode 800x600" | sudo tee -a /etc/xdg/lxsession/LXDE/autostart > /dev/null
-#		else
-#			echo "A2CLOUD: Desktop already set to 800x600 in VirtualBox console (no Additions)."
-#		fi
-#		if ! grep -q VBOX0 /etc/xdg/lxsession/LXDE/autostart; then
-#			echo "A2CLOUD: Setting desktop to 800x600 in VirtualBox console (with Additions)..."
-#			echo -e "\nxrandr --output VBOX0 --mode 800x600" | sudo tee -a /etc/xdg/lxsession/LXDE/autostart > /dev/null
-#		else
-#			echo "A2CLOUD: Desktop already set to 800x600 in VirtualBox console (with Additions)."
-#		fi
-#		echo "A2CLOUD: Disabling screensaver and screen blanking in VirtualBox LXDE..."
-#		sudo sed -i 's/^\(@xscreensaver.*\)$/#\1\n\nxset s noblank\nxset s off\nxset -dpms\n/' /etc/xdg/lxsession/LXDE/autostart
-#	fi
-#	### A2CLOUD: Clean up after old version on RPi
-#	if [[ $isRpi ]]; then
-#		sudo sed -i 's/^.*VBOX0.*$//' /etc/xdg/lxsession/LXDE/autostart 2> /dev/null
-#		sudo sed -i 's/^.*VBOX0.*$//' /etc/xdg/lxsession/LXDE-pi/autostart 2> /dev/null
-#	fi
-
 	# install or update java
 	javaVersion=$(java -version 2>&1)
 	if [[ ( $? -eq 127 ) || ( $(head -1 <<< "$javaVersion" | cut -f 2 -d '.') -lt 8 ) ]]; then
@@ -513,16 +469,16 @@ if [[ $installADTPro ]]; then
 				sudo rm /usr/local/adtpro/disks/VDRIVE*.DSK &> /dev/null
 				sudo rm -r /tmp/a2cloud-install/disks &> /dev/null
 				sudo mv /usr/local/adtpro/disks /tmp/a2cloud-install
-				sudo rm -r /usr/local/adtpro/ac.bat \
-						   /usr/local/adtpro/ac.sh \
-						   /usr/local/adtpro/adtpro.bat \
-						   /usr/local/adtpro/adtpro.cmd \
-						   /usr/local/adtpro/ADTPro.html \
-						   /usr/local/adtpro/adtpro.sh \
-						   /usr/local/adtpro/lib \
-						   /usr/local/adtpro/LICENSE \
-						   /usr/local/adtpro/README \
-						   &> /dev/null
+				sudo rm -rf /usr/local/adtpro/ac.bat \
+					/usr/local/adtpro/ac.sh \
+					/usr/local/adtpro/adtpro.bat \
+					/usr/local/adtpro/adtpro.cmd \
+					/usr/local/adtpro/ADTPro.html \
+					/usr/local/adtpro/adtpro.sh \
+					/usr/local/adtpro/lib \
+					/usr/local/adtpro/LICENSE \
+					/usr/local/adtpro/README \
+					&>/dev/null
 			fi
 		else
 			echo "A2CLOUD: ADTPro server does not need updating."
@@ -792,10 +748,10 @@ if [[ $setupSerialPortLogin ]]; then
 		pwd=$PWD
 		cd /etc/systemd/system/getty.target.wants
 		grep -o 'SYMLINK+="ttyUSB.*,' /etc/udev/rules.d/50-usb.rules | cut -d '"' -f 2 | \
-		  while read ttyUSB; do
-			sudo rm usbgetty@${ttyUSB}.service 2> /dev/null
-			sudo ln -s usbgetty@.service usbgetty@${ttyUSB}.service
-		  done
+			while read ttyUSB; do
+				sudo rm usbgetty@${ttyUSB}.service 2> /dev/null
+				sudo ln -s usbgetty@.service usbgetty@${ttyUSB}.service
+			done
 		cd "$pwd"
 		sudo systemctl daemon-reload
 	elif [[ -n "$isSysVInit" ]]; then
@@ -940,12 +896,9 @@ if [[ $installCommTools ]]; then
 
 	### CommTools: Install Oysttyer (formerly TTYtter)
 	# Do we need to check for the readline module here as well?
-	# if [[ ( ! -f /usr/bin/ttytter && ! -f /usr/local/bin/ttytter ) || ! -f "/usr/local/share/perl/5.14.2/Term/ReadLine/TTYtter.pm" ]]; then
 	perlVersion=$(perl -e 'print $^V' | cut -c 2-)
 	if ! hash ttytter 2> /dev/null || [[ ! -f /usr/local/share/perl/${perlVersion}/Term/ReadLine/TTYtter.pm ]]; then
 		echo "A2CLOUD: Installing Oysttyer..."
-		# sudo wget -qO /usr/local/bin/ttytter http://www.floodgap.com/software/ttytter/dist2/2.1.00.txt
-		# sudo chmod ugo+x /usr/local/bin/ttytter
 		wget -qO- https://github.com/oysttyer/oysttyer/archive/2.7.2.tar.gz | sudo tar -zxP --transform 's|oysttyer-2.7.2/oysttyer.pl|/usr/local/bin/oysttyer|' oysttyer-2.7.2/oysttyer.pl
 		sudo rm /usr/local/bin/ttytter 2> /dev/null
 		sudo ln -s /usr/local/bin/oysttyer /usr/local/bin/ttytter
@@ -1128,12 +1081,6 @@ if [[ $installEmulators ]]; then
 			wget -q -O linapple_src-2b.tar.bz2 http://downloads.sourceforge.net/project/linapple/linapple/linapple_2b/linapple_src-2b.tar.bz2
 			tar jxf linapple_src-2b.tar.bz2
 			cd linapple_src-2b/src
-			# doesn't compile with gcc 4.7, so use 4.6 -- needed for linapple 2a
-			#if (( $(g++ --version | head -1 | rev | cut -f 1 -d ' ' | rev | tr -d '.') >= 470 )); then
-			#	sudo apt-get -y install g++-4.6
-			#	sudo apt-get -y clean
-			#	sed -i 's@CXX ?= c++@CXX = /usr/bin/g++-4.6@' Makefile
-			#fi
 			make
 			sudo make install
 			cd /tmp/a2cloud-install

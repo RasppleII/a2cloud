@@ -452,18 +452,6 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
 || [[ ! -f $imagesDir/"$gsosHD" ]] \
 || [[ ! $kegs && ! -f $imagesDir/spectrum.hdv ]]; then
 
-#	  if [[ ! $autoAnswerYes ]]; then
-#		  echo
-#		  echo -n "Do you want to download the GS/OS installer disks"
-#		  if [[ ! -f $imagesDir/"$gsosHD" ]]; then
-#			  echo -n -e "\nand create a hard disk image file"
-#		  fi
-#		  if [[ ! $kegs && -f /usr/local/bin/acmd && ! -f $imagesDir/spectrum.hdv ]]; then
-#			  echo -n -e "\nand download Spectrum communications software"
-#		  fi
-#		  echo -n "? "
-#		  read
-#	  fi
 	REPLY="y"
 	if [[ $autoAnswerYes || ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]]; then
 
@@ -513,7 +501,6 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
 
 				echo "Copying ProDOS..."
 				acmd -g "$imagesDir/INSTALL.HDV" PRODOS "PRODOS#ff0000"
-				#writecharsHex "PRODOS#ff0000" 0 "4C.00.C5.00"
 				wget -qO- ${binaryURL}${emulatorName}SPLASH.SYS | dd of="PRODOS#ff0000" conv=notrunc &> /dev/null
 				echo "Copying Teach..."
 				cppo -uc -e $imagesDir/SYSTEMTOOLS2.HDV /SYSTEMTOOLS2/TEACH . &> /dev/null
@@ -524,13 +511,11 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
 				echo 2
 				acmd -convert $gsosHD.shk $imagesDir/"$gsosHD" 65535
 				echo 3
-				rm "PRODOS#"* "GSHK#"* "TEACH#"* $gsosHD.shk  &> /dev/null
+				rm "PRODOS#"* "GSHK#"* "TEACH#"* $gsosHD.shk &> /dev/null
 
 				acmd -n $imagesDir/"$gsosHD" $gsosHDvolName
 				dd bs=512 count=1 conv=notrunc if="$imagesDir/INSTALL.HDV" of="$imagesDir/$gsosHD" 2> /dev/null
 				sudo chmod ugo+rw $imagesDir/"$gsosHD"
-				#acmd -p "$imagesDir/$gsosHD" PRODOS SYS < $tempDir/PRODOS
-				#rm $tempDir/PRODOS
 			fi
 			echo 4
 			if [[ $(grep ^s7d1 /usr/local/lib/$configFileName) ]]; then
