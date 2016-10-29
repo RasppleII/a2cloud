@@ -4,6 +4,15 @@
 version="1.9.0"
 adtProVersion="2.0.1"
 
+a2cDevel="$( dirname "${BASH_SOURCE[0]}" )/.."
+if [[ -f "$a2cDevel/.a2cloud_source" ]]; then
+	pushd $a2cDevel >/dev/null
+	a2cDevel="$PWD"
+	popd >/dev/null
+else
+	a2cDevel=
+fi
+
 # Ensure URL we'll use ends in a /
 case "$A2CLOUD_SCRIPT_URL" in
 	*/) scriptURL="$A2CLOUD_SCRIPT_URL" ;;
@@ -296,28 +305,54 @@ fi
 echo "A2CLOUD: Adding udev trigger to /etc/rc.local..."
 grep udevadm /etc/rc.local > /dev/null || sudo sed -i 's/^exit 0$/[ -e \/dev\/ttyUSBupper ] \&\& ! [ -f \/tmp\/udev-ttyUSBupper-added ] \&\& udevadm trigger --action=change\n[ -e \/dev\/ttyUSBlower ] \&\& ! [ -f \/tmp\/udev-ttyUSBlower-added ] \&\& udevadm trigger --action=change\n\nexit 0/' /etc/rc.local
 
-### A2CLOUD: Install dopo
-echo "A2CLOUD: Setting up dopo command..."
-sudo wget -qO /usr/local/bin/dopo ${scriptURL}setup/dopo.txt
-sudo chmod ugo+x /usr/local/bin/dopo
+a2cTools="dopo cppo"
+a2cHelp="a2cloud-help.txt"
+a2cConfScripts="a2cloud-aliases a2cloudrc"
 
-### A2CLOUD: Install cppo
-echo "A2CLOUD: Setting up cppo command..."
-sudo wget -qO /usr/local/bin/cppo ${scriptURL}setup/cppo.txt
-sudo chmod ugo+x /usr/local/bin/cppo
+if [[ -z "$a2cDevel" ]]; then
+	a2cToolDir="/tmp/a2cloud-install/tools"
+	mkdir -p "$a2cToolDir"
 
-### A2CLOUD: Install help
-echo "A2CLOUD: Setting up a2cloud-help..."
-sudo wget -qO /usr/local/etc/a2cloud-help.txt ${scriptURL}setup/a2cloud-help.txt
-if [[ $isRpi ]]; then
-	sudo sed -i 's/^gsport.*$/gsport : GSport Apple IIgs emulator (or log in with user "apple2user")/' /usr/local/etc/a2cloud-help.txt
+	echo "A2CLOUD: Downloading files..."
+	for _file in $a2cTools $a2cHelp $a2cConfScripts; do
+		sudo wget -O "$a2cToolDir/$_tool" "${scriptURL}setup/$_file"
+	done
+else
+	a2cToolDir="$a2cDevel/setup"
 fi
 
+for _tool in $a2cTools; do
+	sudo install -m 755 "$a2cToolDir/$_tool" "/usr/local/bin/$_tool"
+done
+for _help in $a2cHelp; do
+	sudo install -m 644 "$a2cToolDir/$_help" "/usr/local/etc/$_help"
+done
+for _confscript in $a2cConfScripts; do
+	sudo install -m 755 "$a2cToolDir/$_confscript" "/usr/local/etc/$_confscript"
+done
+
+# DISABLED: This is part of Apple II Pi, do we want to do this at all here?
+#           Remove after Apple II Pi is restored as its own project
+#if [[ $isRpi ]]; then
+#	sudo sed -i 's/^gsport.*$/gsport : GSport Apple IIgs emulator (or log in with user "apple2user")/' /usr/local/etc/a2cloud-help.txt
+#fi
+
+if [[ -z "a2cDevel" ]]; then
+	rm -rf "$a2cToolDir"
+fi
+
+### A2CLOUD: Install aliases and make bash use them by default
+echo "A2CLOUD: Setting up login script..."
+sudo sed -i "s/a2cloud-aliases/a2cloudrc/" /etc/bash.bashrc
+sudo sed -i '/ttyUSB/d' /etc/bash.bashrc
+if ! grep a2cloudrc /etc/bash.bashrc &>/dev/null; then
+	echo "source /usr/local/etc/a2cloudrc" | sudo tee -a /etc/bash.bashrc >/dev/null
+fi
+source /usr/local/etc/a2cloudrc
+
 ### A2CLOUD: Install MOTD
-# FIXME: We have "three" MOTD files in the A2CLOUD tree but we only use
-# one.  The other two come from the Raspple II tree.  We should clean
+# FIXME: We have *three* MOTD files in the A2CLOUD tree.  We should clean
 # this up at some point.
-# FIXME#2: All of these MOTDs live in the A2CLOUD tree, so we'll get them from there.
 echo "A2CLOUD: Setting up motd..."
 if [[ $(grep Raspple /etc/motd) ]]; then
 	wget -qO- "${scriptURL}setup/motd-rasppleii.txt" | sudo tee /etc/motd > /dev/null
@@ -335,16 +370,6 @@ if lspci 2> /dev/null | grep -q VirtualBox; then
 	sudo /etc/init.d/kbd restart &> /dev/null
 	sudo /etc/init.d/console-setup restart &> /dev/null
 fi
-
-### A2CLOUD: Install aliases and make bash use them by default
-echo "A2CLOUD: Setting up control commands and environment variables..."
-sudo wget -qO /usr/local/etc/a2cloud-aliases ${scriptURL}setup/a2cloud-aliases.txt
-echo "A2CLOUD: Setting up login script..."
-sudo sed -i "s/a2cloud-aliases/a2cloudrc/" /etc/bash.bashrc
-sudo sed -i '/ttyUSB/d' /etc/bash.bashrc
-[[ ! $(grep a2cloudrc /etc/bash.bashrc) ]] && echo "source /usr/local/etc/a2cloudrc" | sudo tee -a /etc/bash.bashrc > /dev/null
-sudo wget -qO /usr/local/etc/a2cloudrc ${scriptURL}setup/a2cloudrc.txt
-source /usr/local/etc/a2cloudrc
 
 ### A2CLOUD: Record the version we're installing
 echo "A2CLOUD: Saving installer version..."

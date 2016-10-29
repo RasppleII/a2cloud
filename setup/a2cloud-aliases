@@ -1,4 +1,5 @@
-# A2CLOUD aliases:
+#! /bin/bash
+# vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
 
 alias a2cloud-setup='wget -qO /tmp/a2cloud-setup ivanx.com/a2cloud/setup/; source /tmp/a2cloud-setup'
 alias a2cloud-help='(IFS=""; while read thisLine; do [[ ${#thisLine} -eq 0 ]] && echo || echo "$(tput bold)${thisLine%% *}$(tput sgr0) ${thisLine#* }"; done < /usr/local/etc/a2cloud-help.txt | more)'
