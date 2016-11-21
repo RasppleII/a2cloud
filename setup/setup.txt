@@ -3,6 +3,8 @@
 
 version="1.9.0"
 adtProVersion="2.0.1"
+a2cScriptURL="https://raw.githubusercontent.com/RasppleII/a2cloud/master/"
+a2cBinaryURL="http://blocksfree.com/downloads/"
 
 a2cDevel="$( dirname "${BASH_SOURCE[0]}" )/.."
 if [[ -f "$a2cDevel/.a2cloud_source" ]]; then
@@ -13,15 +15,6 @@ else
 	a2cDevel=
 fi
 
-# Ensure URL we'll use ends in a /
-case "$A2CLOUD_SCRIPT_URL" in
-	*/) scriptURL="$A2CLOUD_SCRIPT_URL" ;;
-	*) scriptURL="${A2CLOUD_SCRIPT_URL:-https://raw.githubusercontent.com/RasppleII/a2cloud/current}/" ;;
-esac
-case "$A2CLOUD_BINARY_URL" in
-	*/) binaryURL="$A2CLOUD_BINARY_URL" ;;
-	*) binaryURL="${A2CLOUD_BINARY_URL:-http://ivanx.com/a2cloud/files}/" ;;
-esac
 useExternalURL=1
 [[ $A2CLOUD_NO_EXTERNAL ]] && useExternalURL=
 
@@ -375,7 +368,7 @@ if [[ -z "$a2cDevel" ]]; then
 
 	echo "A2CLOUD: Downloading files..."
 	for _file in $a2cTools $a2cHelp $a2cConfScripts; do
-		sudo wget -O "$a2cToolDir/$_tool" "${scriptURL}setup/$_file"
+		sudo wget -O "$a2cToolDir/$_tool" "${a2cScriptURL}/setup/$_file"
 	done
 else
 	a2cToolDir="$a2cDevel/setup"
@@ -415,11 +408,11 @@ source /usr/local/etc/a2cloudrc
 # this up at some point.
 echo "A2CLOUD: Setting up motd..."
 if [[ $(grep Raspple /etc/motd) ]]; then
-	wget -qO- "${scriptURL}setup/motd-rasppleii.txt" | sudo tee /etc/motd > /dev/null
+	wget -qO- "${a2cScriptURL}/setup/motd-rasppleii.txt" | sudo tee /etc/motd > /dev/null
 elif [[ $(grep A2SERVER /etc/motd) ]]; then
-	wget -qO- "${scriptURL}setup/motd-vm.txt" | sudo tee /etc/motd > /dev/null
+	wget -qO- "${a2cScriptURL}/setup/motd-vm.txt" | sudo tee /etc/motd > /dev/null
 else
-	wget -qO- "${scriptURL}setup/motd.txt" | sudo tee /etc/motd > /dev/null
+	wget -qO- "${a2cScriptURL}/setup/motd.txt" | sudo tee /etc/motd > /dev/null
 fi
 
 if lspci 2> /dev/null | grep -q VirtualBox; then
@@ -601,7 +594,7 @@ if [[ $installADTPro ]]; then
 
 	### ADTPro: Install our modified adtpro.sh
 	echo "A2CLOUD: Setting up customized adtpro.sh..."
-	wget -qO /usr/local/adtpro/adtpro.sh "${scriptURL}setup/adtpro.sh.txt"
+	wget -qO /usr/local/adtpro/adtpro.sh "${a2cScriptURL}/setup/adtpro.sh.txt"
 	sudo chmod ugo+rwx /usr/local/adtpro/adtpro.sh
 
 	### ADTPro: Replace A2CLOUD's disks with the ones ...
@@ -680,23 +673,23 @@ if [[ $installADTPro ]]; then
 
 	### A2CLOUD: Install various shell scripts
 	echo "A2CLOUD: Setting up adtpro-start command..."
-	sudo wget -qO /usr/local/bin/adtpro-start ${scriptURL}setup/adtpro-start.txt
+	sudo wget -qO /usr/local/bin/adtpro-start ${a2cScriptURL}/setup/adtpro-start.txt
 	sudo chmod ugo+x /usr/local/bin/adtpro-start
 
 	echo "A2CLOUD: Setting up vsd1/vsd2 commands..."
-	sudo wget -qO /usr/local/bin/vsd ${scriptURL}setup/vsd.txt
+	sudo wget -qO /usr/local/bin/vsd ${a2cScriptURL}/setup/vsd.txt
 	sudo chmod ugo+x /usr/local/bin/vsd
 
 	echo "A2CLOUD: Setting up acmd command..."
-	sudo wget -qO /usr/local/bin/acmd ${scriptURL}setup/acmd.txt
+	sudo wget -qO /usr/local/bin/acmd ${a2cScriptURL}/setup/acmd.txt
 	sudo chmod ugo+x /usr/local/bin/acmd
 
 	echo "A2CLOUD: Setting up mkpo command..."
-	sudo wget -qO /usr/local/bin/mkpo ${scriptURL}setup/mkpo.txt
+	sudo wget -qO /usr/local/bin/mkpo ${a2cScriptURL}/setup/mkpo.txt
 	sudo chmod ugo+x /usr/local/bin/mkpo
 
 	echo "A2CLOUD: Setting up dos2pro command..."
-	sudo wget -qO /usr/local/bin/dos2pro ${scriptURL}setup/dos2pro.txt
+	sudo wget -qO /usr/local/bin/dos2pro ${a2cScriptURL}/setup/dos2pro.txt
 	sudo chmod ugo+x /usr/local/bin/dos2pro
 
 fi
@@ -716,7 +709,7 @@ fi
 
 ### A2CLOUD: Install serial port rules/scripts
 echo "A2CLOUD: Setting up USB port serial adapter handler..."
-sudo wget -qO /usr/local/sbin/ttyusbhandler ${scriptURL}setup/ttyusbhandler.txt
+sudo wget -qO /usr/local/sbin/ttyusbhandler ${a2cScriptURL}/setup/ttyusbhandler.txt
 sudo chmod ugo+x /usr/local/sbin/ttyusbhandler
 
 if [[ ! -f /etc/udev/rules.d/50-usb.rules ]]; then
@@ -806,16 +799,16 @@ if [[ $setupSerialPortLogin ]]; then
 
 	### SerialCon: Install serial login command scripts
 	echo "A2CLOUD: Setting up baud command..."
-	sudo wget -qO /usr/local/bin/baud ${scriptURL}setup/baud.txt
+	sudo wget -qO /usr/local/bin/baud ${a2cScriptURL}/setup/baud.txt
 	sudo chmod ugo+x /usr/local/bin/baud
 
 	echo "A2CLOUD: Setting up term command..."
-	sudo wget -qO /usr/local/bin/term ${scriptURL}setup/term.txt
+	sudo wget -qO /usr/local/bin/term ${a2cScriptURL}/setup/term.txt
 	sudo chmod ugo+x /usr/local/bin/term
 
 	### SerialCon: Install USB serial port login
 	echo "A2CLOUD: Setting up USB shell login..."
-	sudo wget -qO /usr/local/sbin/usbgetty ${scriptURL}setup/usbgetty.txt
+	sudo wget -qO /usr/local/sbin/usbgetty ${a2cScriptURL}/setup/usbgetty.txt
 	sudo chmod ugo+x /usr/local/sbin/usbgetty
 	if [[ -n "$isSystemd" ]]; then
 		# FIXME: Okay, the way we need to fix this is that we need to do the
@@ -829,7 +822,7 @@ if [[ $setupSerialPortLogin ]]; then
 		# (called by udev, as before) now restarts the service upon adapter insertion.
 		# This might not be the best way to do it, but it works for now,
 		# apart from a 30 second delay before the getty becomes available.
-		sudo wget -qO /etc/systemd/system/getty.target.wants/usbgetty@.service ${scriptURL}setup/usbgetty-systemd.service.txt
+		sudo wget -qO /etc/systemd/system/getty.target.wants/usbgetty@.service ${a2cScriptURL}/setup/usbgetty-systemd.service.txt
 		pwd=$PWD
 		cd /etc/systemd/system/getty.target.wants
 		grep -o 'SYMLINK+="ttyUSB.*,' /etc/udev/rules.d/50-usb.rules | cut -d '"' -f 2 | \
@@ -892,7 +885,7 @@ if [[ $installCommTools ]]; then
 		echo "A2CLOUD: Installing cftp..."
 		cd /tmp/a2cloud-install
 		if [[ $downloadBinaries ]]; then
-			wget -qO- "${binaryURL}precompiled/cftp-${arch}_${debianName}.tgz" | sudo tar Pzx
+			wget -qO- "${a2cBinaryURL}/picopkg/cftp-${arch}_${debianName}.tgz" | sudo tar Pzx
 		fi
 		if ! hash cftp 2> /dev/null; then
 			sudo apt-get -y install build-essential
@@ -933,7 +926,7 @@ if [[ $installCommTools ]]; then
 	fi
 
 	### CommTools: Install tin + a2news script
-	sudo wget -qO /usr/local/bin/a2news ${scriptURL}setup/a2news.txt
+	sudo wget -qO /usr/local/bin/a2news ${a2cScriptURL}/setup/a2news.txt
 	sudo chmod ugo+x /usr/local/bin/a2news
 	if ! hash tin 2> /dev/null; then
 		echo "A2CLOUD: Installing a2news/tin..."
@@ -960,7 +953,7 @@ if [[ $installCommTools ]]; then
 	fi
 
 	### CommTools: Install irssi + a2chat script
-	sudo wget -qO /usr/local/bin/a2chat ${scriptURL}setup/a2chat.txt
+	sudo wget -qO /usr/local/bin/a2chat ${a2cScriptURL}/setup/a2chat.txt
 	sudo chmod ugo+x /usr/local/bin/a2chat
 	if ! hash irssi 2> /dev/null; then
 		echo "A2CLOUD: Installing a2chat/irssi..."
@@ -991,7 +984,7 @@ if [[ $installCommTools ]]; then
 		if [[ ! -f "/usr/local/share/perl/$perlVersion/Term/ReadLine/TTYtter.pm" ]]; then
 			echo "A2CLOUD: Installing TTYtter readline module..."
 			if [[ $downloadBinaries ]] && [[ $perlVersion == "5.14.2" || $perlVersion == "5.20.2" ]]; then
-				wget -qO- ${binaryURL}precompiled/ttytter_readline-rpi.tgz | sudo tar Pzx
+				wget -qO- "${a2cBinaryURL}/picopkg/ttytter_readline-rpi.tgz" | sudo tar Pzx
 			fi
 			if [[ ! -f "/usr/local/share/perl/$perlVersion/Term/ReadLine/TTYtter.pm" ]]; then
 				if [[ ! -f "/usr/local/lib/perl/$perlVersion/Term/ReadKey.pm" ]]; then
@@ -1044,7 +1037,7 @@ if [[ $installEmulators ]]; then
 			### Emulators: GSport: Install pre-built binaries
 			sudo apt-get -y install libpcap0.8 &> /dev/null
 			sudo apt-get -y clean
-			wget -qO- "${binaryURL}precompiled/gsport-${arch}_${debianName}.tgz" | sudo tar Pzx 2> /dev/null
+			wget -qO- "${a2cBinaryURL}/picopkg/gsport-${arch}_${debianName}.tgz" | sudo tar Pzx 2> /dev/null
 		fi
 		if ! hash gsport 2> /dev/null || ! hash gsportx 2> /dev/null || ! hash gsportfb 2> /dev/null; then
 			### Emulators: GSport: Install from source
@@ -1104,7 +1097,7 @@ if [[ $installEmulators ]]; then
 			sudo sed -i 's@^s6d1.*$@s6d1 = /usr/local/share/gsdisks/slot6drive1.po@' "$gsportConfigFile"
 			sudo sed -i 's@^s6d2.*$@s6d2 = /usr/local/share/gsdisks/slot6drive2.po@' "$gsportConfigFile"
 			if [[ ! -f /usr/local/share/gsdisks/slot6drive1.po || ! -f /usr/local/share/gsdisks/slot6drive2.po ]]; then
-				wget -qO- "${binaryURL}slot6.tgz" | sudo tar Pzx 2> /dev/null
+				wget -qO- "${a2BinaryURL}/gsport/slot6.tgz" | sudo tar Pzx 2> /dev/null
 			fi
 		fi
 
@@ -1137,9 +1130,9 @@ if [[ $installEmulators ]]; then
 		sudo chgrp gsport /usr/local/bin/gsportx
 		sudo chmod u+s /usr/local/bin/gsportx
 
-		sudo wget -qO /usr/local/bin/gsport ${scriptURL}setup/gsport.txt
+		sudo wget -qO /usr/local/bin/gsport ${a2cScriptURL}/setup/gsport.txt
 		sudo chmod ugo+x /usr/local/bin/gsport
-		sudo wget -qO /usr/local/bin/gsport-setup ${scriptURL}setup/gsport-setup-shell.txt
+		sudo wget -qO /usr/local/bin/gsport-setup ${a2cScriptURL}/setup/gsport-setup-shell.txt
 		sudo chmod ugo+x /usr/local/bin/gsport-setup
 
 	else
@@ -1152,7 +1145,7 @@ if [[ $installEmulators ]]; then
 		cd /tmp/a2cloud-install
 		if [[ $downloadBinaries ]]; then
 			### Emulators: LinApple: Install pre-built binaries
-			wget -qO- "${binaryURL}linapple-${arch}_${debianName}.tgz" | sudo tar Pzx
+			wget -qO- "${a2cBinaryURL}/picopkg/linapple-${arch}_${debianName}.tgz" | sudo tar Pzx
 		fi
 		if ! hash linapple 2> /dev/null; then
 			### Emulators: LinApple: Install from source
@@ -1175,7 +1168,7 @@ if [[ $installEmulators ]]; then
 		echo "A2CLOUD: LinApple is already installed."
 	fi
 	echo "A2CLOUD: Updating LinApple launch file..."
-	sudo wget -qO /usr/local/bin/linapple ${scriptURL}setup/linapple.txt
+	sudo wget -qO /usr/local/bin/linapple ${a2cScriptURL}/setup/linapple.txt
 	sudo chmod ugo+x /usr/local/bin/linapple
 
 	### Emulators: Set Groups
@@ -1193,7 +1186,7 @@ if [[ $installArchiveTools ]]; then
 		cd /tmp/a2cloud-install
 		if [[ $downloadBinaries ]]; then
 			### ArchiveTools: Install nulib2 binaries
-			wget -qO- "${binaryURL}precompiled/nulib2-${arch}_${debianName}.tgz" | sudo tar Pzx
+			wget -qO- "${a2cBinaryURL}/picopkg/nulib2-${arch}_${debianName}.tgz" | sudo tar Pzx
 		fi
 
 		if ! hash nulib2 2> /dev/null; then
@@ -1244,7 +1237,7 @@ if [[ $installArchiveTools ]]; then
 
 	echo "A2CLOUD: Setting up shk2image command..."
 	### ArchiveTools: Install shk2image command
-	sudo wget -qO /usr/local/bin/shk2image ${scriptURL}setup/shk2image.txt
+	sudo wget -qO /usr/local/bin/shk2image ${a2cScriptURL}/setup/shk2image.txt
 	sudo chmod ugo+x /usr/local/bin/shk2image
 
 	# http://wakaba.c3.cx/s/apps/unarchiver.html
@@ -1264,7 +1257,7 @@ if [[ $installArchiveTools ]]; then
 				# Dependencies: for unar
 				sudo apt-get -y install libgnustep-base1.22
 				sudo apt-get clean
-				wget -qO- "${binaryURL}precompiled/unar-${arch}_${debianName}.tgz" | sudo tar Pzx &> /dev/null
+				wget -qO- "${a2cBinaryURL}/picopkg/unar-${arch}_${debianName}.tgz" | sudo tar Pzx &> /dev/null
 			fi
 
 			# If all else fails, compile from source.
@@ -1282,7 +1275,7 @@ if [[ $installArchiveTools ]]; then
 					unzip -o unar-1.8.1.zip &> /dev/null
 				fi
 				if [ ! -d *Unarchiver*/XADMaster ]; then # need single bracket for glob
-					wget -O unar-1.8.1.zip ${binaryURL}external/source/unar-1.8.1.zip
+					wget -O unar-1.8.1.zip "${a2cBinaryURL}/source/unar-1.8.1.zip"
 					unzip -o unar-1.8.1.zip &> /dev/null
 				fi
 				cd *Unarchiver*/XADMaster
@@ -1319,7 +1312,7 @@ if [[ -f /usr/bin/X ]]; then
 		echo -e "[Desktop Entry]\nName=GSport\nComment=Apple IIgs Emulator\nExec=lxterminal -e /usr/local/bin/gsport\nIcon=/usr/local/share/gsport32.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/share/raspi-ui-overrides/gsport.desktop > ~/Desktop/gsport.desktop
 	fi
 	if [[ ! -f /usr/local/share/gsport32.ico ]]; then
-		sudo wget -qO /usr/local/share/gsport32.ico ${binaryURL}gsport32.ico
+		sudo wget -qO /usr/local/share/gsport32.ico "${a2cBinaryURL}/gsport/gsport32.ico"
 	fi
 	# LinApple:
 	if [[ -f /usr/local/bin/linapple ]]; then
@@ -1400,9 +1393,9 @@ if [[ $a2CloudDisk ]]; then
 		sudo pkill -f ADTPro
 		if [[ ! $buildA2CloudDisk ]]; then
 			echo "A2CLOUD: Downloading 800K disk image..."
-			wget -qO $a2CloudDisk "${binaryURL}A2CLOUD.PO"
+			wget -qO $a2CloudDisk "${a2cBinaryURL}/a2cloud/A2CLOUD.PO"
 			echo "A2CLOUD: Downloading 140K disk image..."
-			wget -qO $a2CloudDisk140 "${binaryURL}A2CLOUD.DSK"
+			wget -qO $a2CloudDisk140 "${a2cBinaryURL}/a2cloud/A2CLOUD.DSK"
 		fi
 
 		# build if we don't have a disk image
@@ -1433,7 +1426,7 @@ if [[ $a2CloudDisk ]]; then
 			mv 'Disk 3 of 7-SystemTools1.sea' SystemTools1.dc42
 			acmd -g SystemTools1.dc42 BASIC.SYSTEM - | acmd -p "$a2CloudDisk" BASIC.SYSTEM SYS
 			# use our startup program
-			wget -qO- "${binaryURL}STARTUP.BAS" | acmd -p "$a2CloudDisk" STARTUP BAS
+			wget -qO- "${a2cBinaryURL}/a2cloud/STARTUP.BAS" | acmd -p "$a2CloudDisk" STARTUP BAS
 
 			### DiskImage: Add VEDRIVE to A2CLOUD disk
 			echo "A2CLOUD: Copying VEDRIVE..."
@@ -1481,11 +1474,11 @@ if [[ $a2CloudDisk ]]; then
 			done
 			acmd -p "$a2CloudDisk" PT3.DIAL/PTD.SPACEBAR COM \$8002 < /tmp/a2cloud-install/pt31/PT3.DIAL/"PTD.SPACEBAR#598002"
 			echo "A2CLOUD: Adding 115200 baud macros for ProTERM..."
-			wget -qO PT3.IIC.MACRO "${binaryURL}PT3.IIC.MACRO.txt"
+			wget -qO PT3.IIC.MACRO "${a2cBinaryURL}/a2cloud/PT3.IIC.MACRO.txt"
 			cat "PT3.GLOBAL#040000" | tr '\r' '\n' | sed ':a;N;$!ba;s/\n\*\nOPTION-f : Unused & available.\n\*/~~~/' | sed -e '/~~~/r PT3.IIC.MACRO' -e 's///' | tr '\n' '\r' | acmd -p "$a2CloudDisk" PT3.IIC.GLOBAL TXT
-			wget -qO PT3.IIE.MACRO "${binaryURL}PT3.IIE.MACRO.txt"
+			wget -qO PT3.IIE.MACRO "${a2cBinaryURL}/a2cloud/PT3.IIE.MACRO.txt"
 			cat "PT3.GLOBAL#040000" | tr '\r' '\n' | sed ':a;N;$!ba;s/\n\*\nOPTION-f : Unused & available.\n\*/~~~/' | sed -e '/~~~/r PT3.IIE.MACRO' -e 's///' | tr '\n' '\r' | acmd -p "$a2CloudDisk" PT3.IIE.GLOBAL TXT
-			wget -qO PT3.IIGS.MACRO "${binaryURL}PT3.IIGS.MACRO.txt"
+			wget -qO PT3.IIGS.MACRO "${a2cBinaryURL}/a2cloud/PT3.IIGS.MACRO.txt"
 			cat "PT3.GLOBAL#040000" | tr '\r' '\n' | sed ':a;N;$!ba;s/\n\*\nOPTION-h : Unused & available.\n\*\n\n\*\nOPTION-H : Unused & available.\n\*/~~~/' | sed -e '/~~~/r PT3.IIGS.MACRO' -e 's///' | tr '\n' '\r' | acmd -p "$a2CloudDisk" PT3.IIGS.GLOBAL TXT
 			acmd -p "$a2CloudDisk" PROTERM SYS < /tmp/a2cloud-install/pt31/"PT3.SYSTEM#ff2000"
 			cd /tmp/a2cloud-install
@@ -1501,7 +1494,7 @@ if [[ $a2CloudDisk ]]; then
 			echo "A2CLOUD: Downloading and copying ShrinkIt..."
 			cd /tmp/a2cloud-install
 			wget -qO shrinkit.sdk http://web.archive.org/web/20131031160750/http://www.nulib.com/library/shrinkit.sdk
-			[[ ! -f shrinkit.sdk ]] && wget -qO shrinkit.sdk "${binaryURL}shrinkit.sdk"
+			[[ ! -f shrinkit.sdk ]] && wget -qO shrinkit.sdk "${a2cBinaryURL}/a2cloud/shrinkit.sdk"
 			nulib2 -xs shrinkit.sdk > /dev/null
 			acmd -g /tmp/a2cloud-install/SHRINKIT SHRINKIT -        | acmd -p "$a2CloudDisk" SHRINKIT SYS
 			acmd -g /tmp/a2cloud-install/SHRINKIT SHRINKIT.SYSTEM - | acmd -p "$a2CloudDisk" SHRINKIT.SYS SYS
