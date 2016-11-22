@@ -3,8 +3,8 @@
 
 version="1.9.0"
 adtProVersion="2.0.1"
-a2cScriptURL="https://raw.githubusercontent.com/RasppleII/a2cloud/master/"
-a2cBinaryURL="http://blocksfree.com/downloads/"
+a2cScriptURL="https://raw.githubusercontent.com/RasppleII/a2cloud/master"
+a2cBinaryURL="http://blocksfree.com/downloads"
 
 a2cDevel="$( dirname "${BASH_SOURCE[0]}" )/.."
 if [[ -f "$a2cDevel/.a2cloud_source" ]]; then
