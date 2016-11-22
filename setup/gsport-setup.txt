@@ -73,16 +73,9 @@ writecharsHex () {
 
 ### start
 
-# Ensure URL we'll use ends in a /
-case "$A2CLOUD_SCRIPT_URL" in
-	*/) scriptURL="$A2CLOUD_SCRIPT_URL" ;;
-	*) scriptURL="${A2CLOUD_SCRIPT_URL:-https://raw.githubusercontent.com/RasppleII/a2cloud/master}/" ;;
-esac
-case "$A2CLOUD_BINARY_URL" in
-	*/) binaryURL="$A2CLOUD_BINARY_URL" ;;
-	*) binaryURL="${A2CLOUD_BINARY_URL:-http://ivanx.com/a2cloud/files}/" ;;
-esac
-useExternalURL=1
+a2cScriptURL="https://raw.githubusercontent.com/RasppleII/a2cloud/master"
+a2cBinaryURL="http://blocksfree.com/downloads"
+
 [[ $A2CLOUD_NO_EXTERNAL ]] && useExternalURL=
 
 debianVersion=$(cat /etc/debian_version 2> /dev/null)
@@ -262,7 +255,7 @@ if ! hash unar 2> /dev/null; then
 			# Dependencies: for unar
 			sudo apt-get -y install libgnustep-base1.22
 			sudo apt-get clean
-			wget -qO- "${binaryURL}precompiled/unar-${arch}_${debianName}.tgz" | sudo tar Pzx &> /dev/null
+			wget -qO- "${a2cBinaryURL}/picopkg/unar-${arch}_${debianName}.tgz" | sudo tar Pzx &> /dev/null
 		fi
 
 		# If all else fails, compile from source.
@@ -280,7 +273,7 @@ if ! hash unar 2> /dev/null; then
 				unzip -o unar-1.8.1.zip &> /dev/null
 			fi
 			if [ ! -d *Unarchiver*/XADMaster ]; then # need single bracket for glob
-				wget -O unar-1.8.1.zip ${binaryURL}external/source/unar-1.8.1.zip
+				wget -O unar-1.8.1.zip "${a2cBinaryURL}/source/unar-1.8.1.zip"
 				unzip -o unar-1.8.1.zip &> /dev/null
 			fi
 			cd *Unarchiver*/XADMaster
@@ -300,7 +293,7 @@ fi
 cd $tempDir
 
 echo "A2CLOUD: Setting up mkpo command..."
-sudo wget -qO /usr/local/bin/mkpo ${scriptURL}setup/mkpo.txt
+sudo wget -qO /usr/local/bin/mkpo ${a2cScriptURL}/setup/mkpo.txt
 sudo chmod ugo+x /usr/local/bin/mkpo
 
 if ! hash nulib2 2> /dev/null; then
@@ -310,7 +303,7 @@ if ! hash nulib2 2> /dev/null; then
 	cd $tempDir
 	if [[ $downloadBinaries ]]; then
 		### ArchiveTools: Install nulib2 binaries
-		wget -qO- "${binaryURL}precompiled/nulib2-${arch}_${debianName}.tgz" | sudo tar Pzx
+		wget -qO- "${a2cBinaryURL}/picopkg/nulib2-${arch}_${debianName}.tgz" | sudo tar Pzx
 	fi
 
 	if ! hash nulib2 2> /dev/null; then
@@ -390,7 +383,7 @@ if [[ $slot6 ]]; then
 	sudo sed -i 's@^s6d1.*$@s6d1 = $imagesDir/slot6drive1.po@' /usr/local/lib/$configFileName
 	sudo sed -i 's@^s6d2.*$@s6d2 = $imagesDir/slot6drive2.po@' /usr/local/lib/$configFileName
 	if [[ ! -f $imagesDir/slot6drive1.po || ! -f $imagesDir/slot6drive2.po ]]; then
-		wget -qO- ${binaryURL}slot6.tgz | sudo tar Pzx 2> /dev/null
+		wget -qO- "${a2BinaryURL}/gsport/slot6.tgz" | sudo tar Pzx 2> /dev/null
 	fi
 fi
 
@@ -501,7 +494,7 @@ if [[ ! -f $imagesDir/INSTALL.HDV ]] \
 
 				echo "Copying ProDOS..."
 				acmd -g "$imagesDir/INSTALL.HDV" PRODOS "PRODOS#ff0000"
-				wget -qO- ${binaryURL}${emulatorName}SPLASH.SYS | dd of="PRODOS#ff0000" conv=notrunc &> /dev/null
+				wget -qO- ${a2cBinaryURL}/gsport/splash/${emulatorName}SPLASH.SYS | dd of="PRODOS#ff0000" conv=notrunc &> /dev/null
 				echo "Copying Teach..."
 				cppo -uc -e $imagesDir/SYSTEMTOOLS2.HDV /SYSTEMTOOLS2/TEACH . &> /dev/null
 				echo "Downloading GS-ShrinkIt..."
