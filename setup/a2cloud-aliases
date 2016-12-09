@@ -1,6 +1,5 @@
 #! /bin/bash
 # vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
-
 alias a2cloud-setup='wget -qO /tmp/a2cloud-setup ivanx.com/a2cloud/setup/; source /tmp/a2cloud-setup'
 alias a2cloud-help='(IFS=""; while read thisLine; do [[ ${#thisLine} -eq 0 ]] && echo || echo "$(tput bold)${thisLine%% *}$(tput sgr0) ${thisLine#* }"; done < /usr/local/etc/a2cloud-help.txt | more)'
 alias a2cloud-version='cat /usr/local/etc/A2CLOUD-version'
@@ -8,13 +7,6 @@ alias a2cloud-update='a2cloud-setup'
 
 alias system-shutdown='sudo shutdown -h now'
 alias system-restart='sudo shutdown -r now'
-
-
-alias raspi-config='[[ -f /usr/bin/raspi-config ]] && sudo /usr/bin/raspi-config || echo "raspi-config not found. Are you using a Raspberry Pi with Raspbian?"'
-alias appleiipi-update="sudo apt-get -y update && sudo apt-get -y --force-yes install a2pi apple2user gsport"
-alias raspbian-update='wget -qO /tmp/raspbian-update ivanx.com/a2cloud/setup/raspbian-update.txt; source /tmp/raspbian-update'
-alias rasppleii-update='raspbian-update a2cloud a2server'
-
 
 alias welcome-message-edit='sudo nano /etc/motd'
 

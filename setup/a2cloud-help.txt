@@ -8,13 +8,6 @@ a2cloud-update : update A2CLOUD, or add features
 system-shutdown : shut down the A2CLOUD machine (or VM)
 system-restart : shut down and restart  the A2CLOUD machine (or VM)
 
- Raspberry Pi commands, if you're using one:
-raspi-config : configure Raspberry Pi
-appleiipi-update : update Apple II Pi and GSport
-raspbian-update : update Raspbian operating system
-rasppleii-update : update Raspbian OS, A2CLOUD, A2SERVER, Apple II Pi
- Apple II Pi: for help, visit http://schmenk.is-a-geek.com/wordpress
-
 welcome-message-edit : change the welcome message
 
 showip : show the current ethernet IP address of the server
