@@ -1,0 +1,95 @@
+#! /bin/bash
+# vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
+
+# update/index.txt - upgrade path from Ivan's a2cloud tree
+#
+# Ivan's a2cloud installed with a single copy-paste of a command line that
+# downloaded a script and ran it sight-unseen.  It also installed alias
+# commands that would perform a similar one-liner to upgrade a2cloud to the
+# latest version.  This script provides that interface for upgrades.
+
+a2cBranch="master"
+a2cScriptURL="https://raw.githubusercontent.com/RasppleII/a2cloud/${a2cBranch}"
+a2cTarball="https://github.com/RasppleII/a2cloud/archive/${a2cBranch}.tar.gz"
+
+# Set a2cSource to the location of the source tree if we're running in one
+a2cSource="$( dirname "${BASH_SOURCE[0]}" )/.."
+pushd $a2cSource >/dev/null
+a2cSource="$PWD"
+popd >/dev/null
+if [[ ! -f "$a2cSource/.a2cloud_source" ]]; then
+	a2cWebUpdate=1
+	a2cSource=$(mktemp -d /tmp/a2cloud.XXXXXXXXXXXX)
+fi
+
+installedVersion=
+if [[ -f /usr/local/etc/A2CLOUD-version ]]; then
+	read installedVersion < /usr/local/etc/A2CLOUD-version
+	# Convert old three-digit version if needed
+    if [[ $installedVersion != *.*.* ]]; then
+        installedVersion="${installedVersion:0:1}.${installedVersion:1:1}.${installedVersion:2}"
+    fi
+fi
+
+autoAnswerYes=
+for arg in $@; do
+	if [[ $arg == "-y" ]]; then
+		autoAnswerYes=1
+		break
+	fi
+done
+
+printf "\na2cloud web install\n\n"
+
+if (( $a2cWebUpdate )); then
+	newVersion=$(wget -qO- "${a2cScriptURL}/install.sh" | grep '^a2cloudVersion' | cut -d '"' -f 2)
+	cat <<-EOT
+	You've started the single command a2cloud install script.  This script will
+	download things behind the scenes, run them without much verification, and
+	then it will delete what it ran whether the upgrade finished successfully or
+	not.  For this reason, we are going to be phasing this script out in the
+	future, but it still does what you expect for now.
+	EOT
+else
+	newVersion=$(grep '^a2cloudVersion' "$a2cSource/install.sh" | cut -d '"' -f 2)
+	cat <<-EOT
+	You've started the single command a2cloud install script from inside the
+	a2cloud source directory for version $newVersion.  This script will only
+	install or update to that version.
+	EOT
+fi
+
+cat <<EOT
+
+installed version: ${installedVersion:-None}
+available version: ${newVersion}
+
+EOT
+
+if [[ ! $autoAnswerYes ]]; then
+	printf "Do you want to install (or update) a2cloud? "
+	read
+	if [[ ${REPLY:0:1} != "y" && ${REPLY:0:1} != "Y" ]]; then
+		printf "\nOkay, not installing anything now!\n\n"
+		exit 1
+	fi
+fi
+
+if (( $a2cWebUpdate )); then
+	a2cSource=$(mktemp -d /tmp/a2cloud.XXXXXXXXXXXX)
+
+	# Normally tarballs unpack in a subdirectory, but we want it to unpack into
+	# $a2cSource directly (even though the directory has the tarball in it.)
+	printf "\na2cloud: Downloading installer to $a2cSource.\n"
+	wget -O "$a2cSource/a2cloud-$a2cBranch.tar.gz" "$a2cTarball"
+	tar -C $a2cSource --strip-components=1 -zxf "$a2cSource/a2cloud-${a2cBranch}.tar.gz"
+fi
+
+# Now we actually run the installer as if we were installing it by hand
+printf "\na2cloud: Running the installer now.\n"
+"${a2cSource}/install.sh" "$@"
+
+if (( $a2cWebUpdate )); then
+	printf "\na2cloud: Finished with installer, now deleting ${a2cSource}.\n"
+	rm -rf "$a2cSource"
+fi
