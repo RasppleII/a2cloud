@@ -1,7 +1,7 @@
 #! /bin/bash
 # vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
 
-version="1.9.0"
+version="2.9.0"
 adtProVersion="2.0.1"
 a2cScriptURL="https://raw.githubusercontent.com/RasppleII/a2cloud/master"
 a2cBinaryURL="http://blocksfree.com/downloads"
