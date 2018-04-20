@@ -1220,7 +1220,7 @@ if [[ $installArchiveTools ]]; then
 		### ArchiveTools: Install undoit (sciibin, etc.)
 		echo "A2CLOUD: Installing sciibin, unblu, unbit, unexec, usq..."
 
-		sudo apt-get -y install build-essential
+		sudo apt-get -y install build-essential unzip
 		sudo apt-get -y clean
 		rm -rf undoit &> /dev/null
 		mkdir -p undoit
