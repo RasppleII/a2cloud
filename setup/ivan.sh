@@ -69,66 +69,6 @@ fi
 echo "A2CLOUD version available: $version"
 echo "A2CLOUD version installed: ${installedVersion:-None}"
 
-function a2cCmpInstalled() {
-	local iMajor iMinor iRev
-	local cMajor cMinor cRev
-
-	[[ -z "$installedVersion" ]] && return 0 # No, not installed
-	[[ -z "$1" ]] && return 1
-	iMajor=${installedVersion%%.*}
-	iMinor=${installedVersion#*.}
-	iMinor=${iMinor%%.*}
-	iRev=${installedVersion##*.}
-	cMajor=${2%%.*}
-	cMinor=${2#*.}
-	cMinor=${cMinor%%.*}
-	cRev=${2##*.}
-
-	case "$1" in
-		lt|le)
-			if [[ "$iMajor" -lt "$cMajor" ]]; then
-				return 0
-			elif [[ "$iMajor" -eq "$cMajor" ]]; then
-				if [[ "$iMinor" -lt "$cMinor" ]]; then
-					return 0
-				elif [[ "$iMinor" -eq "$cMinor" ]]; then
-					if [[ "$iRev" -le "$cRev" ]]; then
-						if [[ "$1" == "le" || "$iRev" -lt "$cRev" ]]; then
-							return 0
-						fi
-					fi
-				fi
-			fi
-			;;
-		gt|ge)
-			if [[ "$iMajor" -gt "$cMajor" ]]; then
-				return 0
-			elif [[ "$iMajor" -eq "$cMajor" ]]; then
-				if [[ "$iMinor" -gt "$cMinor" ]]; then
-					return 0
-				elif [[ "$iMinor" -eq "$cMinor" ]]; then
-					if [[ "$iRev" -ge "$cRev" ]]; then
-						if [[ "$1" == "ge" || "$iRev" -gt "$cRev" ]]; then
-							return 0
-						fi
-					fi
-				fi
-			fi
-			;;
-		eq)
-			if [[ "$iMajor" -eq "$cMajor" ]]; then
-				if [[ "$iMinor" -eq "$cMinor" ]]; then
-					if [[ "$iRev" -eq "$cRev" ]]; then
-						return 0
-					fi
-				fi
-			fi
-			;;
-	esac
-
-	return 1
-}
-
 ### A2CLOUD: Process command line args
 buildA2CloudDisk=
 downloadBinaries=1
