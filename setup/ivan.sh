@@ -7,12 +7,12 @@ a2cScriptURL="https://raw.githubusercontent.com/RasppleII/a2cloud/master"
 a2cBinaryURL="http://blocksfree.com/downloads"
 
 # Find the path of our source directory
-a2cDevel="$( dirname "${BASH_SOURCE[0]}" )/.."
-pushd $a2cDevel >/dev/null
-a2cDevel="$PWD"
+a2cSource="$( dirname "${BASH_SOURCE[0]}" )/.."
+pushd $a2cSource >/dev/null
+a2cSource="$PWD"
 popd >/dev/null
-if [[ ! -f "$a2cDevel/.a2cloud_source" ]]; then
-	printf "\na2cloud: cannot find a2cloud source directory in $a2cDevel.\n\n"
+if [[ ! -f "$a2cSource/.a2cloud_source" ]]; then
+	printf "\na2cloud: cannot find a2cloud source directory in $a2cSource.\n\n"
 	exit 1
 fi
 
@@ -302,18 +302,7 @@ grep udevadm /etc/rc.local > /dev/null || sudo sed -i 's/^exit 0$/[ -e \/dev\/tt
 a2cTools="dopo cppo"
 a2cHelp="a2cloud-help.txt"
 a2cConfScripts="a2cloud-aliases a2cloudrc"
-
-if [[ -z "$a2cDevel" ]]; then
-	a2cToolDir="/tmp/a2cloud-install/tools"
-	mkdir -p "$a2cToolDir"
-
-	echo "A2CLOUD: Downloading files..."
-	for _file in $a2cTools $a2cHelp $a2cConfScripts; do
-		sudo wget -O "$a2cToolDir/$_tool" "${a2cScriptURL}/setup/$_file"
-	done
-else
-	a2cToolDir="$a2cDevel/setup"
-fi
+a2cToolDir="$a2cSource/setup"
 
 for _tool in $a2cTools; do
 	sudo install -m 755 "$a2cToolDir/$_tool" "/usr/local/bin/$_tool"
@@ -330,10 +319,6 @@ done
 #if [[ $isRpi ]]; then
 #	sudo sed -i 's/^gsport.*$/gsport : GSport Apple IIgs emulator (or log in with user "apple2user")/' /usr/local/etc/a2cloud-help.txt
 #fi
-
-if [[ -z "a2cDevel" ]]; then
-	rm -rf "$a2cToolDir"
-fi
 
 ### A2CLOUD: Install aliases and make bash use them by default
 echo "A2CLOUD: Setting up login script..."
