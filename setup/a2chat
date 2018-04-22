@@ -3,7 +3,7 @@
 
 if [[ ! $(dpkg -l irssi 2> /dev/null | grep '^ii') ]]; then
 	echo "Installing irssi..."
-	supo apt-get -y update
+	sudo apt-get -y update
 	sudo apt-get -y install irssi &> /dev/null
 	sudo apt-get -y clean
 fi

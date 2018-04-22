@@ -1,7 +1,7 @@
 #! /bin/bash
 # vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
 
-wget -qO /tmp/gsport-setup https://raw.githubusercontent.com/RasppleII/a2cloud/master/setup/gsport-setup.txt
+wget -qO /tmp/gsport-setup https://raw.githubusercontent.com/RasppleII/a2cloud/master/setup/gsport-setup
 if [[ $(wc -c /tmp/gsport-setup | grep '^0 ') ]]; then
 	echo "Please connect to the internet to set up GSport."
 else

@@ -3,16 +3,16 @@
 
 version="2.9.0"
 adtProVersion="2.0.1"
-a2cScriptURL="https://raw.githubusercontent.com/RasppleII/a2cloud/master"
 a2cBinaryURL="http://blocksfree.com/downloads"
 
-a2cDevel="$( dirname "${BASH_SOURCE[0]}" )/.."
-if [[ -f "$a2cDevel/.a2cloud_source" ]]; then
-	pushd $a2cDevel >/dev/null
-	a2cDevel="$PWD"
-	popd >/dev/null
-else
-	a2cDevel=
+# Find the path of our source directory
+a2cSource="$( dirname "${BASH_SOURCE[0]}" )/.."
+pushd $a2cSource >/dev/null
+a2cSource="$PWD"
+popd >/dev/null
+if [[ ! -f "$a2cSource/.a2cloud_source" ]]; then
+	printf "\na2cloud: cannot find a2cloud source directory in $a2cSource.\n\n"
+	exit 1
 fi
 
 useExternalURL=1
@@ -68,66 +68,6 @@ if [[ -f /usr/local/etc/A2CLOUD-version ]]; then
 fi
 echo "A2CLOUD version available: $version"
 echo "A2CLOUD version installed: ${installedVersion:-None}"
-
-function a2cCmpInstalled() {
-	local iMajor iMinor iRev
-	local cMajor cMinor cRev
-
-	[[ -z "$installedVersion" ]] && return 0 # No, not installed
-	[[ -z "$1" ]] && return 1
-	iMajor=${installedVersion%%.*}
-	iMinor=${installedVersion#*.}
-	iMinor=${iMinor%%.*}
-	iRev=${installedVersion##*.}
-	cMajor=${2%%.*}
-	cMinor=${2#*.}
-	cMinor=${cMinor%%.*}
-	cRev=${2##*.}
-
-	case "$1" in
-		lt|le)
-			if [[ "$iMajor" -lt "$cMajor" ]]; then
-				return 0
-			elif [[ "$iMajor" -eq "$cMajor" ]]; then
-				if [[ "$iMinor" -lt "$cMinor" ]]; then
-					return 0
-				elif [[ "$iMinor" -eq "$cMinor" ]]; then
-					if [[ "$iRev" -le "$cRev" ]]; then
-						if [[ "$1" == "le" || "$iRev" -lt "$cRev" ]]; then
-							return 0
-						fi
-					fi
-				fi
-			fi
-			;;
-		gt|ge)
-			if [[ "$iMajor" -gt "$cMajor" ]]; then
-				return 0
-			elif [[ "$iMajor" -eq "$cMajor" ]]; then
-				if [[ "$iMinor" -gt "$cMinor" ]]; then
-					return 0
-				elif [[ "$iMinor" -eq "$cMinor" ]]; then
-					if [[ "$iRev" -ge "$cRev" ]]; then
-						if [[ "$1" == "ge" || "$iRev" -gt "$cRev" ]]; then
-							return 0
-						fi
-					fi
-				fi
-			fi
-			;;
-		eq)
-			if [[ "$iMajor" -eq "$cMajor" ]]; then
-				if [[ "$iMinor" -eq "$cMinor" ]]; then
-					if [[ "$iRev" -eq "$cRev" ]]; then
-						return 0
-					fi
-				fi
-			fi
-			;;
-	esac
-
-	return 1
-}
 
 ### A2CLOUD: Process command line args
 buildA2CloudDisk=
@@ -361,18 +301,7 @@ grep udevadm /etc/rc.local > /dev/null || sudo sed -i 's/^exit 0$/[ -e \/dev\/tt
 a2cTools="dopo cppo"
 a2cHelp="a2cloud-help.txt"
 a2cConfScripts="a2cloud-aliases a2cloudrc"
-
-if [[ -z "$a2cDevel" ]]; then
-	a2cToolDir="/tmp/a2cloud-install/tools"
-	mkdir -p "$a2cToolDir"
-
-	echo "A2CLOUD: Downloading files..."
-	for _file in $a2cTools $a2cHelp $a2cConfScripts; do
-		sudo wget -O "$a2cToolDir/$_tool" "${a2cScriptURL}/setup/$_file"
-	done
-else
-	a2cToolDir="$a2cDevel/setup"
-fi
+a2cToolDir="$a2cSource/setup"
 
 for _tool in $a2cTools; do
 	sudo install -m 755 "$a2cToolDir/$_tool" "/usr/local/bin/$_tool"
@@ -390,10 +319,6 @@ done
 #	sudo sed -i 's/^gsport.*$/gsport : GSport Apple IIgs emulator (or log in with user "apple2user")/' /usr/local/etc/a2cloud-help.txt
 #fi
 
-if [[ -z "a2cDevel" ]]; then
-	rm -rf "$a2cToolDir"
-fi
-
 ### A2CLOUD: Install aliases and make bash use them by default
 echo "A2CLOUD: Setting up login script..."
 sudo sed -i "s/a2cloud-aliases/a2cloudrc/" /etc/bash.bashrc
@@ -408,11 +333,11 @@ source /usr/local/etc/a2cloudrc
 # this up at some point.
 echo "A2CLOUD: Setting up motd..."
 if [[ $(grep Raspple /etc/motd) ]]; then
-	wget -qO- "${a2cScriptURL}/setup/motd-rasppleii.txt" | sudo tee /etc/motd > /dev/null
+	sudo install -u root -g root -m 644 "$a2cSource/setup/motd-rasppleii.txt" /etc/motd
 elif [[ $(grep A2SERVER /etc/motd) ]]; then
-	wget -qO- "${a2cScriptURL}/setup/motd-vm.txt" | sudo tee /etc/motd > /dev/null
+	sudo install -u root -g root -m 644 "$a2cSource/setup/motd-vm.txt" /etc/motd
 else
-	wget -qO- "${a2cScriptURL}/setup/motd.txt" | sudo tee /etc/motd > /dev/null
+	sudo install -u root -g root -m 644 "$a2cSource/setup/motd.txt" /etc/motd
 fi
 
 if lspci 2> /dev/null | grep -q VirtualBox; then
@@ -594,8 +519,7 @@ if [[ $installADTPro ]]; then
 
 	### ADTPro: Install our modified adtpro.sh
 	echo "A2CLOUD: Setting up customized adtpro.sh..."
-	wget -qO /usr/local/adtpro/adtpro.sh "${a2cScriptURL}/setup/adtpro.sh.txt"
-	sudo chmod ugo+rwx /usr/local/adtpro/adtpro.sh
+	sudo install -u root -g root -m 755 ${a2cSource}/setup/adtpro.sh /usr/local/bin/adtpro.sh
 
 	### ADTPro: Replace A2CLOUD's disks with the ones ...
 	###     FIXME: where are these created/downloaded to move?
@@ -673,24 +597,19 @@ if [[ $installADTPro ]]; then
 
 	### A2CLOUD: Install various shell scripts
 	echo "A2CLOUD: Setting up adtpro-start command..."
-	sudo wget -qO /usr/local/bin/adtpro-start ${a2cScriptURL}/setup/adtpro-start.txt
-	sudo chmod ugo+x /usr/local/bin/adtpro-start
+	sudo install -u root -g root -m 755 "$a2cSource/setup/adtpro-start" /usr/local/bin/adtpro-start
 
 	echo "A2CLOUD: Setting up vsd1/vsd2 commands..."
-	sudo wget -qO /usr/local/bin/vsd ${a2cScriptURL}/setup/vsd.txt
-	sudo chmod ugo+x /usr/local/bin/vsd
+	sudo install -u root -g root -m 755 "$a2cSource/setup/vsd" /usr/local/bin/vsd
 
 	echo "A2CLOUD: Setting up acmd command..."
-	sudo wget -qO /usr/local/bin/acmd ${a2cScriptURL}/setup/acmd.txt
-	sudo chmod ugo+x /usr/local/bin/acmd
+	sudo install -u root -g root -m 755 "$a2cSource/setup/acmd" /usr/local/bin/acmd
 
 	echo "A2CLOUD: Setting up mkpo command..."
-	sudo wget -qO /usr/local/bin/mkpo ${a2cScriptURL}/setup/mkpo.txt
-	sudo chmod ugo+x /usr/local/bin/mkpo
+	sudo install -u root -g root -m 755 "$a2cSource/setup/mkpo" /usr/local/bin/mkpo
 
 	echo "A2CLOUD: Setting up dos2pro command..."
-	sudo wget -qO /usr/local/bin/dos2pro ${a2cScriptURL}/setup/dos2pro.txt
-	sudo chmod ugo+x /usr/local/bin/dos2pro
+	sudo install -u root -g root -m 755 "$a2cSource/setup/dos2pro" /usr/local/bin/dos2pro
 
 fi
 
@@ -709,8 +628,7 @@ fi
 
 ### A2CLOUD: Install serial port rules/scripts
 echo "A2CLOUD: Setting up USB port serial adapter handler..."
-sudo wget -qO /usr/local/sbin/ttyusbhandler ${a2cScriptURL}/setup/ttyusbhandler.txt
-sudo chmod ugo+x /usr/local/sbin/ttyusbhandler
+sudo install -u root -g root -m 755 "$a2cSource/setup/ttyusbhandler" /usr/local/sbin/ttyusbhandler
 
 if [[ ! -f /etc/udev/rules.d/50-usb.rules ]]; then
 	echo "A2CLOUD: Creating device rules for USB ports..."
@@ -799,17 +717,14 @@ if [[ $setupSerialPortLogin ]]; then
 
 	### SerialCon: Install serial login command scripts
 	echo "A2CLOUD: Setting up baud command..."
-	sudo wget -qO /usr/local/bin/baud ${a2cScriptURL}/setup/baud.txt
-	sudo chmod ugo+x /usr/local/bin/baud
+	sudo install -u root -g root -m 755 "$a2cSource/setup/baud" /usr/local/bin/baud
 
 	echo "A2CLOUD: Setting up term command..."
-	sudo wget -qO /usr/local/bin/term ${a2cScriptURL}/setup/term.txt
-	sudo chmod ugo+x /usr/local/bin/term
+	sudo install -u root -g root -m 755 "$a2cSource/setup/term" /usr/local/bin/term
 
 	### SerialCon: Install USB serial port login
 	echo "A2CLOUD: Setting up USB shell login..."
-	sudo wget -qO /usr/local/sbin/usbgetty ${a2cScriptURL}/setup/usbgetty.txt
-	sudo chmod ugo+x /usr/local/sbin/usbgetty
+	sudo install -u root -g root -m 755 "$a2cSource/setup/usbgetty" /usr/local/sbin/usbgetty
 	if [[ -n "$isSystemd" ]]; then
 		# FIXME: Okay, the way we need to fix this is that we need to do the
 		# -scanttyUSB behavior and create a symlink in udev here.  If we have
@@ -822,7 +737,7 @@ if [[ $setupSerialPortLogin ]]; then
 		# (called by udev, as before) now restarts the service upon adapter insertion.
 		# This might not be the best way to do it, but it works for now,
 		# apart from a 30 second delay before the getty becomes available.
-		sudo wget -qO /etc/systemd/system/getty.target.wants/usbgetty@.service ${a2cScriptURL}/setup/usbgetty-systemd.service.txt
+		sudo install -u root -g root -m 644 "$a2cSource/setup/usbgetty-systemd.service" /etc/systemd/system/getty.target.wants/usbgetty@.service
 		pwd=$PWD
 		cd /etc/systemd/system/getty.target.wants
 		grep -o 'SYMLINK+="ttyUSB.*,' /etc/udev/rules.d/50-usb.rules | cut -d '"' -f 2 | \
@@ -926,8 +841,7 @@ if [[ $installCommTools ]]; then
 	fi
 
 	### CommTools: Install tin + a2news script
-	sudo wget -qO /usr/local/bin/a2news ${a2cScriptURL}/setup/a2news.txt
-	sudo chmod ugo+x /usr/local/bin/a2news
+	sudo install -u root -g root -m 755 "$a2cSource/setup/a2news" /usr/local/bin/a2news
 	if ! hash tin 2> /dev/null; then
 		echo "A2CLOUD: Installing a2news/tin..."
 		sudo apt-get -y install tin
@@ -953,8 +867,7 @@ if [[ $installCommTools ]]; then
 	fi
 
 	### CommTools: Install irssi + a2chat script
-	sudo wget -qO /usr/local/bin/a2chat ${a2cScriptURL}/setup/a2chat.txt
-	sudo chmod ugo+x /usr/local/bin/a2chat
+	sudo install -u root -g root -m 755 "$a2cSource/setup/a2chat" /usr/local/bin/a2chat
 	if ! hash irssi 2> /dev/null; then
 		echo "A2CLOUD: Installing a2chat/irssi..."
 		sudo apt-get -y install irssi
@@ -1130,10 +1043,8 @@ if [[ $installEmulators ]]; then
 		sudo chgrp gsport /usr/local/bin/gsportx
 		sudo chmod u+s /usr/local/bin/gsportx
 
-		sudo wget -qO /usr/local/bin/gsport ${a2cScriptURL}/setup/gsport.txt
-		sudo chmod ugo+x /usr/local/bin/gsport
-		sudo wget -qO /usr/local/bin/gsport-setup ${a2cScriptURL}/setup/gsport-setup-shell.txt
-		sudo chmod ugo+x /usr/local/bin/gsport-setup
+		sudo install -u root -g root -m 755 "$a2cSource/setup/gsport" /usr/local/bin/gsport
+		sudo install -u root -g root -m 755 "$a2cSource/setup/gsport-setup" /usr/local/bin/gsport-setup
 
 	else
 		echo "A2CLOUD: GSport is already installed."
@@ -1168,8 +1079,7 @@ if [[ $installEmulators ]]; then
 		echo "A2CLOUD: LinApple is already installed."
 	fi
 	echo "A2CLOUD: Updating LinApple launch file..."
-	sudo wget -qO /usr/local/bin/linapple ${a2cScriptURL}/setup/linapple.txt
-	sudo chmod ugo+x /usr/local/bin/linapple
+	sudo install -u root -g root -m 755 "$a2cSource/setup/linapple" /usr/local/bin/linapple
 
 	### Emulators: Set Groups
 	sudo addgroup gsport &> /dev/null
@@ -1220,7 +1130,7 @@ if [[ $installArchiveTools ]]; then
 		### ArchiveTools: Install undoit (sciibin, etc.)
 		echo "A2CLOUD: Installing sciibin, unblu, unbit, unexec, usq..."
 
-		sudo apt-get -y install build-essential
+		sudo apt-get -y install build-essential unzip
 		sudo apt-get -y clean
 		rm -rf undoit &> /dev/null
 		mkdir -p undoit
@@ -1237,8 +1147,7 @@ if [[ $installArchiveTools ]]; then
 
 	echo "A2CLOUD: Setting up shk2image command..."
 	### ArchiveTools: Install shk2image command
-	sudo wget -qO /usr/local/bin/shk2image ${a2cScriptURL}/setup/shk2image.txt
-	sudo chmod ugo+x /usr/local/bin/shk2image
+	sudo install -u root -g root -m 755 "$a2cSource/setup/shk2image" /usr/local/bin/shk2image
 
 	# http://wakaba.c3.cx/s/apps/unarchiver.html
 	if ! hash unar 2> /dev/null; then
