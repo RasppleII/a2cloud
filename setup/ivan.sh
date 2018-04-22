@@ -6,13 +6,14 @@ adtProVersion="2.0.1"
 a2cScriptURL="https://raw.githubusercontent.com/RasppleII/a2cloud/master"
 a2cBinaryURL="http://blocksfree.com/downloads"
 
+# Find the path of our source directory
 a2cDevel="$( dirname "${BASH_SOURCE[0]}" )/.."
-if [[ -f "$a2cDevel/.a2cloud_source" ]]; then
-	pushd $a2cDevel >/dev/null
-	a2cDevel="$PWD"
-	popd >/dev/null
-else
-	a2cDevel=
+pushd $a2cDevel >/dev/null
+a2cDevel="$PWD"
+popd >/dev/null
+if [[ ! -f "$a2cDevel/.a2cloud_source" ]]; then
+	printf "\na2cloud: cannot find a2cloud source directory in $a2cDevel.\n\n"
+	exit 1
 fi
 
 useExternalURL=1
