@@ -1,0 +1,149 @@
+#! /bin/bash
+# vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
+
+# install_archive_tools - temporary script for archive tools from ivan.sh
+#
+# To the extent possible under law, T. Joseph Carter and Ivan Drucker have
+# waived all copyright and related or neighboring rights to the a2cloud
+# scripts themselves.  Software used or installed by these scripts is subject
+# to other licenses.  This work is published from the United States.
+
+###
+### FIXME! This script drops everything in $PWD and does not clean up after
+###        itself in any meaningful way other than being run by ivan.sh.
+###        That comes later.
+###
+
+a2cBinaryURL="http://blocksfree.com/downloads"
+
+# Find the path of our source directory
+a2cSource="$( dirname "${BASH_SOURCE[0]}" )/.."
+pushd $a2cSource >/dev/null
+a2cSource="$PWD"
+popd >/dev/null
+if [[ ! -f "$a2cSource/.a2cloud_source" ]]; then
+	printf "\na2cloud: cannot find a2cloud source directory in $a2cSource.\n\n"
+	exit 1
+fi
+
+# Make sure ras2_{os,arch} get set
+. "$a2cSource/scripts/system_ident"
+
+install_nulib2() {
+	if ! hash nulib2 2> /dev/null; then
+
+		echo "A2CLOUD: Installing nulib2..."
+
+		cd /tmp/a2cloud-install
+		if [[ $downloadBinaries ]]; then
+			### ArchiveTools: Install nulib2 binaries
+			wget -qO- "${a2cBinaryURL}/picopkg/nulib2-${ras2_os}_${ras2_arch}.tgz" | sudo tar Pzx
+		fi
+
+		if ! hash nulib2 2> /dev/null; then
+			### ArchiveTools: Install nulib2 from source
+			sudo apt-get -y install build-essential
+			sudo apt-get -y install zlib1g-dev
+			sudo apt-get -y clean
+
+			# install nulib2
+			rm -rf nulib &> /dev/null
+			mkdir -p nulib
+			cd nulib
+			wget -qO nulib.tgz http://web.archive.org/web/20131031160750/http://www.nulib.com/downloads/nulibdist.tar.gz
+			tar zxf nulib.tgz
+			cd nufxlib*
+			./configure
+			make
+			sudo make install
+			cd ../nulib2*
+			./configure
+			make
+			sudo make install
+			cd /tmp/a2cloud-install
+			rm -rf nulib
+		fi
+	else
+		echo "A2CLOUD: nulib2 is already installed."
+	fi
+}
+
+install_sciibin() {
+	if ! hash sciibin 2> /dev/null; then
+		### ArchiveTools: Install undoit (sciibin, etc.)
+		echo "A2CLOUD: Installing sciibin, unblu, unbit, unexec, usq..."
+
+		sudo apt-get -y install build-essential unzip
+		sudo apt-get -y clean
+		rm -rf undoit &> /dev/null
+		mkdir -p undoit
+		cd undoit
+		wget -q http://web.archive.org/web/20110619163030/http://fadden.com/dl-apple2/undoit.zip
+		unzip undoit.zip
+		make
+		sudo mv sciibin unbit unblu unexec usq /usr/local/bin
+		cd /tmp/a2cloud-install
+		rm -rf undoit
+	else
+		echo "A2CLOUD: sciibin, unblu, unbit, unexec, usq are already installed."
+	fi
+}
+
+install_shk2image() {
+	echo "A2CLOUD: Setting up shk2image command..."
+	### ArchiveTools: Install shk2image command
+	sudo install -u root -g root -m 755 "$a2cSource/setup/shk2image" /usr/local/bin/shk2image
+}
+
+install_unar() {
+	# http://wakaba.c3.cx/s/apps/unarchiver.html
+	if ! hash unar 2> /dev/null; then
+
+		### ArchiveTools: Install unar package
+		echo "A2CLOUD: Installing The Unarchiver..."
+
+		# jessie and later: Just use the unar package
+		sudo apt-get -y install unar
+		sudo apt-get clean
+
+		# If all else fails, compile from source.
+		if ! hash unar 2> /dev/null; then
+			# Dependencies: build-deps for unar
+			sudo apt-get -y install build-essential libgnustep-base-dev libz-dev libbz2-dev libssl-dev libicu-dev unzip
+			sudo apt-get clean
+
+			rm -rf /tmp/unar &> /dev/null
+			mkdir /tmp/unar
+			cd /tmp/unar
+			if [[ $useExternalURL ]]; then
+				wget -O unar-1.8.1.zip https://github.com/incbee/Unarchiver/archive/unar-1.8.1.zip
+				unzip -o unar-1.8.1.zip &> /dev/null
+			fi
+			if [ ! -d *Unarchiver*/XADMaster ]; then # need single bracket for glob
+				wget -O unar-1.8.1.zip "${a2cBinaryURL}/source/unar-1.8.1.zip"
+				unzip -o unar-1.8.1.zip &> /dev/null
+			fi
+			cd *Unarchiver*/XADMaster
+			make -f Makefile.linux
+			sudo mv lsar unar /usr/local/bin
+			cd ../Extra
+			sudo mkdir -p /usr/local/man/man1
+			sudo mv lsar.1 unar.1 /usr/local/man/man1
+			cd
+			rm -rf /tmp/unar
+			sudo mandb &> /dev/null
+		fi
+	else
+		echo "A2CLOUD: The Unarchiver has already been installed."
+	fi
+}
+
+
+downloadBinaries=1
+if [[ $1 == -c ]]; then
+	downloadBinaries=1
+fi
+install_nulib2
+install_sciibin
+install_shk2image
+install_unar
