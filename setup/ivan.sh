@@ -304,11 +304,11 @@ source /usr/local/etc/a2cloudrc
 # this up at some point.
 echo "A2CLOUD: Setting up motd..."
 if [[ $(grep Raspple /etc/motd) ]]; then
-	sudo install -u root -g root -m 644 "$a2cSource/setup/motd-rasppleii.txt" /etc/motd
+	sudo install -o root -g root -m 644 "$a2cSource/setup/motd-rasppleii.txt" /etc/motd
 elif [[ $(grep A2SERVER /etc/motd) ]]; then
-	sudo install -u root -g root -m 644 "$a2cSource/setup/motd-vm.txt" /etc/motd
+	sudo install -o root -g root -m 644 "$a2cSource/setup/motd-vm.txt" /etc/motd
 else
-	sudo install -u root -g root -m 644 "$a2cSource/setup/motd.txt" /etc/motd
+	sudo install -o root -g root -m 644 "$a2cSource/setup/motd.txt" /etc/motd
 fi
 
 if lspci 2> /dev/null | grep -q VirtualBox; then
@@ -490,7 +490,7 @@ if [[ $installADTPro ]]; then
 
 	### ADTPro: Install our modified adtpro.sh
 	echo "A2CLOUD: Setting up customized adtpro.sh..."
-	sudo install -u root -g root -m 755 ${a2cSource}/setup/adtpro.sh /usr/local/bin/adtpro.sh
+	sudo install -o root -g root -m 755 ${a2cSource}/setup/adtpro.sh /usr/local/bin/adtpro.sh
 
 	### ADTPro: Replace A2CLOUD's disks with the ones ...
 	###     FIXME: where are these created/downloaded to move?
@@ -568,19 +568,19 @@ if [[ $installADTPro ]]; then
 
 	### A2CLOUD: Install various shell scripts
 	echo "A2CLOUD: Setting up adtpro-start command..."
-	sudo install -u root -g root -m 755 "$a2cSource/setup/adtpro-start" /usr/local/bin/adtpro-start
+	sudo install -o root -g root -m 755 "$a2cSource/setup/adtpro-start" /usr/local/bin/adtpro-start
 
 	echo "A2CLOUD: Setting up vsd1/vsd2 commands..."
-	sudo install -u root -g root -m 755 "$a2cSource/setup/vsd" /usr/local/bin/vsd
+	sudo install -o root -g root -m 755 "$a2cSource/setup/vsd" /usr/local/bin/vsd
 
 	echo "A2CLOUD: Setting up acmd command..."
-	sudo install -u root -g root -m 755 "$a2cSource/setup/acmd" /usr/local/bin/acmd
+	sudo install -o root -g root -m 755 "$a2cSource/setup/acmd" /usr/local/bin/acmd
 
 	echo "A2CLOUD: Setting up mkpo command..."
-	sudo install -u root -g root -m 755 "$a2cSource/setup/mkpo" /usr/local/bin/mkpo
+	sudo install -o root -g root -m 755 "$a2cSource/setup/mkpo" /usr/local/bin/mkpo
 
 	echo "A2CLOUD: Setting up dos2pro command..."
-	sudo install -u root -g root -m 755 "$a2cSource/setup/dos2pro" /usr/local/bin/dos2pro
+	sudo install -o root -g root -m 755 "$a2cSource/setup/dos2pro" /usr/local/bin/dos2pro
 
 fi
 
@@ -599,7 +599,7 @@ fi
 
 ### A2CLOUD: Install serial port rules/scripts
 echo "A2CLOUD: Setting up USB port serial adapter handler..."
-sudo install -u root -g root -m 755 "$a2cSource/setup/ttyusbhandler" /usr/local/sbin/ttyusbhandler
+sudo install -o root -g root -m 755 "$a2cSource/setup/ttyusbhandler" /usr/local/sbin/ttyusbhandler
 
 if [[ ! -f /etc/udev/rules.d/50-usb.rules ]]; then
 	echo "A2CLOUD: Creating device rules for USB ports..."
@@ -688,14 +688,14 @@ if [[ $setupSerialPortLogin ]]; then
 
 	### SerialCon: Install serial login command scripts
 	echo "A2CLOUD: Setting up baud command..."
-	sudo install -u root -g root -m 755 "$a2cSource/setup/baud" /usr/local/bin/baud
+	sudo install -o root -g root -m 755 "$a2cSource/setup/baud" /usr/local/bin/baud
 
 	echo "A2CLOUD: Setting up term command..."
-	sudo install -u root -g root -m 755 "$a2cSource/setup/term" /usr/local/bin/term
+	sudo install -o root -g root -m 755 "$a2cSource/setup/term" /usr/local/bin/term
 
 	### SerialCon: Install USB serial port login
 	echo "A2CLOUD: Setting up USB shell login..."
-	sudo install -u root -g root -m 755 "$a2cSource/setup/usbgetty" /usr/local/sbin/usbgetty
+	sudo install -o root -g root -m 755 "$a2cSource/setup/usbgetty" /usr/local/sbin/usbgetty
 	if [[ -n "$isSystemd" ]]; then
 		# FIXME: Okay, the way we need to fix this is that we need to do the
 		# -scanttyUSB behavior and create a symlink in udev here.  If we have
@@ -708,7 +708,7 @@ if [[ $setupSerialPortLogin ]]; then
 		# (called by udev, as before) now restarts the service upon adapter insertion.
 		# This might not be the best way to do it, but it works for now,
 		# apart from a 30 second delay before the getty becomes available.
-		sudo install -u root -g root -m 644 "$a2cSource/setup/usbgetty-systemd.service" /etc/systemd/system/getty.target.wants/usbgetty@.service
+		sudo install -o root -g root -m 644 "$a2cSource/setup/usbgetty-systemd.service" /etc/systemd/system/getty.target.wants/usbgetty@.service
 		pwd=$PWD
 		cd /etc/systemd/system/getty.target.wants
 		grep -o 'SYMLINK+="ttyUSB.*,' /etc/udev/rules.d/50-usb.rules | cut -d '"' -f 2 | \
@@ -812,7 +812,7 @@ if [[ $installCommTools ]]; then
 	fi
 
 	### CommTools: Install tin + a2news script
-	sudo install -u root -g root -m 755 "$a2cSource/setup/a2news" /usr/local/bin/a2news
+	sudo install -o root -g root -m 755 "$a2cSource/setup/a2news" /usr/local/bin/a2news
 	if ! hash tin 2> /dev/null; then
 		echo "A2CLOUD: Installing a2news/tin..."
 		sudo apt-get -y install tin
@@ -838,7 +838,7 @@ if [[ $installCommTools ]]; then
 	fi
 
 	### CommTools: Install irssi + a2chat script
-	sudo install -u root -g root -m 755 "$a2cSource/setup/a2chat" /usr/local/bin/a2chat
+	sudo install -o root -g root -m 755 "$a2cSource/setup/a2chat" /usr/local/bin/a2chat
 	if ! hash irssi 2> /dev/null; then
 		echo "A2CLOUD: Installing a2chat/irssi..."
 		sudo apt-get -y install irssi
@@ -1018,8 +1018,8 @@ if [[ $installEmulators ]]; then
 		sudo chgrp gsport /usr/local/bin/gsportx
 		sudo chmod u+s /usr/local/bin/gsportx
 
-		sudo install -u root -g root -m 755 "$a2cSource/setup/gsport" /usr/local/bin/gsport
-		sudo install -u root -g root -m 755 "$a2cSource/setup/gsport-setup" /usr/local/bin/gsport-setup
+		sudo install -o root -g root -m 755 "$a2cSource/setup/gsport" /usr/local/bin/gsport
+		sudo install -o root -g root -m 755 "$a2cSource/setup/gsport-setup" /usr/local/bin/gsport-setup
 
 	else
 		echo "A2CLOUD: GSport is already installed."
@@ -1054,7 +1054,7 @@ if [[ $installEmulators ]]; then
 		echo "A2CLOUD: LinApple is already installed."
 	fi
 	echo "A2CLOUD: Updating LinApple launch file..."
-	sudo install -u root -g root -m 755 "$a2cSource/setup/linapple" /usr/local/bin/linapple
+	sudo install -o root -g root -m 755 "$a2cSource/setup/linapple" /usr/local/bin/linapple
 
 	### Emulators: Set Groups
 	sudo addgroup gsport &> /dev/null

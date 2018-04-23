@@ -34,10 +34,14 @@ install_nulib2() {
 
 		echo "A2CLOUD: Installing nulib2..."
 
-		cd /tmp/a2cloud-install
+		local nulibWork="$(mktemp -d /tmp/nulib.XXXXXXXXXXXX)"
+		pushd "$nulibWork" >/dev/null
 		if [[ $downloadBinaries ]]; then
 			### ArchiveTools: Install nulib2 binaries
-			wget -qO- "${a2cBinaryURL}/picopkg/nulib2-${ras2_os}_${ras2_arch}.tgz" | sudo tar Pzx
+			wget -q "${a2cBinaryURL}/picopkg/nulib2-${ras2_os}_${ras2_arch}.tgz"
+			if [[ -f "nulib2-${ras2_os}_${ras2_arch}.tgz" ]]; then
+				sudo tar Pzxf "nulib2-${ras2_os}_${ras2_arch}.tgz"
+			fi
 		fi
 
 		if ! hash nulib2 2> /dev/null; then
@@ -47,10 +51,7 @@ install_nulib2() {
 			sudo apt-get -y clean
 
 			# install nulib2
-			rm -rf nulib &> /dev/null
-			mkdir -p nulib
-			cd nulib
-			wget -qO nulib.tgz http://web.archive.org/web/20131031160750/http://www.nulib.com/downloads/nulibdist.tar.gz
+			wget -O nulib.tgz http://web.archive.org/web/20131031160750/http://www.nulib.com/downloads/nulibdist.tar.gz
 			tar zxf nulib.tgz
 			cd nufxlib*
 			./configure
@@ -60,9 +61,9 @@ install_nulib2() {
 			./configure
 			make
 			sudo make install
-			cd /tmp/a2cloud-install
-			rm -rf nulib
+			popd >/dev/null
 		fi
+		rm -rf "$nulibWork"
 	else
 		echo "A2CLOUD: nulib2 is already installed."
 	fi
@@ -75,15 +76,14 @@ install_sciibin() {
 
 		sudo apt-get -y install build-essential unzip
 		sudo apt-get -y clean
-		rm -rf undoit &> /dev/null
-		mkdir -p undoit
-		cd undoit
+		local undoitWork="$(mktemp -d /tmp/undoit.XXXXXXXXXXXX)"
+		pushd "$undoitWork" >/dev/null
 		wget -q http://web.archive.org/web/20110619163030/http://fadden.com/dl-apple2/undoit.zip
 		unzip undoit.zip
 		make
 		sudo mv sciibin unbit unblu unexec usq /usr/local/bin
-		cd /tmp/a2cloud-install
-		rm -rf undoit
+		popd >/dev/null
+		rm -rf "$undoitWork"
 	else
 		echo "A2CLOUD: sciibin, unblu, unbit, unexec, usq are already installed."
 	fi
@@ -92,7 +92,7 @@ install_sciibin() {
 install_shk2image() {
 	echo "A2CLOUD: Setting up shk2image command..."
 	### ArchiveTools: Install shk2image command
-	sudo install -u root -g root -m 755 "$a2cSource/setup/shk2image" /usr/local/bin/shk2image
+	sudo install -o root -g root -m 755 "$a2cSource/setup/shk2image" /usr/local/bin/shk2image
 }
 
 install_unar() {
@@ -112,9 +112,8 @@ install_unar() {
 			sudo apt-get -y install build-essential libgnustep-base-dev libz-dev libbz2-dev libssl-dev libicu-dev unzip
 			sudo apt-get clean
 
-			rm -rf /tmp/unar &> /dev/null
-			mkdir /tmp/unar
-			cd /tmp/unar
+			local unarWork="$(mktemp -d /tmp/undoit.XXXXXXXXXXXX)"
+			pushd "$unarWork" >/dev/null
 			if [[ $useExternalURL ]]; then
 				wget -O unar-1.8.1.zip https://github.com/incbee/Unarchiver/archive/unar-1.8.1.zip
 				unzip -o unar-1.8.1.zip &> /dev/null
@@ -129,8 +128,8 @@ install_unar() {
 			cd ../Extra
 			sudo mkdir -p /usr/local/man/man1
 			sudo mv lsar.1 unar.1 /usr/local/man/man1
-			cd
-			rm -rf /tmp/unar
+			popd >/dev/null
+			rm -rf "$unarWork"
 			sudo mandb &> /dev/null
 		fi
 	else
