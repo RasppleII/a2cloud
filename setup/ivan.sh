@@ -1131,46 +1131,34 @@ if [[ $installArchiveTools ]]; then
 		echo "A2CLOUD: Installing The Unarchiver..."
 
 		# jessie and later: Just use the unar package
-		if [[ $debianMajor -ge 8 ]]; then
-			sudo apt-get -y install unar
-			sudo apt-get clean
-		fi
+		sudo apt-get -y install unar
+		sudo apt-get clean
 
+		# If all else fails, compile from source.
 		if ! hash unar 2> /dev/null; then
-			if [[ $downloadBinaries && "$(apt-cache search '^libgnustep-base1.22$')" ]]; then
-				# Dependencies: for unar
-				sudo apt-get -y install libgnustep-base1.22
-				sudo apt-get clean
-				wget -qO- "${a2cBinaryURL}/picopkg/unar-${ras2_os}_${ras2_arch}.tgz" | sudo tar Pzx &> /dev/null
+			# Dependencies: build-deps for unar
+			sudo apt-get -y install build-essential libgnustep-base-dev libz-dev libbz2-dev libssl-dev libicu-dev unzip
+			sudo apt-get clean
+
+			rm -rf /tmp/unar &> /dev/null
+			mkdir /tmp/unar
+			cd /tmp/unar
+			if [[ $useExternalURL ]]; then
+				wget -O unar-1.8.1.zip https://github.com/incbee/Unarchiver/archive/unar-1.8.1.zip
+				unzip -o unar-1.8.1.zip &> /dev/null
 			fi
-
-			# If all else fails, compile from source.
-
-			if ! hash unar 2> /dev/null; then
-				# Dependencies: build-deps for unar
-				sudo apt-get -y install build-essential libgnustep-base-dev libz-dev libbz2-dev libssl-dev libicu-dev unzip
-				sudo apt-get clean
-
-				rm -rf /tmp/unar &> /dev/null
-				mkdir /tmp/unar
-				cd /tmp/unar
-				if [[ $useExternalURL ]]; then
-					wget -O unar-1.8.1.zip https://github.com/incbee/Unarchiver/archive/unar-1.8.1.zip
-					unzip -o unar-1.8.1.zip &> /dev/null
-				fi
-				if [ ! -d *Unarchiver*/XADMaster ]; then # need single bracket for glob
-					wget -O unar-1.8.1.zip "${a2cBinaryURL}/source/unar-1.8.1.zip"
-					unzip -o unar-1.8.1.zip &> /dev/null
-				fi
-				cd *Unarchiver*/XADMaster
-				make -f Makefile.linux
-				sudo mv lsar unar /usr/local/bin
-				cd ../Extra
-				sudo mkdir -p /usr/local/man/man1
-				sudo mv lsar.1 unar.1 /usr/local/man/man1
-				cd
-				rm -rf /tmp/unar
+			if [ ! -d *Unarchiver*/XADMaster ]; then # need single bracket for glob
+				wget -O unar-1.8.1.zip "${a2cBinaryURL}/source/unar-1.8.1.zip"
+				unzip -o unar-1.8.1.zip &> /dev/null
 			fi
+			cd *Unarchiver*/XADMaster
+			make -f Makefile.linux
+			sudo mv lsar unar /usr/local/bin
+			cd ../Extra
+			sudo mkdir -p /usr/local/man/man1
+			sudo mv lsar.1 unar.1 /usr/local/man/man1
+			cd
+			rm -rf /tmp/unar
 			sudo mandb &> /dev/null
 		fi
 	else
