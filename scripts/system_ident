@@ -12,7 +12,7 @@ if [[ -z $ras2_os || -z $ras2_arch ]]; then
 	ras2_os="unknown"
 	if hash lsb_release 2>/dev/null; then
 		if [[ -f /usr/bin/raspi-config ]]; then
-			ras2_os="rpi-$(lsb_release -rs)"
+			ras2_os="rpi-$(lsb_release -cs)"
 		else
 			case "$(lsb_release -is)" in
 				Debian)
