@@ -18,37 +18,17 @@ fi
 useExternalURL=1
 [[ $A2CLOUD_NO_EXTERNAL ]] && useExternalURL=
 
-debianVersion=$(cat /etc/debian_version 2> /dev/null)
+# Make sure ras2_{os,arch} get set
+. "$a2cSource/scripts/system_ident" -q
+
 isRpi=
-isDebian=
-arch=
-if [[ -f /usr/bin/raspi-config ]]; then
+if [[ $ras2_os == rpi-* ]]; then
 	isRpi=1
-	arch='rpi'
 	me="Pi"
 	fullme="Raspberry Pi"
-elif lsb_release -a 2> /dev/null | grep -q 'Distributor ID:.Debian' && [[ $(cut -d . -f 1 <<< $debianVersion) -ge "7" ]]; then
-	isDebian=1
-	uname_m="$(uname -m)"
-	if [[ $uname_m == "i686" ]]; then
-		arch='debian_x86'
-	elif [[ $uname_m == "x86_64" ]]; then
-		arch='debian_x64'
-	fi
+else
 	me="computer"
 	fullme="computer"
-fi
-
-debianName=
-if [[ $debianVersion ]]; then
-	debianMajor=$(cut -d . -f 1 <<< $debianVersion)
-	if [[ $debianMajor == "8" ]]; then
-		debianName="jessie"
-	elif [[ $debianMajor == "7" ]]; then
-		debianName="wheezy"
-	else
-		debianName="unknown"
-	fi
 fi
 
 isSystemd=
@@ -113,9 +93,6 @@ while [[ $1 ]]; do
 		echo "-6: put blank 140K disk images in GSport slot 6"
 		echo "-b: build A2CLOUD disks, rather than downloading premade images"
 		echo "-c: compile non-package items, rather than downloading binaries"
-		if [[ $isRpi ]]; then
-			echo "-os: update Raspbian OS, A2CLOUD, and A2SERVER"
-		fi
 		[[ $0 == "-bash" ]] && return 1 || exit 1
 	fi
 done
@@ -794,7 +771,7 @@ if [[ $installCommTools ]]; then
 		echo "A2CLOUD: Installing cftp..."
 		cd /tmp/a2cloud-install
 		if [[ $downloadBinaries ]]; then
-			wget -qO- "${a2cBinaryURL}/picopkg/cftp-${arch}_${debianName}.tgz" | sudo tar Pzx
+			wget -qO- "${a2cBinaryURL}/picopkg/cftp-${ras2_os}_${ras2_arch}.tgz" | sudo tar Pzx
 		fi
 		if ! hash cftp 2> /dev/null; then
 			sudo apt-get -y install build-essential
@@ -944,7 +921,7 @@ if [[ $installEmulators ]]; then
 			### Emulators: GSport: Install pre-built binaries
 			sudo apt-get -y install libpcap0.8 &> /dev/null
 			sudo apt-get -y clean
-			wget -qO- "${a2cBinaryURL}/picopkg/gsport-${arch}_${debianName}.tgz" | sudo tar Pzx 2> /dev/null
+			wget -qO- "${a2cBinaryURL}/picopkg/gsport-${ras2_os}_${ras2_arch}.tgz" | sudo tar Pzx 2> /dev/null
 		fi
 		if ! hash gsport 2> /dev/null || ! hash gsportx 2> /dev/null || ! hash gsportfb 2> /dev/null; then
 			### Emulators: GSport: Install from source
@@ -966,15 +943,19 @@ if [[ $installEmulators ]]; then
 				cp vars_pi vars_x
 			else
 				cp vars_x86linux vars_x
-				if [[ $arch == "debian_x86" ]]; then
-					sed -i 's/-march=armv6/-march=i686/' vars_fb
-				elif [[ $arch == "debian_x64" ]]; then
-					sed -i 's/-march=i686/-march=x86-64/' vars_x
-					sed -i 's/-march=armv6/-march=x86-64/' vars_fb
-				else
-					buildGSport=
-					echo "A2CLOUD: cannot build GSport; unknown machine architecture."
-				fi
+				case "$ras2_arch" in
+					x86_64)
+						sed -i 's/-march=i686/-march=x86-64/' vars_x
+						sed -i 's/-march=armv6/-march=x86-64/' vars_fb
+						;;
+					i686)
+						sed -i 's/-march=armv6/-march=i686/' vars_fb
+						;;
+					*)
+						buildGSport=
+						echo "A2CLOUD: cannot build GSport; unknown machine architecture."
+						;;
+				esac
 			fi
 			sed -i 's/^LDFLAGS =.*$/LDFLAGS = -ldl/' vars_x
 			sed -i 's/^LDFLAGS =.*$/LDFLAGS = -ldl/' vars_fb
@@ -1050,7 +1031,7 @@ if [[ $installEmulators ]]; then
 		cd /tmp/a2cloud-install
 		if [[ $downloadBinaries ]]; then
 			### Emulators: LinApple: Install pre-built binaries
-			wget -qO- "${a2cBinaryURL}/picopkg/linapple-${arch}_${debianName}.tgz" | sudo tar Pzx
+			wget -qO- "${a2cBinaryURL}/picopkg/linapple-${ras2_os}_${ras2_arch}.tgz" | sudo tar Pzx
 		fi
 		if ! hash linapple 2> /dev/null; then
 			### Emulators: LinApple: Install from source
@@ -1090,7 +1071,7 @@ if [[ $installArchiveTools ]]; then
 		cd /tmp/a2cloud-install
 		if [[ $downloadBinaries ]]; then
 			### ArchiveTools: Install nulib2 binaries
-			wget -qO- "${a2cBinaryURL}/picopkg/nulib2-${arch}_${debianName}.tgz" | sudo tar Pzx
+			wget -qO- "${a2cBinaryURL}/picopkg/nulib2-${ras2_os}_${ras2_arch}.tgz" | sudo tar Pzx
 		fi
 
 		if ! hash nulib2 2> /dev/null; then
@@ -1160,7 +1141,7 @@ if [[ $installArchiveTools ]]; then
 				# Dependencies: for unar
 				sudo apt-get -y install libgnustep-base1.22
 				sudo apt-get clean
-				wget -qO- "${a2cBinaryURL}/picopkg/unar-${arch}_${debianName}.tgz" | sudo tar Pzx &> /dev/null
+				wget -qO- "${a2cBinaryURL}/picopkg/unar-${ras2_os}_${ras2_arch}.tgz" | sudo tar Pzx &> /dev/null
 			fi
 
 			# If all else fails, compile from source.
