@@ -114,7 +114,7 @@ while [[ $1 ]]; do
 		echo "-b: build A2CLOUD disks, rather than downloading premade images"
 		echo "-c: compile non-package items, rather than downloading binaries"
 		if [[ $isRpi ]]; then
-			echo "-os: update Raspbian OS, A2CLOUD, A2SERVER, and Apple II Pi"
+			echo "-os: update Raspbian OS, A2CLOUD, and A2SERVER"
 		fi
 		[[ $0 == "-bash" ]] && return 1 || exit 1
 	fi
@@ -312,12 +312,6 @@ done
 for _confscript in $a2cConfScripts; do
 	sudo install -m 755 "$a2cToolDir/$_confscript" "/usr/local/etc/$_confscript"
 done
-
-# DISABLED: This is part of Apple II Pi, do we want to do this at all here?
-#           Remove after Apple II Pi is restored as its own project
-#if [[ $isRpi ]]; then
-#	sudo sed -i 's/^gsport.*$/gsport : GSport Apple IIgs emulator (or log in with user "apple2user")/' /usr/local/etc/a2cloud-help.txt
-#fi
 
 ### A2CLOUD: Install aliases and make bash use them by default
 echo "A2CLOUD: Setting up login script..."
@@ -1566,117 +1560,3 @@ fi
 
 ### A2CLOUD: If restarting, restart
 [[ $doRestart ]] && sudo shutdown -r now
-
-
-# FIXME: Redo this as its own top-level project later
-#        pending updated Apple II Pi release
-#= APPLE2PI BEGIN
-#noA2PiExtras=
-#while [[ $1 ]]; do
-#	if [[ $1 == "-p" ]]; then
-#		shift
-#		noA2PiExtras=1
-#	elif [[ $1 ]]; then
-#		echo "options:"
-#		if [[ $isRpi ]]; then
-#			echo "-p: don't install Apple II Pi extras"
-#		fi
-#		[[ $0 == "-bash" ]] && return 1 || exit 1
-#	fi
-#done
-#installA2Pi=
-#if [[ $isRpi ]]; then
-#	echo
-#	echo -n "Install Apple II Pi? "
-#	read
-#	[[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]] && installA2Pi=1
-#fi
-#if [[ $installA2Pi ]]; then
-#	if dpkg-query -l a2pi &> /dev/null; then
-#		echo "A2CLOUD: Installing Apple II Pi..."
-#		cd /tmp/a2cloud-install
-#		if ! grep 'schmenk.is-a-geek.com' /etc/apt/sources.list; then
-#			echo "deb http://schmenk.is-a-geek.com/raspbian wheezy contrib" | sudo tee -a /etc/apt/sources.list > /dev/null
-#			sudo apt-get -y update > /dev/null
-#		fi
-#		sudo apt-get -y --force-yes install a2pi
-#		sudo apt-get -y clean
-#	else
-#		echo "A2CLOUD: Apple II Pi is already installed."
-#	fi
-#	if [[ ! $noA2PiExtras ]]; then
-#		if [[ ! $(dpkg -l | grep libpcap0.8-dev) ]]; then
-#			sudo apt-get -y install libpcap0.8-dev
-#			sudo apt-get -y clean
-#		fi
-#		if ! command -v gsport > /dev/null; then
-#			# echo "A2CLOUD: Updating package repositories to include Apple II Pi..."
-#			# sudo apt-get -y update > /dev/null
-#			echo "A2CLOUD: Installing Apple II Pi extras (GSport)..."
-#			sudo apt-get -y --force-yes install apple2user
-#			sudo apt-get -y clean
-#		else
-#			echo "A2CLOUD: Apple II Pi extras (GSport) are already installed."
-#		fi
-#	fi
-#	sudo sed -i 's/( $SSH_CLIENT || $REMOTEHOST )/( $(tty | grep ttyUSB) || $(tty | grep ttyAMA) || $SSH_CLIENT || $REMOTEHOST )/' /usr/bin/gsport
-#	if [[ $slot6 ]]; then
-#		echo "A2CLOUD: Putting blank disks in GSport slot 6..."
-#		sudo sed -i 's@^s6d1.*$@s6d1 = /usr/share/gsport/disks/slot6drive1.po@' /usr/share/gsport/config.txt
-#		sudo sed -i 's@^s6d2.*$@s6d2 = /usr/share/gsport/disks/slot6drive2.po@' /usr/share/gsport/config.txt
-#		sudo sed -i 's@^s6d1.*$@s6d1 = /usr/share/gsport/disks/slot6drive1.po@' /home/apple2/config.txt
-#		sudo sed -i 's@^s6d2.*$@s6d2 = /usr/share/gsport/disks/slot6drive2.po@' /home/apple2/config.txt
-#		if [[ ! -f /usr/share/gsport/disks/slot6drive1.po || ! -f /usr/share/gsport/disks/slot6drive2.po ]]; then
-#			wget -qO- "${binaryURL}slot6-gsport-rpi.tgz" | sudo tar Pzx 2> /dev/null
-#		fi
-#	fi
-#
-#	# set AppleTalk to turbo
-#	if ! grep -q 'g_appletalk_turbo' /usr/share/gsport/config.txt; then
-#		if grep -q 'bram1[00]' /usr/share/gsport/config.txt; then
-#			sudo sed -i 's/^\(bram1\[00\]\)/g_appletalk_turbo = 1\n\n\1/' /usr/share/gsport/config.txt
-#		else
-#			echo -e '\ng_appletalk_turbo = 1' | sudo tee -a /usr/share/gsport/config.txt > /dev/null
-#		fi
-#	fi
-#	sudo sed -i 's/^g_appletalk_turbo = 0/g_appletalk_turbo = 1/' /usr/share/gsport/config.txt
-#
-#	# enable Uthernet
-#	if ! grep -q 'g_ethernet[^_]' /usr/share/gsport/config.txt; then
-#		if grep -q 'bram1[00]' /usr/share/gsport/config.txt; then
-#			sudo sed -i 's/^\(bram1\[00\]\)/g_ethernet = 1\n\n\1/' /usr/share/gsport/config.txt
-#		else
-#			echo -e '\ng_ethernet = 1' | sudo tee -a /usr/share/gsport/config.txt > /dev/null
-#		fi
-#	fi
-#	sudo sed -i 's/^g_ethernet = 0/g_ethernet = 1/' /usr/share/gsport/config.txt
-#
-#fi
-#= APPLE2PI END
-#= APPLE2PI BEGIN
-	# This was part of building the A2CLOUD disk image
-#		# A2PI
-#		if [[ ! $(acmd -ls "$a2CloudDisk" | grep '^  A2PI BIN') ]]; then
-#			echo "A2CLOUD: Downloading and copying A2PI client..."
-#			mkdir -p /tmp/a2cloud-install/a2pi
-#			cd /tmp/a2cloud-install/a2pi
-#			wget -qO a2pi.deb http://schmenk.is-a-geek.com/tarfiles/a2pi_armhf.deb
-#			# dpkg-deb --fsys-tarfile a2pi.deb | tar --strip-components=4 --wildcards -O -x ./usr/share/a2pi/A2PI*.PO >A2PI.PO
-#			dpkg-deb --fsys-tarfile a2pi.deb | tar --strip-components=4 --wildcards -x ./usr/share/a2pi/A2PI*.PO
-#			a2piImage=$(ls -1r A2PI*.PO | head -1)
-#			mkdir a2pidisk
-#			cppo -e "$a2piImage" a2pidisk &> /dev/null
-#			mv a2pidisk/A2PI* a2pidisk/A2PI
-#			cd a2pidisk/A2PI
-#			rm PRODOS* *A3* BASIC.SYSTEM*
-#			cd ..
-#			nulib2 -a -r -e ../a2pi.shk A2PI &> /dev/null
-#			cd ..
-#			shk2image a2pi.shk $a2CloudDisk &> /dev/null
-#			shk2image a2pi.shk $a2CloudDisk140 &> /dev/null
-#			cd /tmp/a2cloud-install
-#			rm -rf a2pi
-#		else
-#			echo "A2CLOUD: A2PI client is already on the target disk image."
-#		fi
-#= APPLE2PI END
