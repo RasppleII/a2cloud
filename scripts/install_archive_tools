@@ -55,8 +55,8 @@ install_nulib2() {
 			./configure
 			make
 			sudo make install
-			popd >/dev/null
 		fi
+		popd >/dev/null
 		rm -rf "$nulibWork"
 	else
 		echo "A2CLOUD: nulib2 is already installed."
