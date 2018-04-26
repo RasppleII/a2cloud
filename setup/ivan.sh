@@ -124,7 +124,6 @@ if [[ $installAllFeatures ]]; then
 	createBootDisk=1
 	setupSerialPortLogin=1
 	installCommTools=1
-	installArchiveTools=1
 	installEmulators=1
 else
 	### Q: Install ADTPro?
@@ -141,7 +140,6 @@ else
 
 	### Q: Create disk images?
 	createBootDisk=
-	installArchiveTools=
 	newImageName=
 	imageSize=
 	if [[ $installADTPro ]]; then
@@ -151,7 +149,6 @@ else
 		read
 		if [[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]]; then
 			createBootDisk=1
-			installArchiveTools=1
 		fi
 
 		if [[ ! -f /usr/local/adtpro/disks/Virtual.po || ( -f /usr/local/adtpro/adtpro.sh && -f /usr/local/adtpro/disks/Virtual.po && $(sha1sum /usr/local/adtpro/disks/Virtual.po | cut -f 1 -d ' ') == "a209a8b3a485c95c57bc691a8a58867a6c0ec628" ) ]]; then
@@ -202,14 +199,6 @@ else
 	echo -n "Install internet access and file transfer tools on your $me? "
 	read
 	[[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]] && installCommTools=1
-
-	### Q: Install archive tools?
-	if [[ ! $installArchiveTools ]]; then
-		echo
-		echo -n "Install utilities for Apple II archives and disk images? "
-		read
-		[[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]] && installArchiveTools=1
-	fi
 
 	### Q: Install emulators?
 	installEmulators=
@@ -1062,10 +1051,9 @@ if [[ $installEmulators ]]; then
 
 fi
 
-if [[ $installArchiveTools ]]; then
-	# FIXME: Interim refactoring
-	. "$a2cSource/scripts/install_archive_tools"
-fi
+# Install Archive Tools
+# FIXME: Interim refactoring
+. "$a2cSource/scripts/install_archive_tools"
 
 # add shortcuts to LXDE desktop
 if [[ -f /usr/bin/X ]]; then
