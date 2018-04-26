@@ -8,12 +8,6 @@
 # scripts themselves.  Software used or installed by these scripts is subject
 # to other licenses.  This work is published from the United States.
 
-###
-### FIXME! This script drops everything in $PWD and does not clean up after
-###        itself in any meaningful way other than being run by ivan.sh.
-###        That comes later.
-###
-
 a2cBinaryURL="http://blocksfree.com/downloads"
 
 # Find the path of our source directory
