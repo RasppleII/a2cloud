@@ -134,7 +134,7 @@ install_unar() {
 
 downloadBinaries=1
 if [[ $1 == -c ]]; then
-	downloadBinaries=1
+	downloadBinaries=
 fi
 install_nulib2
 install_sciibin

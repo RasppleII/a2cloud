@@ -252,7 +252,7 @@ install_oysttyer() {
 
 downloadBinaries=1
 if [[ $1 == -c ]]; then
-	downloadBinaries=1
+	downloadBinaries=
 fi
 install_curl
 install_lrzsz
