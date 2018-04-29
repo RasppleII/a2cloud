@@ -1,0 +1,246 @@
+#! /bin/bash
+# vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
+
+# install_comm_tools - temporary script for comm tools from ivan.sh
+#
+# To the extent possible under law, T. Joseph Carter and Ivan Drucker have
+# waived all copyright and related or neighboring rights to the a2cloud
+# scripts themselves.  Software used or installed by these scripts is subject
+# to other licenses.  This work is published from the United States.
+
+a2cBinaryURL="http://blocksfree.com/downloads"
+
+# Find the path of our source directory
+a2cSource="$( dirname "${BASH_SOURCE[0]}" )/.."
+pushd $a2cSource >/dev/null
+a2cSource="$PWD"
+popd >/dev/null
+if [[ ! -f "$a2cSource/.a2cloud_source" ]]; then
+	printf "\na2cloud: cannot find a2cloud source directory in $a2cSource.\n\n"
+	exit 1
+fi
+
+# Make sure ras2_{os,arch} get set
+. "$a2cSource/scripts/system_ident"
+
+install_curl() {
+	if ! hash curl 2> /dev/null; then
+		### CommTools: Install curl
+		echo "A2CLOUD: Installing curl..."
+		sudo apt-get -y install curl
+		sudo apt-get -y clean
+	else
+		echo "A2CLOUD: curl is already installed."
+	fi
+}
+
+install_lrzsz() {
+	if ! hash sz 2> /dev/null; then
+		### CommTools: Install lrzsz
+		echo "A2CLOUD: Installing rzsz for X/Y/Zmodem transfers..."
+		sudo apt-get -y install lrzsz
+		sudo apt-get -y clean
+	else
+		echo "A2CLOUD: rzsz is already installed."
+	fi
+}
+
+install_ftp() {
+	if ! hash ftp 2> /dev/null; then
+		### CommTools: Install ftp
+		echo "A2CLOUD: Installing ftp..."
+		sudo apt-get -y install ftp
+		sudo apt-get -y clean
+	else
+		echo "A2CLOUD: ftp is already installed."
+	fi
+}
+
+install_cftp() {
+	if ! hash cftp 2> /dev/null; then
+		### CommTools: Install cftp
+		echo "A2CLOUD: Installing cftp..."
+
+		local cftpWork="$(mktemp -d /tmp/nulib.XXXXXXXXXXXX)"
+		pushd "$cftpWork" >/dev/null
+
+		if [[ $downloadBinaries ]]; then
+			wget -qO- "${a2cBinaryURL}/picopkg/cftp-${ras2_os}_${ras2_arch}.tgz" | sudo tar Pzx
+		fi
+
+		if ! hash cftp 2> /dev/null; then
+			sudo apt-get -y install build-essential
+			sudo apt-get -y install ncurses-dev
+			sudo apt-get -y clean
+			wget -q -O cftp-0.12.tar.gz http://nih.at/cftp/cftp-0.12.tar.gz
+			tar zxf cftp-0.12.tar.gz
+			cd cftp-0.12
+			./configure
+			make
+			sudo make install
+		fi
+
+		popd >/dev/null
+		rm -rf "$cftpWork"
+	else
+		echo "A2CLOUD: cftp is already installed."
+	fi
+}
+
+install_lynx() {
+	if ! hash lynx 2> /dev/null; then
+		### CommTools: Install lynx
+		echo "A2CLOUD: Installing lynx..."
+		sudo apt-get -y install lynx
+		sudo apt-get -y clean
+	else
+		echo "A2CLOUD: lynx is already installed."
+	fi
+}
+
+install_links() {
+	if ! hash links 2> /dev/null; then
+		### CommTools: Install links
+		echo "A2CLOUD: Installing links..."
+		sudo apt-get -y --force-yes install links
+		sudo apt-get -y clean
+	else
+		echo "A2CLOUD: links is already installed."
+	fi
+}
+
+install_a2news() {
+	### CommTools: Install tin + a2news script
+	sudo install -o root -g root -m 755 "$a2cSource/setup/a2news" /usr/local/bin/a2news
+	if ! hash tin 2> /dev/null; then
+		echo "A2CLOUD: Installing a2news/tin..."
+		sudo apt-get -y install tin
+		sudo apt-get -y clean
+	else
+		echo "A2CLOUD: a2news/tin is already installed."
+	fi
+
+	# FIXME: Installing tin pulls in exim4, and it used to have an error at
+	#        startup.  We should check to see if it still does.
+
+	### CommTools: Configure exim4 to use ipv4 to kill console errors
+	# have exim4 use IPv4 only to prevent log errors (IPv6 is off by default in Raspbian)
+	if [[ $(grep ' ; ::1' /etc/exim4/update-exim4.conf.conf) ]]; then
+		echo "A2CLOUD: Setting exim4 to use only IPv4 to prevent startup error messages..."
+		sudo sed -i 's/ ; ::1//' /etc/exim4/update-exim4.conf.conf
+		sudo update-exim4.conf
+		sudo rm /var/log/exim4/mainlog /var/log/exim4/paniclog &> /dev/null
+	fi
+
+	# restore exim4 log directory if occupied by a file put there by earlier A2CLOUD versions
+	if [[ -f /var/log/exim4 ]]; then
+		echo "A2CLOUD: Restoring exim4 log directory..."
+		sudo rm /var/log/exim4
+		sudo mkdir /var/log/exim4
+		sudo chown Debian-exim:adm /var/log/exim4
+		sudo chmod 2750 /var/log/exim4
+	fi
+}
+
+install_a2chat() {
+	### CommTools: Install irssi + a2chat script
+	sudo install -o root -g root -m 755 "$a2cSource/setup/a2chat" /usr/local/bin/a2chat
+	if ! hash irssi 2> /dev/null; then
+		echo "A2CLOUD: Installing a2chat/irssi..."
+		sudo apt-get -y install irssi
+		sudo apt-get -y clean
+	else
+		echo "A2CLOUD: a2chat/irssi is already installed."
+	fi
+}
+
+install_telnet() {
+	### CommTools: Install telnet
+	if ! hash telnet 2> /dev/null; then
+		echo "A2CLOUD: Installing telnet..."
+		sudo apt-get -y install telnet
+		sudo apt-get -y clean
+	else
+		echo "A2CLOUD: telnet is already installed."
+	fi
+}
+
+install_oysttyer() {
+	### CommTools: Install Oysttyer (formerly TTYtter)
+
+	# Do we need to check for the readline module here as well?
+	local perlVersion=$(perl -e 'print $^V' | cut -c 2-)
+
+	# Remove old ttytter
+	# Previous versions of a2cloud symlinked ttytter to oysttyer.  I don't think
+	# we want to do that, because Debian won't in buster when we start using
+	# their oysttyer package.
+	if [[ -f /usr/local/bin/ttytter || -f /usr/local/share/perl/${perlVersion}/Term/ReadLine/TTYtter.pm ]]; then
+		echo "a2cloud: Removing ttytter in favor of oysttyer..."
+		sudo rm -f /usr/local/bin/ttytter
+	fi
+
+	# Remove locally installed Term::ReadKey (libterm-readline-gnu-perl
+	if [[ -f /usr/local/man/man3/Term::ReadKey.3pm ]]; then
+		echo "a2cloud: Removing locally installed Term::ReadKey"
+		rm -f /usr/local/man/man3/Term::ReadKey.3pm
+
+		# Oh yeah, this could've wound up lots of places…
+		for ver in 5.14.2 5.20.2 $perlVersion; do
+			for perlDir in perl arm-linux-gnueabihf/perl i686-linux-gnu/perl x86_64-linux-gnu/perl; do
+				if [[ -f /usr/local/lib/$perlDir/$ver/Term/ReadKey.pm ]]; then
+					rm -f /usr/local/lib/$perlDir/$ver/Term/ReadKey.pm
+					rm -f /usr/local/lib/$perlDir/$ver/perllocal.pod
+					rm -f /usr/local/lib/$perlDir/$ver/auto/Term/ReadKey/autosplit.ix
+					rm -f /usr/local/lib/$perlDir/$ver/auto/Term/ReadKey/ReadKey.so
+					rm -f /usr/local/lib/$perlDir/$ver/auto/Term/ReadKey/.packlist
+				fi
+			done
+		done
+	fi
+
+	# Now install the Debian's package
+	echo "a2cloud: Installing Debian's Term::ReadKey (libterm-readline-gnu-perl)"
+	apt-get -y install libterm-readline-gnu-perl
+	apt-get -y clean
+
+	local oysttyerWork="$(mktemp -d /tmp/nulib.XXXXXXXXXXXX)"
+	pushd "$oysttyerWork" >/dev/null
+
+	# Install old TTYtter readline module (still used by oysttyer)
+	if [[ ! -f "/usr/local/share/perl/$perlVersion/Term/ReadLine/TTYtter.pm" ]]; then
+		echo "a2cloud: Installing Term::ReadLine::TTYtter for oysttyer"
+
+		# We don't need to make anything for this, just copy the files
+		wget -O Term-ReadLine-TTYtter-1.4.tar.gz http://search.cpan.org/CPAN/authors/id/C/CK/CKAISER/Term-ReadLine-TTYtter-1.4.tar.gz
+		tar zxf Term-ReadLine-TTYtter-1.4.tar.gz
+		cd Term-ReadLine-TTYtter-1.4
+		sudo install -m 755 -o root -g root -d /usr/local/share/perl/$perlVersion/Term/ReadLine
+		sudo install -m 644 -o root -g root ReadLine/readline_ttytter.pm ReadLine/TTYtter.pm /usr/local/share/perl/$perlVersion/Term/ReadLine
+		cd ..
+	fi
+
+	# Actually install oysttyer now, if needed
+	if ! hash oysttyer 2>/dev/null; then
+		echo "a2cloud: Installing oysttyer..."
+		wget -qO- https://github.com/oysttyer/oysttyer/archive/2.7.2.tar.gz | sudo tar -zxP --transform 's|oysttyer-2.7.2/oysttyer.pl|/usr/local/bin/oysttyer|' oysttyer-2.7.2/oysttyer.pl
+	fi
+
+	popd >/dev/null
+	rm -rf "$oysttyerWork"
+}
+
+downloadBinaries=1
+if [[ $1 == -c ]]; then
+	downloadBinaries=1
+fi
+install_curl
+install_lrzsz
+install_ftp
+install_cftp
+install_lynx
+install_links
+install_a2news
+install_a2chat
+install_telnet
+install_oysttyer
