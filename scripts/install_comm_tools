@@ -87,6 +87,26 @@ install_cftp() {
 	fi
 }
 
+install_lftp() {
+	if ! hash lftp 2> /dev/null; then
+		echo "a2cloud: Installing lftp..."
+		sudo apt-get -y install lftp
+		sudo apt-get -y clean
+	else
+		echo "a2cloud: ftp is already installed."
+	fi
+}
+
+install_mc() {
+	if ! hash mc 2> /dev/null; then
+		echo "a2cloud: Installing mc..."
+		sudo apt-get -y install mc
+		sudo apt-get -y clean
+	else
+		echo "a2cloud: ftp is already installed."
+	fi
+}
+
 install_lynx() {
 	if ! hash lynx 2> /dev/null; then
 		### CommTools: Install lynx
@@ -238,6 +258,8 @@ install_curl
 install_lrzsz
 install_ftp
 install_cftp
+install_lftp
+install_mc
 install_lynx
 install_links
 install_a2news
