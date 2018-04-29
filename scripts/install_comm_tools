@@ -21,7 +21,7 @@ if [[ ! -f "$a2cSource/.a2cloud_source" ]]; then
 fi
 
 # Make sure ras2_{os,arch} get set
-. "$a2cSource/scripts/system_ident"
+. "$a2cSource/scripts/system_ident" -q
 
 install_curl() {
 	if ! hash curl 2> /dev/null; then
