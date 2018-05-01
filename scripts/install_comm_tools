@@ -56,37 +56,6 @@ install_ftp() {
 	fi
 }
 
-install_cftp() {
-	if ! hash cftp 2> /dev/null; then
-		### CommTools: Install cftp
-		echo "A2CLOUD: Installing cftp..."
-
-		local cftpWork="$(mktemp -d /tmp/nulib.XXXXXXXXXXXX)"
-		pushd "$cftpWork" >/dev/null
-
-		if [[ $downloadBinaries ]]; then
-			wget -qO- "${a2cBinaryURL}/picopkg/cftp-${ras2_os}_${ras2_arch}.tgz" | sudo tar Pzx
-		fi
-
-		if ! hash cftp 2> /dev/null; then
-			sudo apt-get -y install build-essential
-			sudo apt-get -y install ncurses-dev
-			sudo apt-get -y clean
-			wget -q -O cftp-0.12.tar.gz http://nih.at/cftp/cftp-0.12.tar.gz
-			tar zxf cftp-0.12.tar.gz
-			cd cftp-0.12
-			./configure
-			make
-			sudo make install
-		fi
-
-		popd >/dev/null
-		rm -rf "$cftpWork"
-	else
-		echo "A2CLOUD: cftp is already installed."
-	fi
-}
-
 install_lftp() {
 	if ! hash lftp 2> /dev/null; then
 		echo "a2cloud: Installing lftp..."
@@ -256,7 +225,6 @@ fi
 install_curl
 install_lrzsz
 install_ftp
-install_cftp
 install_lftp
 install_mc
 install_lynx
