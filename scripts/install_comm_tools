@@ -93,7 +93,7 @@ install_lftp() {
 		sudo apt-get -y install lftp
 		sudo apt-get -y clean
 	else
-		echo "a2cloud: ftp is already installed."
+		echo "a2cloud: lftp is already installed."
 	fi
 }
 
@@ -103,7 +103,7 @@ install_mc() {
 		sudo apt-get -y install mc
 		sudo apt-get -y clean
 	else
-		echo "a2cloud: ftp is already installed."
+		echo "a2cloud: mc is already installed."
 	fi
 }
 
