@@ -189,8 +189,8 @@ install_oysttyer() {
 
 	# Now install the Debian's package
 	echo "a2cloud: Installing Debian's Term::ReadKey (libterm-readline-gnu-perl)"
-	apt-get -y install libterm-readline-gnu-perl
-	apt-get -y clean
+	sudo apt-get -y install libterm-readline-gnu-perl
+	sudo apt-get -y clean
 
 	local oysttyerWork="$(mktemp -d /tmp/nulib.XXXXXXXXXXXX)"
 	pushd "$oysttyerWork" >/dev/null
