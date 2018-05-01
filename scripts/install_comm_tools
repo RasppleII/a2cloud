@@ -8,8 +8,6 @@
 # scripts themselves.  Software used or installed by these scripts is subject
 # to other licenses.  This work is published from the United States.
 
-a2cBinaryURL="http://blocksfree.com/downloads"
-
 # Find the path of our source directory
 a2cSource="$( dirname "${BASH_SOURCE[0]}" )/.."
 pushd $a2cSource >/dev/null
