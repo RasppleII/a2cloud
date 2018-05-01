@@ -133,24 +133,23 @@ install_a2news() {
 	### CommTools: Install tin + a2news script
 	sudo install -o root -g root -m 755 "$a2cSource/setup/a2news" /usr/local/bin/a2news
 	if ! hash tin 2> /dev/null; then
-		echo "A2CLOUD: Installing a2news/tin..."
+		echo "A2CLOUD: Installing tin..."
 		sudo apt-get -y install tin
 		sudo apt-get -y clean
 	else
-		echo "A2CLOUD: a2news/tin is already installed."
+		echo "A2CLOUD: tin is already installed."
 	fi
 
-	# FIXME: Installing tin pulls in exim4, and it used to have an error at
-	#        startup.  We should check to see if it still does.
+	# Leaving this here just in case, but it should not be necessary anymore.
 
-	### CommTools: Configure exim4 to use ipv4 to kill console errors
-	# have exim4 use IPv4 only to prevent log errors (IPv6 is off by default in Raspbian)
-	if [[ $(grep ' ; ::1' /etc/exim4/update-exim4.conf.conf) ]]; then
-		echo "A2CLOUD: Setting exim4 to use only IPv4 to prevent startup error messages..."
-		sudo sed -i 's/ ; ::1//' /etc/exim4/update-exim4.conf.conf
-		sudo update-exim4.conf
-		sudo rm /var/log/exim4/mainlog /var/log/exim4/paniclog &> /dev/null
-	fi
+#	### CommTools: Configure exim4 to use ipv4 to kill console errors
+#	# have exim4 use IPv4 only to prevent log errors (IPv6 is off by default in Raspbian)
+#	if [[ $(grep ' ; ::1' /etc/exim4/update-exim4.conf.conf) ]]; then
+#		echo "A2CLOUD: Setting exim4 to use only IPv4 to prevent startup error messages..."
+#		sudo sed -i 's/ ; ::1//' /etc/exim4/update-exim4.conf.conf
+#		sudo update-exim4.conf
+#		sudo rm /var/log/exim4/mainlog /var/log/exim4/paniclog &> /dev/null
+#	fi
 
 	# restore exim4 log directory if occupied by a file put there by earlier A2CLOUD versions
 	if [[ -f /var/log/exim4 ]]; then
