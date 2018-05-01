@@ -123,7 +123,6 @@ if [[ $installAllFeatures ]]; then
 	installADTPro=1
 	createBootDisk=1
 	setupSerialPortLogin=1
-	installCommTools=1
 	installEmulators=1
 else
 	### Q: Install ADTPro?
@@ -192,13 +191,6 @@ else
 	echo -n "Do you want to set up your $me for serial port login? "
 	read
 	[[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]] && setupSerialPortLogin=1
-
-	### Q: Install Comm Tools?
-	installCommTools=
-	echo
-	echo -n "Install internet access and file transfer tools on your $me? "
-	read
-	[[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]] && installCommTools=1
 
 	### Q: Install emulators?
 	installEmulators=
@@ -725,177 +717,10 @@ if [[ $setupSerialPortLogin ]]; then
 fi
 
 
+# Install Comm Tools
+# FIXME: Interim refactoring
+. "$a2cSource/scripts/install_comm_tools"
 
-if [[ $installCommTools ]]; then
-
-	if ! hash curl 2> /dev/null; then
-		### CommTools: Install curl
-		echo "A2CLOUD: Installing curl..."
-		sudo apt-get -y install curl
-		sudo apt-get -y clean
-	else
-		echo "A2CLOUD: curl is already installed."
-	fi
-
-	if ! hash sz 2> /dev/null; then
-		### CommTools: Install lrzsz
-		echo "A2CLOUD: Installing rzsz for X/Y/Zmodem transfers..."
-		sudo apt-get -y install lrzsz
-		sudo apt-get -y clean
-	else
-		echo "A2CLOUD: rzsz is already installed."
-	fi
-
-	if ! hash ftp 2> /dev/null; then
-		### CommTools: Install ftp
-		echo "A2CLOUD: Installing ftp..."
-		sudo apt-get -y install ftp
-		sudo apt-get -y clean
-	else
-		echo "A2CLOUD: ftp is already installed."
-	fi
-
-	if ! hash cftp 2> /dev/null; then
-		### CommTools: Install cftp
-		echo "A2CLOUD: Installing cftp..."
-		cd /tmp/a2cloud-install
-		if [[ $downloadBinaries ]]; then
-			wget -qO- "${a2cBinaryURL}/picopkg/cftp-${ras2_os}_${ras2_arch}.tgz" | sudo tar Pzx
-		fi
-		if ! hash cftp 2> /dev/null; then
-			sudo apt-get -y install build-essential
-			sudo apt-get -y install ncurses-dev
-			sudo apt-get -y clean
-			rm -rf /tmp/a2cloud-install/cftp* &> /dev/null
-			mkdir -p /tmp/a2cloud-install/cftp
-			cd /tmp/a2cloud-install/cftp
-			wget -q -O cftp-0.12.tar.gz http://nih.at/cftp/cftp-0.12.tar.gz
-			tar zxf cftp-0.12.tar.gz
-			cd cftp-0.12
-			./configure
-			make
-			sudo make install
-			cd /tmp/a2cloud-install
-			rm -rf cftp
-		fi
-	else
-		echo "A2CLOUD: cftp is already installed."
-	fi
-
-	if ! hash lynx 2> /dev/null; then
-		### CommTools: Install lynx
-		echo "A2CLOUD: Installing lynx..."
-		sudo apt-get -y install lynx
-		sudo apt-get -y clean
-	else
-		echo "A2CLOUD: lynx is already installed."
-	fi
-
-	if ! hash links 2> /dev/null; then
-		### CommTools: Install links
-		echo "A2CLOUD: Installing links..."
-		sudo apt-get -y --force-yes install links
-		sudo apt-get -y clean
-	else
-		echo "A2CLOUD: links is already installed."
-	fi
-
-	### CommTools: Install tin + a2news script
-	sudo install -o root -g root -m 755 "$a2cSource/setup/a2news" /usr/local/bin/a2news
-	if ! hash tin 2> /dev/null; then
-		echo "A2CLOUD: Installing a2news/tin..."
-		sudo apt-get -y install tin
-		sudo apt-get -y clean
-	else
-		echo "A2CLOUD: a2news/tin is already installed."
-	fi
-	### CommTools: Configure exim4 to use ipv4 to kill console errors
-	# have exim4 use IPv4 only to prevent log errors (IPv6 is off by default in Raspbian)
-	if [[ $(grep ' ; ::1' /etc/exim4/update-exim4.conf.conf) ]]; then
-		echo "A2CLOUD: Setting exim4 to use only IPv4 to prevent startup error messages..."
-		sudo sed -i 's/ ; ::1//' /etc/exim4/update-exim4.conf.conf
-		sudo update-exim4.conf
-		sudo rm /var/log/exim4/mainlog /var/log/exim4/paniclog &> /dev/null
-	fi
-	# restore exim4 log directory if occupied by a file put there by earlier A2CLOUD versions
-	if [[ -f /var/log/exim4 ]]; then
-		echo "A2CLOUD: Restoring exim4 log directory..."
-		sudo rm /var/log/exim4
-		sudo mkdir /var/log/exim4
-		sudo chown Debian-exim:adm /var/log/exim4
-		sudo chmod 2750 /var/log/exim4
-	fi
-
-	### CommTools: Install irssi + a2chat script
-	sudo install -o root -g root -m 755 "$a2cSource/setup/a2chat" /usr/local/bin/a2chat
-	if ! hash irssi 2> /dev/null; then
-		echo "A2CLOUD: Installing a2chat/irssi..."
-		sudo apt-get -y install irssi
-		sudo apt-get -y clean
-	else
-		echo "A2CLOUD: a2chat/irssi is already installed."
-	fi
-
-	### CommTools: Install telnet
-	if ! hash telnet 2> /dev/null; then
-		echo "A2CLOUD: Installing telnet..."
-		sudo apt-get -y install telnet
-		sudo apt-get -y clean
-	else
-		echo "A2CLOUD: telnet is already installed."
-	fi
-
-	### CommTools: Install Oysttyer (formerly TTYtter)
-	# Do we need to check for the readline module here as well?
-	perlVersion=$(perl -e 'print $^V' | cut -c 2-)
-	if ! hash ttytter 2> /dev/null || [[ ! -f /usr/local/share/perl/${perlVersion}/Term/ReadLine/TTYtter.pm ]]; then
-		echo "A2CLOUD: Installing Oysttyer..."
-		wget -qO- https://github.com/oysttyer/oysttyer/archive/2.7.2.tar.gz | sudo tar -zxP --transform 's|oysttyer-2.7.2/oysttyer.pl|/usr/local/bin/oysttyer|' oysttyer-2.7.2/oysttyer.pl
-		sudo rm /usr/local/bin/ttytter 2> /dev/null
-		sudo ln -s /usr/local/bin/oysttyer /usr/local/bin/ttytter
-		perlVersion=$(perl -e 'print $^V' | cut -c 2-)
-		if [[ ! -f "/usr/local/share/perl/$perlVersion/Term/ReadLine/TTYtter.pm" ]]; then
-			echo "A2CLOUD: Installing TTYtter readline module..."
-			if [[ $downloadBinaries ]] && [[ $perlVersion == "5.14.2" || $perlVersion == "5.20.2" ]]; then
-				wget -qO- "${a2cBinaryURL}/picopkg/ttytter_readline-rpi.tgz" | sudo tar Pzx
-			fi
-			if [[ ! -f "/usr/local/share/perl/$perlVersion/Term/ReadLine/TTYtter.pm" ]]; then
-				if [[ ! -f "/usr/local/lib/perl/$perlVersion/Term/ReadKey.pm" ]]; then
-					cd /tmp/a2cloud-install
-					wget -qO TermReadKey-2.33.tar.gz http://www.cpan.org/authors/id/J/JS/JSTOWE/TermReadKey-2.33.tar.gz
-					tar zxf TermReadKey-2.33.tar.gz
-					cd TermReadKey-2.33
-					perl Makefile.PL &> /dev/null
-					if ! hash make 2> /dev/null; then
-						sudo apt-get -y install build-essential
-						sudo apt-get -y clean
-					fi
-					make &> /dev/null
-					sudo make install &> /dev/null
-					cd /tmp/a2cloud-install
-					rm -rf TermReadKey-2.33
-				fi
-				cd /tmp/a2cloud-install
-				wget -qO Term-ReadLine-TTYtter-1.4.tar.gz http://www.cpan.org/authors/id/C/CK/CKAISER/Term-ReadLine-TTYtter-1.4.tar.gz
-				tar zxf Term-ReadLine-TTYtter-1.4.tar.gz
-				cd Term-ReadLine-TTYtter-1.4
-				perl Makefile.PL &> /dev/null
-				if ! hash make 2> /dev/null; then
-					sudo apt-get -y install build-essential
-					sudo apt-get -y clean
-				fi
-				make &> /dev/null
-				sudo make install &> /dev/null
-				cd /tmp/a2cloud-install
-				rm -rf Term-ReadLine-TTYtter-1.4
-			fi
-		else
-			echo "A2CLOUD: TTYtter readline module is already installed."
-		fi
-	else
-		echo "A2CLOUD: Oysttyer is already installed."
-	fi
-fi
 
 if [[ $installEmulators ]]; then
 
