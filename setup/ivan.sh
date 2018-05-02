@@ -1227,8 +1227,6 @@ fi
 
 ### A2CLOUD: Clean up temp files
 cd "$origDir"
-rm setup &> /dev/null
-rm a2cloud-setup &> /dev/null
 rm -rf /tmp/a2cloud-install &> /dev/null
 
 ### A2CLOUD: in case not restarting, make groups take effect immediately
