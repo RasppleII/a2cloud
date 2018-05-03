@@ -106,7 +106,7 @@ install_unar() {
 			sudo apt-get -y install build-essential libgnustep-base-dev libz-dev libbz2-dev libssl-dev libicu-dev unzip
 			sudo apt-get clean
 
-			local unarWork="$(mktemp -d /tmp/undoit.XXXXXXXXXXXX)"
+			local unarWork="$(mktemp -d /tmp/unar.XXXXXXXXXXXX)"
 			pushd "$unarWork" >/dev/null
 			if [[ $useExternalURL ]]; then
 				wget -O unar-1.8.1.zip https://github.com/incbee/Unarchiver/archive/unar-1.8.1.zip

@@ -190,7 +190,7 @@ install_oysttyer() {
 	sudo apt-get -y install libterm-readline-gnu-perl
 	sudo apt-get -y clean
 
-	local oysttyerWork="$(mktemp -d /tmp/nulib.XXXXXXXXXXXX)"
+	local oysttyerWork="$(mktemp -d /tmp/oysttyer.XXXXXXXXXXXX)"
 	pushd "$oysttyerWork" >/dev/null
 
 	# Install old TTYtter readline module (still used by oysttyer)
