@@ -30,7 +30,7 @@ install_nulib2() {
 
 		local nulibWork="$(mktemp -d /tmp/nulib.XXXXXXXXXXXX)"
 		pushd "$nulibWork" >/dev/null
-		if [[ $downloadBinaries ]]; then
+		if [[ ! $noPicoPkg ]]; then
 			### ArchiveTools: Install nulib2 binaries
 			wget -q "${a2cBinaryURL}/picopkg/nulib2-${ras2_os}_${ras2_arch}.tgz"
 			if [[ -f "nulib2-${ras2_os}_${ras2_arch}.tgz" ]]; then
@@ -132,9 +132,9 @@ install_unar() {
 }
 
 
-downloadBinaries=1
+noPicoPkg=
 if [[ $1 == -c ]]; then
-	downloadBinaries=
+	noPicoPkg=1
 fi
 install_nulib2
 install_sciibin

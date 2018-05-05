@@ -216,10 +216,6 @@ install_oysttyer() {
 	rm -rf "$oysttyerWork"
 }
 
-downloadBinaries=1
-if [[ $1 == -c ]]; then
-	downloadBinaries=
-fi
 install_curl
 install_lrzsz
 install_ftp

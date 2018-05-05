@@ -92,7 +92,7 @@ while [[ $1 ]]; do
 		echo "-s: prompt for restart after installation"
 		echo "-6: put blank 140K disk images in GSport slot 6"
 		echo "-b: build A2CLOUD disks, rather than downloading premade images"
-		echo "-c: compile non-package items, rather than downloading binaries"
+		echo "-c: compile non-package items, rather than downloading picopkg files"
 		[[ $0 == "-bash" ]] && return 1 || exit 1
 	fi
 done
@@ -719,7 +719,7 @@ fi
 
 # Install Comm Tools
 # FIXME: Interim refactoring
-. "$a2cSource/scripts/install_comm_tools" ${noPicoPkg:+-c}
+. "$a2cSource/scripts/install_comm_tools"
 
 if [[ $installEmulators ]]; then
 
