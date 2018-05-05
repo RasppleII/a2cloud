@@ -51,7 +51,7 @@ echo "A2CLOUD version installed: ${installedVersion:-None}"
 
 ### A2CLOUD: Process command line args
 buildA2CloudDisk=
-downloadBinaries=1
+noPicoPkg=
 skipRepoUpdate=
 restartPrompt=
 autoAnswerYes=
@@ -64,7 +64,7 @@ while [[ $1 ]]; do
 		buildA2CloudDisk=1
 	elif [[ $1 == "-c" ]]; then
 		shift
-		downloadBinaries=
+		noPicoPkg=1
 	elif [[ $1 == "-r" ]]; then
 		shift
 		skipRepoUpdate="-r"
@@ -719,8 +719,7 @@ fi
 
 # Install Comm Tools
 # FIXME: Interim refactoring
-. "$a2cSource/scripts/install_comm_tools"
-
+. "$a2cSource/scripts/install_comm_tools" ${noPicoPkg:+-c}
 
 if [[ $installEmulators ]]; then
 
@@ -731,7 +730,7 @@ if [[ $installEmulators ]]; then
 
 		echo "A2CLOUD: Installing GSport..."
 		cd /tmp/a2cloud-install
-		if [[ $downloadBinaries ]]; then
+		if [[ ! $noPicoPkg ]]; then
 			### Emulators: GSport: Install pre-built binaries
 			sudo apt-get -y install libpcap0.8 &> /dev/null
 			sudo apt-get -y clean
@@ -843,7 +842,7 @@ if [[ $installEmulators ]]; then
 	if ! hash linapple 2> /dev/null; then
 		echo "A2CLOUD: Installing LinApple..."
 		cd /tmp/a2cloud-install
-		if [[ $downloadBinaries ]]; then
+		if [[ ! $noPicoPkg ]]; then
 			### Emulators: LinApple: Install pre-built binaries
 			wget -qO- "${a2cBinaryURL}/picopkg/linapple-${ras2_os}_${ras2_arch}.tgz" | sudo tar Pzx
 		fi
@@ -878,7 +877,7 @@ fi
 
 # Install Archive Tools
 # FIXME: Interim refactoring
-. "$a2cSource/scripts/install_archive_tools"
+. "$a2cSource/scripts/install_archive_tools" ${noPicoPkg:+-c}
 
 # add shortcuts to LXDE desktop
 if [[ -f /usr/bin/X ]]; then
