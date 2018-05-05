@@ -1,0 +1,203 @@
+#! /bin/bash
+# vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
+
+# install_emulators - temporary script for emulators from ivan.sh
+#
+# To the extent possible under law, T. Joseph Carter and Ivan Drucker have
+# waived all copyright and related or neighboring rights to the a2cloud
+# scripts themselves.  Software used or installed by these scripts is subject
+# to other licenses.  This work is published from the United States.
+
+a2cBinaryURL="http://blocksfree.com/downloads"
+
+# Find the path of our source directory
+a2cSource="$( dirname "${BASH_SOURCE[0]}" )/.."
+pushd $a2cSource >/dev/null
+a2cSource="$PWD"
+popd >/dev/null
+if [[ ! -f "$a2cSource/.a2cloud_source" ]]; then
+	printf "\na2cloud: cannot find a2cloud source directory in $a2cSource.\n\n"
+	exit 1
+fi
+
+# Make sure ras2_{os,arch} get set
+. "$a2cSource/scripts/system_ident" -q
+
+install_gsport() {
+	### Emulators: GSport
+	if ! hash gsport 2> /dev/null || ! hash gsportx 2> /dev/null || ! hash gsportfb 2> /dev/null; then
+		# FIXME: This is a _TERRIBLE_ name/place for this...
+		gsportConfigFile='/usr/local/lib/config.txt'
+
+		echo "A2CLOUD: Installing GSport..."
+
+		local gsportWork="$(mktemp -d /tmp/gsport.XXXXXXXXXXXX)"
+		pushd "$gsportWork" >/dev/null
+		if [[ ! $noPicoPkg ]]; then
+			### Emulators: GSport: Install pre-built binaries
+			sudo apt-get -y install libpcap0.8
+			sudo apt-get -y clean
+			wget "${a2cBinaryURL}/picopkg/gsport-${ras2_os}_${ras2_arch}.tgz"
+			if [[ -f gsport-${ras2_os}_${ras2_arch}.tgz ]]; then
+				sudo tar Pzxf gsport-${ras2_os}_${ras2_arch}.tgz
+			fi
+		fi
+		if ! hash gsport 2> /dev/null || ! hash gsportx 2> /dev/null || ! hash gsportfb 2> /dev/null; then
+			### Emulators: GSport: Install from source
+			echo "A2CLOUD: Building GSport from source..."
+
+			sudo apt-get -y install build-essential &> /dev/null
+			sudo apt-get -y install libx11-dev libxext-dev xfonts-base libpcap0.8-dev
+			sudo apt-get -y clean
+
+			wget -O gsport.tar.gz http://downloads.sourceforge.net/project/gsport/GSport-0.31/gsport_0.31.tar.gz
+			tar --strip-components=1 -zxf gsport.tar.gz
+			cd src
+			rm -f vars
+
+			buildGSport=1
+			cp vars_fbrpilinux vars_fb
+			if [[ -n $isRpi ]]; then
+				cp vars_pi vars_x
+			else
+				cp vars_x86linux vars_x
+				case "$ras2_arch" in
+					x86_64)
+						sed -i 's/-march=i686/-march=x86-64/' vars_x
+						sed -i 's/-march=armv6/-march=x86-64/' vars_fb
+						;;
+					i686)
+						sed -i 's/-march=armv6/-march=i686/' vars_fb
+						;;
+					*)
+						buildGSport=
+						echo "A2CLOUD: cannot build GSport; unknown machine architecture."
+						;;
+				esac
+			fi
+			sed -i 's/^LDFLAGS =.*$/LDFLAGS = -ldl/' vars_x
+			sed -i 's/^LDFLAGS =.*$/LDFLAGS = -ldl/' vars_fb
+			if [[ -n $buildGSport ]]; then
+				for varsFile in vars_x vars_fb; do
+					rm -f vars
+					cp $varsFile vars
+					make clean
+					make
+					sudo install -o root -g root -m 755 ../gsport${varsFile:5:2} /usr/local/bin
+				done
+				gcc -o ../to_pro to_pro.c &> /dev/null
+				gcc -o ../partls partls.c &> /dev/null
+				sudo install -o root -g root -m 755 ../to_pro /usr/local/bin
+				sudo install -o root -g root -m 755 ../partls /usr/local/bin
+				sudo install -o root -g root -m 666 ../config.txt "$gsportConfigFile"
+				cd "${gsportConfigFile%/*}"
+				sudo ln -s "${gsportConfigFile##*/}" gsport_config.txt 2> /dev/null
+			fi
+
+			cd /tmp/a2cloud-install 2> /dev/null
+			rm -rf gsport 2> /dev/null
+		fi
+
+		if [[ $slot6 ]]; then
+			### Emulators: GSport: Place blank disk images in slot 6
+			echo "A2CLOUD: Putting blank disks in GSport slot 6..."
+			sudo sed -i 's@^s6d1.*$@s6d1 = /usr/local/share/gsdisks/slot6drive1.po@' "$gsportConfigFile"
+			sudo sed -i 's@^s6d2.*$@s6d2 = /usr/local/share/gsdisks/slot6drive2.po@' "$gsportConfigFile"
+			if [[ ! -f /usr/local/share/gsdisks/slot6drive1.po || ! -f /usr/local/share/gsdisks/slot6drive2.po ]]; then
+				wget -qO- "${a2BinaryURL}/gsport/slot6.tgz" | sudo tar Pzx 2> /dev/null
+			fi
+		fi
+
+		if ! grep -q '^g_appletalk_turbo' "$gsportConfigFile"; then
+			### Emulators: GSport: Enable AppleTalk Turbo support
+			if grep -q 'bram1[00]' "$gsportConfigFile"; then
+				sudo sed -i 's/^\(bram1\[00\]\)/g_appletalk_turbo = 1\n\n\1/' "$gsportConfigFile"
+			else
+				echo -e '\ng_appletalk_turbo = 1' | sudo tee -a "$gsportConfigFile" > /dev/null
+			fi
+		fi
+		sudo sed -i 's/^g_appletalk_turbo = 0/g_appletalk_turbo = 1/' "$gsportConfigFile"
+
+		if ! grep -q 'g_ethernet[^_]' "$gsportConfigFile"; then
+			### Emulators: GSport: Enable Uthernet emulation
+			if grep -q 'bram1[00]' "$gsportConfigFile"; then
+				sudo sed -i 's/^\(bram1\[00\]\)/g_ethernet = 1\n\n\1/' "$gsportConfigFile"
+			else
+				echo -e '\ng_ethernet = 1' | sudo tee -a "$gsportConfigFile" > /dev/null
+			fi
+		fi
+		sudo sed -i 's/g_ethernet = 0/g_ethernet = 1/' "$gsportConfigFile"
+
+		### Emulators: GSport: Setup groups and wrapper scripts
+		echo "A2CLOUD: Updating GSport launch and setup files..."
+
+		sudo addgroup gsport &> /dev/null
+		sudo chgrp gsport /usr/local/bin/gsportfb
+		sudo chmod u+s /usr/local/bin/gsportfb
+		sudo chgrp gsport /usr/local/bin/gsportx
+		sudo chmod u+s /usr/local/bin/gsportx
+
+		sudo install -o root -g root -m 755 "$a2cSource/setup/gsport" /usr/local/bin/gsport
+		sudo install -o root -g root -m 755 "$a2cSource/setup/gsport-setup" /usr/local/bin/gsport-setup
+
+		popd >/dev/null
+		rm -rf "$gsportWork"
+	else
+		echo "A2CLOUD: GSport is already installed."
+	fi
+}
+
+install_linapple() {
+	### Emulators: LinApple
+	if ! hash linapple 2> /dev/null; then
+		echo "A2CLOUD: Installing LinApple..."
+		local linappleWork="$(mktemp -d /tmp/linapple.XXXXXXXXXXXX)"
+		pushd "$linappleWork" >/dev/null
+		if [[ ! $noPicoPkg ]]; then
+			### Emulators: LinApple: Install pre-built binaries
+			wget "${a2cBinaryURL}/picopkg/linapple-${ras2_os}_${ras2_arch}.tgz"
+			if [[ -f linapple-${ras2_os}_${ras2_arch}.tgz ]]; then
+				sudo tar Pzxf linapple-${ras2_os}_${ras2_arch}.tgz
+			fi
+		fi
+		if ! hash linapple 2> /dev/null; then
+			### Emulators: LinApple: Install from source
+			echo "A2CLOUD: Building LinApple from source..."
+			sudo apt-get -y install build-essential
+			sudo apt-get -y install libsdl1.2-dev libcurl4-openssl-dev zlib1g-dev libzip-dev
+			sudo apt-get -y clean
+			wget -q -O linapple_src-2b.tar.bz2 http://downloads.sourceforge.net/project/linapple/linapple/linapple_2b/linapple_src-2b.tar.bz2
+			tar jxf linapple_src-2b.tar.bz2
+			cd linapple_src-2b/src
+			make
+			sudo make install
+		fi
+		popd >/dev/null
+		rm -rf "$linappleWork"
+	else
+		echo "A2CLOUD: LinApple is already installed."
+	fi
+	echo "A2CLOUD: Updating LinApple launch file..."
+	sudo install -o root -g root -m 755 "$a2cSource/setup/linapple" /usr/local/bin/linapple
+}
+
+
+noPicoPkg=
+slot6=
+while [[ $1 ]]; do
+	case $1 in
+		-c)
+			noPicoPkg=1
+			;;
+		-6)
+			slot6=1
+			;;
+		*)
+			;;
+	esac
+done
+install_gsport
+install_linapple
+
+### Emulators: Set Groups
+sudo usermod -a -G audio,video,netdev,gsport,plugdev $USER &> /dev/null
