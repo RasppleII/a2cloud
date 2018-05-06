@@ -123,7 +123,6 @@ if [[ $installAllFeatures ]]; then
 	installADTPro=1
 	createBootDisk=1
 	setupSerialPortLogin=1
-	installEmulators=1
 else
 	### Q: Install ADTPro?
 	installADTPro=
@@ -191,13 +190,6 @@ else
 	echo -n "Do you want to set up your $me for serial port login? "
 	read
 	[[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]] && setupSerialPortLogin=1
-
-	### Q: Install emulators?
-	installEmulators=
-	echo
-	echo -n "Install Apple IIgs and IIe emulators? "
-	read
-	[[ ${REPLY:0:1} == "Y" || ${REPLY:0:1} == "y" ]] && installEmulators=1
 
 fi
 
