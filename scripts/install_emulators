@@ -181,6 +181,44 @@ install_linapple() {
 	sudo install -o root -g root -m 755 "$a2cSource/setup/linapple" /usr/local/bin/linapple
 }
 
+install_desktop() {
+	# FIXME: HACK HACK HACK! We're only messing with ~/Desktop in the least
+	# because I'm not 100% sure that if we put things in the menu that you'll
+	# get them.  Didn't used to be the case.  If that's changed, we should stop.
+	mkdir -p ~/Desktop
+
+	sudo mkdir -p /usr/local/share/applications
+
+	# FIXME: Is there a reason we're running these in a lxterminal with Terminal=false
+	if [[ -f /usr/local/bin/gsport ]]; then
+		sudo tee /usr/local/share/applications/gsport.desktop > ~/Desktop/gsport.desktop <<-EOF
+		[Desktop Entry]
+		Name=GSport
+		Comment=Apple IIgs Emulator
+		Exec=lxterminal -e /usr/local/bin/gsport
+		Icon=/usr/local/share/gsport32.ico
+		Terminal=false
+		Type=Application
+		Categories=AppleII
+		EOF
+		if [[ ! -f /usr/local/share/gsport32.ico ]]; then
+			sudo wget -O /usr/local/share/gsport32.ico https://raw.githubusercontent.com/david-schmidt/gsport/master/src/gsport32.ico
+		fi
+	fi
+	# LinApple:
+	if [[ -f /usr/local/bin/linapple ]]; then
+		sudo tee /usr/local/share/applications/linapple.desktop > ~/Desktop/linapple.desktop <<-EOF
+		[Desktop Entry]
+		Name=LinApple
+		Comment=Apple IIe Emulator
+		Exec=lxterminal -e /usr/local/bin/linapple
+		Icon=/usr/local/linapple/icon.bmp
+		Terminal=false
+		Type=Application
+		Categories=AppleII
+		EOF
+	fi
+}
 
 noPicoPkg=
 slot6=
@@ -198,6 +236,7 @@ while [[ $1 ]]; do
 done
 install_gsport
 install_linapple
+install_user_desktop
 
 ### Emulators: Set Groups
 sudo usermod -a -G audio,video,netdev,gsport,plugdev $USER &> /dev/null

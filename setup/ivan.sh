@@ -740,19 +740,6 @@ if [[ -f /usr/bin/X ]]; then
 	sudo rm /etc/xdg/autostart/lxterminal.desktop 2> /dev/null
 
 	mkdir -p ~/Desktop
-	# GSport:
-	if [[ -f /usr/bin/gsport ]]; then
-		echo -e "[Desktop Entry]\nName=GSport\nComment=Apple IIgs Emulator\nExec=lxterminal -e /usr/bin/gsport\nIcon=/usr/local/share/gsport32.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/share/raspi-ui-overrides/gsport.desktop > ~/Desktop/gsport.desktop
-	elif [[ -f /usr/local/bin/gsport ]]; then
-		echo -e "[Desktop Entry]\nName=GSport\nComment=Apple IIgs Emulator\nExec=lxterminal -e /usr/local/bin/gsport\nIcon=/usr/local/share/gsport32.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/share/raspi-ui-overrides/gsport.desktop > ~/Desktop/gsport.desktop
-	fi
-	if [[ ! -f /usr/local/share/gsport32.ico ]]; then
-		sudo wget -qO /usr/local/share/gsport32.ico "${a2cBinaryURL}/gsport/gsport32.ico"
-	fi
-	# LinApple:
-	if [[ -f /usr/local/bin/linapple ]]; then
-		echo -e "[Desktop Entry]\nName=LinApple\nComment=Apple IIe Emulator\nExec=lxterminal -e /usr/local/bin/linapple\nIcon=/usr/local/linapple/icon.bmp\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/share/raspi-ui-overrides/linapple.desktop > ~/Desktop/linapple.desktop
-	fi
 	# ADTPro Server:
 	if [[ -f /usr/local/bin/adtpro.sh ]]; then
 		echo -e "[Desktop Entry]\nName=ADTPro Server\nComment=Floppy Transfer Utility\nExec=/usr/local/bin/adtpro.sh\nIcon=/usr/local/adtpro/lib/ADTPro.ico\nTerminal=false\nType=Application\nCategories=AppleII\n" | sudo tee /usr/share/raspi-ui-overrides/adtproserver.desktop > ~/Desktop/adtproserver.desktop
