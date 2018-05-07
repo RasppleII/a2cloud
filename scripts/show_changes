@@ -1,17 +1,15 @@
 #! /bin/bash
 # vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
 
-# install.sh - a2cloud main installation script
+# show_changes - show a2cloud version differences
 #
 # To the extent possible under law, T. Joseph Carter and Ivan Drucker have
 # waived all copyright and related or neighboring rights to the a2cloud
 # scripts themselves.  Software used or installed by these scripts is subject
 # to other licenses.  This work is published from the United States.
 
-a2cloudVersion="2.9.0"  # Leave this quoted!
-
 # Find the path of our source directory
-a2cSource="$( dirname "${BASH_SOURCE[0]}" )"
+a2cSource="$( dirname "${BASH_SOURCE[0]}" )/.."
 pushd $a2cSource >/dev/null
 a2cSource="$PWD"
 popd >/dev/null
@@ -20,9 +18,15 @@ if [[ ! -f "$a2cSource/.a2cloud_source" ]]; then
 	exit 1
 fi
 
-"$a2cSource/scripts/show_changes"
+newVersion=$(grep '^a2cloudVersion' "$a2cSource/install.sh" | cut -d '"' -f 2)
 
-# Run the legacy setup script for anything not yet ported
-if [[ -e "${a2cSource}/setup/ivan.sh" ]]; then
-	"${a2cSource}/setup/ivan.sh" "$@"
+if [[ -f /usr/local/etc/A2CLOUD-version ]]; then
+	installedVersion="$(cat /usr/local/etc/A2CLOUD-version)"
+	if [[ $installedVersion != *.*.* ]]; then
+		installedVersion="${installedVersion:0:1}.${installedVersion:1:1}.${installedVersion:2}"
+	fi
 fi
+echo "a2cloud version available: $newVersion"
+echo "a2cloud version installed: ${installedVersion:-None}"
+
+# FIXME: Do something useful with a changelog perhaps?

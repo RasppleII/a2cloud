@@ -1,7 +1,9 @@
 #! /bin/bash
 # vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
 
+# FIXME: Remove this when convenient.
 version="2.9.0"
+
 adtProVersion="2.0.1"
 a2cBinaryURL="http://blocksfree.com/downloads"
 
@@ -39,15 +41,6 @@ if command -v systemctl > /dev/null && systemctl | grep -q '\-\.mount'; then
 elif [[ -f /etc/inittab ]]; then
 	isSysVInit=1
 fi
-
-if [[ -f /usr/local/etc/A2CLOUD-version ]]; then
-	installedVersion="$(cat /usr/local/etc/A2CLOUD-version)"
-	if [[ $installedVersion != *.*.* ]]; then
-		installedVersion="${installedVersion:0:1}.${installedVersion:1:1}.${installedVersion:2}"
-	fi
-fi
-echo "A2CLOUD version available: $version"
-echo "A2CLOUD version installed: ${installedVersion:-None}"
 
 ### A2CLOUD: Process command line args
 buildA2CloudDisk=
