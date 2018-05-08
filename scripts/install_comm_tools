@@ -152,50 +152,86 @@ install_telnet() {
 }
 
 install_oysttyer() {
+	rm_file() {
+		if [[ -f $1 ]]; then
+			echo "Removing $1"
+			sudo rm -f "$1"
+		fi
+	}
+
+	try_rmdir() {
+		if [[ -d $1 ]]; then
+			if sudo rmdir $1 &>/dev/null; then
+				echo "Removing directory $1"
+			else
+				echo "Cannot remove $1"
+			fi
+		fi
+	}
 	### CommTools: Install Oysttyer (formerly TTYtter)
 
 	# Do we need to check for the readline module here as well?
 	local perlVersion=$(perl -e 'print $^V' | cut -c 2-)
+
+	local oysttyerWork="$(mktemp -d /tmp/oysttyer.XXXXXXXXXXXX)"
+	pushd "$oysttyerWork" >/dev/null
 
 	# Remove old ttytter
 	# Previous versions of a2cloud symlinked ttytter to oysttyer.  I don't think
 	# we want to do that, because Debian won't in buster when we start using
 	# their oysttyer package.
 	if [[ -f /usr/local/bin/ttytter || -f /usr/local/share/perl/${perlVersion}/Term/ReadLine/TTYtter.pm ]]; then
-		echo "a2cloud: Removing ttytter in favor of oysttyer..."
+		echo "Removing ttytter in favor of oysttyer..."
 		sudo rm -f /usr/local/bin/ttytter
 	fi
 
+	# Now install the Debian's package
+	echo "Installing Debian's Term::ReadKey (libterm-readline-gnu-perl)..."
+	sudo apt-get -y install libterm-readline-gnu-perl
+
 	# Remove locally installed Term::ReadKey (libterm-readline-gnu-perl
 	if [[ -f /usr/local/man/man3/Term::ReadKey.3pm ]]; then
-		echo "a2cloud: Removing locally installed Term::ReadKey"
-		rm -f /usr/local/man/man3/Term::ReadKey.3pm
+		cat <<-EOF
+		You have a locally installed Term::ReadKey from an older version of a2cloud.
 
-		# Oh yeah, this could've wound up lots of places…
+		We will try to remove it, but locally installed perl modules are rather
+		difficult to completely remove.  What we cannot remove will not interfere
+		with a running system, but if you like a tidy system, you'll need to clean
+		up a few perl files yourself.
+
+		EOF
+		rm_file "/usr/local/man/man3/Term::ReadKey.3pm"
+
+		# Deleting perl modules properly is hard, next to impossible, and this
+		# could be in man places.  We'll do what we can.
 		for ver in 5.14.2 5.20.2 $perlVersion; do
 			for perlDir in perl arm-linux-gnueabihf/perl i686-linux-gnu/perl x86_64-linux-gnu/perl; do
 				if [[ -f /usr/local/lib/$perlDir/$ver/Term/ReadKey.pm ]]; then
-					rm -f /usr/local/lib/$perlDir/$ver/Term/ReadKey.pm
-					rm -f /usr/local/lib/$perlDir/$ver/perllocal.pod
-					rm -f /usr/local/lib/$perlDir/$ver/auto/Term/ReadKey/autosplit.ix
-					rm -f /usr/local/lib/$perlDir/$ver/auto/Term/ReadKey/ReadKey.so
-					rm -f /usr/local/lib/$perlDir/$ver/auto/Term/ReadKey/.packlist
+					rm_file "/usr/local/lib/$perlDir/$ver/Term/ReadKey.pm"
+					try_rmdir "/usr/local/lib/$perlDir/$ver/Term"
+					rm_file "/usr/local/lib/$perlDir/$ver/auto/Term/ReadKey/autosplit.ix"
+					rm_file "/usr/local/lib/$perlDir/$ver/auto/Term/ReadKey/ReadKey.so"
+					try_rmdir "/usr/local/lib/$perlDir/$ver/auto/Term/ReadKey"
+					try_rmdir "/usr/local/lib/$perlDir/$ver/auto/Term"
+					echo "Additional cleaning may be needed under:"
+					echo "  /usr/local/lib/$perlDir/$ver"
 				fi
 			done
 		done
 	fi
 
-	# Now install the Debian's package
-	echo "a2cloud: Installing Debian's Term::ReadKey (libterm-readline-gnu-perl)"
-	sudo apt-get -y install libterm-readline-gnu-perl
-	sudo apt-get -y clean
-
-	local oysttyerWork="$(mktemp -d /tmp/oysttyer.XXXXXXXXXXXX)"
-	pushd "$oysttyerWork" >/dev/null
-
-	# Install old TTYtter readline module (still used by oysttyer)
-	if [[ ! -f "/usr/local/share/perl/$perlVersion/Term/ReadLine/TTYtter.pm" ]]; then
-		echo "a2cloud: Installing Term::ReadLine::TTYtter for oysttyer"
+	# Old TTYtter author still maintains the readline module for oysttyer
+	echo "Installing Term::ReadLine::TTYtter..."
+	if sudo apt-get -y install libterm-readline-ttytter-perl; then
+		# We have a package now, so remove any locally installed version
+		if [[ -f /usr/local/share/perl/$perlVersion/Term/ReadLine/TTYtter.pm ]]; then
+			echo "Removing local Term::ReadLine::TTYtter in favor of the package we installed."
+			sudo rm -f "/usr/local/share/perl/$perlVersion/Term/ReadLine/readline_ttytter.pm"
+			sudo rm -f "/usr/local/share/perl/$perlVersion/Term/ReadLine/TTYtter.pm"
+		fi
+	else
+		# We haven't got a package, install it locally
+		echo "No package. That's all right, we'll install it locally..."
 
 		# We don't need to make anything for this, just copy the files
 		wget -O Term-ReadLine-TTYtter-1.4.tar.gz http://search.cpan.org/CPAN/authors/id/C/CK/CKAISER/Term-ReadLine-TTYtter-1.4.tar.gz
@@ -207,10 +243,20 @@ install_oysttyer() {
 	fi
 
 	# Actually install oysttyer now, if needed
-	if ! hash oysttyer 2>/dev/null; then
-		echo "a2cloud: Installing oysttyer..."
-		wget -qO- https://github.com/oysttyer/oysttyer/archive/2.7.2.tar.gz | sudo tar -zxP --transform 's|oysttyer-2.7.2/oysttyer.pl|/usr/local/bin/oysttyer|' oysttyer-2.7.2/oysttyer.pl
+	echo "Installing oysttyer..."
+	if sudo apt-get -y install oysttyer; then
+		if [[ -f /usr/local/bin/oysttyer ]]; then
+			echo "Removing local oysttyer in favor of the package we installed."
+			sudo rm -f /usr/local/bin/oysttyer
+		fi
+	else
+		echo "No package. That's all right, we'll install it locally..."
+		wget -O oysttyer-2.9.1.tar.gz https://github.com/oysttyer/oysttyer/archive/2.9.1.tar.gz
+		tar -zxf oysttyer-2.9.1.tar.gz
+		sudo install -m 755 -o root -g root oysttyer-2.9.1/oysttyer.pl /usr/local/bin/oysttyer
 	fi
+
+	sudo apt-get clean
 
 	popd >/dev/null
 	rm -rf "$oysttyerWork"
