@@ -1,0 +1,70 @@
+#! /bin/bash
+# vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
+
+# install_java - make sure we have java installed
+#
+# To the extent possible under law, T. Joseph Carter and Ivan Drucker have
+# waived all copyright and related or neighboring rights to the a2cloud
+# scripts themselves.  Software used or installed by these scripts is subject
+# to other licenses.  This work is published from the United States.
+
+# Find the path of our source directory
+a2cSource="$( dirname "${BASH_SOURCE[0]}" )/.."
+pushd $a2cSource >/dev/null
+a2cSource="$PWD"
+popd >/dev/null
+if [[ ! -f "$a2cSource/.a2cloud_source" ]]; then
+	printf "\na2cloud: cannot find a2cloud source directory in $a2cSource.\n\n"
+	exit 1
+fi
+
+# Make sure ras2_{os,arch} get set
+. "$a2cSource/scripts/system_ident" -q
+
+check_freespace() {
+	# we use df -k because its output works on Linux and BSD/Mac
+	freeSpace=$(df -k / | tail -1 | awk '{ print $4 }')
+	(( $freeSpace > 360000 ))
+	return $?
+}
+
+install_java() {
+	sudo apt-get update
+	if [[ $ras2_os == rpi-* ]]; then
+		sudo apt-get -y install oracle-java8-jdk
+	else
+		# Used to go out and find Oracle Java, but we don't need it.
+		sudo apt-get -y install default-jre
+	fi
+	sudo apt-get clean
+}
+
+if ! hash java 2>/dev/null; then
+	printf "\nJava is not installed"
+	if check_freespace; then
+		printf ", but we can install it.\n"
+
+		install_java
+	else
+		cat <<-EOF
+		 amd this script cannot continue.
+
+		You don't seem to have enough free space to install Java, which is
+		needed by several components we install (ADTPro and AppleCommander,
+		for example.)  On a Raspberry Pi, it is possible that you may simply
+		need to expand your filesystem to fill the SD card.  You can do that
+		by running "sudo raspi-config" and selecting the appropriate option.
+
+		If that's not the cause, you might investigate to see if you happen
+		to have unwanted large packages installed.  Some systems come loaded
+		with full desktop environments, development IDEs, or other large
+		packages or package groups you don't need.
+
+		Failing all of that, you can figure out how to get java installed and
+		into your default path and set JAVA_HOME.  If we find java in your
+		path this script will assume that we should simply use that.  We do
+		recommend Java 8 or above.
+		EOF
+		exit 1
+	fi
+fi
