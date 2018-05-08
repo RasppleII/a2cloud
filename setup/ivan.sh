@@ -320,22 +320,8 @@ fi
 
 if [[ $installADTPro ]]; then
 
-	### ADTPro: Make sure we have enough free space
-	freeSpace=$(df / | tail -1 | awk '{ print $4 }')
-	java -version &> /dev/null
-	if (( $? == 127 && $freeSpace < 350000 )); then
-		echo "You do not have enough free space to install"
-		echo "Java, which is needed for ADTPro server."
-		if [[ $isRpi ]]; then
-			echo "If you haven't"
-			echo "yet expanded the file system to use the full capacity"
-			echo "of your SD card, type \"sudo raspi-config\" and do that."
-		else
-			echo "Free up some space."
-		fi
-		echo "Then try this installer again."
-		echo
-		[[ $0 == "-bash" ]] && return 3 || exit 3
+	if ! "$a2cSource/scripts/install_java"; then
+		exit 1
 	fi
 
 	### ADTPro: Install X and LXDE
@@ -356,38 +342,6 @@ if [[ $installADTPro ]]; then
 		sudo update-grub
 	else
 		echo "A2CLOUD: can't disable GUI at startup: unrecognized init system."
-	fi
-
-	# install or update java
-	javaVersion=$(java -version 2>&1)
-	if [[ ( $? -eq 127 ) || ( $(head -1 <<< "$javaVersion" | cut -f 2 -d '.') -lt 8 ) ]]; then
-		echo "A2CLOUD: Installing Java (takes a while)..."
-		if [[ $isRpi ]]; then
-			if [[ $(apt-cache search '^oracle-java8-jdk$') ]]; then
-				sudo apt-get -y install oracle-java8-jdk
-			else
-				sudo apt-get -y install oracle-java7-jdk
-			fi
-			sudo apt-get -y clean
-		else
-			# from http://www.webupd8.org/2012/06/how-to-install-oracle-java-7-in-debian.html
-			if ! grep -q webupd8team /etc/apt/sources.list; then
-				{
-					echo;
-					echo "# Oracle Java JDK";
-					echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu precise main";
-					echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu precise main";
-				} | sudo tee -a /etc/apt/sources.list > /dev/null
-			fi
-			sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886
-			sudo apt-get -y update
-			echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
-			sudo apt-get -y install oracle-java8-installer
-			sudo apt-get -y clean
-		fi
-		source /usr/local/etc/a2cloudrc
-	else
-		echo "A2CLOUD: Java is already installed."
 	fi
 
 	updateADTPro=
