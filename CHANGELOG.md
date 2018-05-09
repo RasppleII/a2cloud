@@ -10,8 +10,78 @@ it no longer does.
 
 ## [Unreleased]
 
-  * [78d247a] *.txt: Trailing whitespace removal
-  * [1824c4a] Re-indent scripts (tabs)
+### Added
+
+- Installation run from source tree (or git repo) no longer downloads any
+  part of the installation from the internet since you've already got it.
+
+- Created new scripts for a2cloud-setup and a2cloud-update to use that
+  actually download the source tree and install from that.  This avoids
+  some potential bugs and better security and integrity checks later.
+
+- New scripts in scripts/ you can run separately from the full installer,
+  install_archive_tools, install_comm_tools, and install_emulators. There
+  are others too, but these are the ones you might want to be able to run
+  yourself.
+
+- lftp, an advanced ftp client with lots of power, tab-completion, etc.
+  Much more user-friendly than the basic ftp client while maintaining the
+  command line interface.  Supports mirroring, if you want that.
+
+- mc (Midnight Commander), a Norton Commander style file manager.  It too
+  has its own FTP interface capability and might be considered a possible
+  alternative to cftp, assuming you become comfortable with using mc for
+  file management tasks.
+
+### Fixed
+
+- Actually install unzip as prerequisite for undoit.
+
+- Correct typo in a2chat
+
+- No longer disables ::1 for exim.  Having that used to cause an error, so
+  we'd modified your configuration to remove the use of IPv6.  We don't
+  undo that if it was done in the past, but a new install won't do it.
+
+### Changed
+
+- Unexpectedly large version bump.  Because the last released version was
+  1.9.x, we haven't really got version-space for pre-releases, so we've
+  bumped the pre-release tree to version 2.9.0 to give us plenty of room
+  for pre-releases before a major version bump.
+
+- Oysttyer version we install is now 2.9.1.
+
+- Modified the format of the this changelog ultimately to be hopefully
+  more user-friendly.
+
+- Ivan Drucker has agreed to allow his scripts and future work to be
+  released under this more mainstream alternative to the "WTFPL".  Less
+  "expressive", but more legally correct in countries without explicit
+  support for public domain or a sense of humor.  ;)
+
+- On desktop Debian systems, we now use default-jre instead of Oracle.
+  For now we're still using Oracle on RPi, but that may soon change.
+
+### Removed
+
+- cftp has been removed.  It was always highly-buggy alpha software and
+  it didn't do much.  If you want that kind of interface with some more
+  maturity, connect to your ftp server with lynx.  Or see above.
+
+- The ttytter command is gone.  TTYtter is abandoned upstream, but the
+  developer's allowed others to take up development under a new name.
+  Oysttyer may already be installed on your system and we've already been
+  using it, just continuing to call it tttytter.
+
+- The A2CLOUD_SCRIPT_URL and A2CLOUD_BINARY_URL environment variables,
+  which probably nobody else was using since they were kind of only for
+  a2cloud developers anyway, are gone.  Just run scripts from the source
+  tree you're working on now.
+
+- The raspbian-update script is gone.  Also gone are the aliases for
+  raspi-config, appleiipi-update, and rasppleii-update.  (FIXME: a2server
+  has debupdate as a replacement.  Do we want it in a2cloud?)
 
 ## [1.9.0] - 2016-07-23
 
