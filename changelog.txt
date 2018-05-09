@@ -1,28 +1,33 @@
-a2cloud (1.9.1) UNRELEASED; urgency=medium
+# Changelog
 
-  [ Joseph Carter ]
+Notable changes to a2cloud will be documented here.  This document is for
+users, rather than developers.  If you want an immutable history of all
+changes made, you can follow git history so far as it goes and we'll try
+to preserve more detail from the time before as we may.  We will try to
+update older entries to reflect changes that have been reverted, please
+file an issue if you notice something the changelog says should work, and
+it no longer does.
+
+## [Unreleased]
+
   * [78d247a] *.txt: Trailing whitespace removal
   * [1824c4a] Re-indent scripts (tabs)
 
- -- T. Joseph Carter <tjcarter@rem>  Tue, 25 Oct 2016 10:40:29 -0700
+## [1.9.0] - 2016-07-23
 
-a2cloud (1.9.0) stable; urgency=low
-
-  [ Ivan Drucker ]
   * [40b55a5] fix motd, and icon creation error messages in setup
   * [83a40d7] make "baud" command compatible with systemd
 
- -- Ivan Drucker <ivan@ivanx.com>  Sat, 23 Jul 2016 06:59:22 -0500
+## [1.8.3] - 2016-01-19
 
-a2cloud (1.8.3) oldstable; urgency=low
-
+### Added
   * First release from GitHub version
 
-  [ Ivan Drucker ]
+### Changes by Ivan Drucker
   * fix bug where language isn't properly selected for A2 login
   * download from Apple first, then Internet Archive as fallback
 
-  [ Joseph Carter ]
+### Changes by Joseph Carter
   * Archived Ivan Drucker's A2CLOUD site in source tree
   * As this package will be native package, convert its changelog to Debian
     style.  Developers may want to install the devscripts package and have a
@@ -37,20 +42,16 @@ a2cloud (1.8.3) oldstable; urgency=low
   * setup.txt is now 7-bit clean (the only reason it wasn't is the extended
     changelog at the bottom)
 
-  [1.8.2]
+### Changes from 1.8.2
   * download from Internet Archive
 
- -- Joseph Carter <tjcarter@spiritsubstance.com>  Tue, 19 Jan 2016 05:08:01 -0800
-
-a2cloud (1.8.1) stable; urgency=low
+## [1.8.1] - 2015-05-05
 
   * ADTPro 2.0.1
   * Apple II Pi client 1.5
   * set JAVA_HOME correctly for Java 8 (Pi, webupd8, Ubuntu for Pi 2B)
 
- -- Ivan Drucker <ivan@ivanx.com>  Tue, 05 May 2015 00:00:00 +0000
-
-a2cloud (1.8.0) stable; urgency=low
+## [1.8.0] - 2015-03-17
 
   * compatible with every Raspberry Pi, including Raspberry Pi 2 Model B
   * GSport installed for non-Raspberry Pi computers, with option for
@@ -128,21 +129,14 @@ a2cloud (1.8.0) stable; urgency=low
     http://www.raspberrypi.org/forums/viewtopic.php?t=98617 for details)
   * see if uninstalling vbox additions is really necessary (nope)
 
-
-
-
- -- Ivan Drucker <ivan@ivanx.com>  Tue, 17 Mar 2015 00:00:00 +0000
-
-a2cloud (1.7.2) stable; urgency=low
+## [1.7.2] - 2015-02-07
 
   * supports Raspberry Pi Model A and A+ (and Pi 2 Model B)
   * manually triggers udev rules during startup if ttyusbhandler script didn't
     execute (resolves issues with Raspbian 2015-01-31/kernel 3.18)
   * doesn't provide Java space warning if java is already installed
 
- -- Ivan Drucker <ivan@ivanx.com>  Sat, 07 Feb 2015 00:00:00 +0000
-
-a2cloud (1.7.1) stable; urgency=low
+## [1.7.1] - 2014-08-11
 
   * A2CLOUD is no longer “beta” on non-Raspberry Pi computers
   * A2CLOUD includes KEGS and Linapple on debian_x86
@@ -158,15 +152,11 @@ a2cloud (1.7.1) stable; urgency=low
   * LXDE terminal window now in global autostart (opens for any user)
   * LXDE desktop defaults to 800x600 if running in VirtualBox VM
 
- -- Ivan Drucker <ivan@ivanx.com>  Mon, 11 Aug 2014 00:00:00 +0000
-
-a2cloud (1.7.0) stable; urgency=low
+## [1.7.0] - 2014-08-02
 
   * a2cloud-setup installs Java 8 if not already installed
 
- -- Ivan Drucker <ivan@ivanx.com>  Sat, 02 Aug 2014 00:00:00 +0000
-
-a2cloud (1.6.9) stable; urgency=low
+## [1.6.9] - 2014-07-24
 
   * ADTPro 2.0.0 (quicker and more reliable transfer; selectable filenames from
     list)
@@ -174,17 +164,13 @@ a2cloud (1.6.9) stable; urgency=low
   * tested working on Raspberry Pi Model B+ (use USB ports closest to Ethernet
     jack for ttyUSBlower and ttyUSBupper)
 
- -- Ivan Drucker <ivan@ivanx.com>  Thu, 24 Jul 2014 00:00:00 +0000
-
-a2cloud (1.6.8) stable; urgency=low
+## [1.6.8] - 2014-04-07
 
   * ADTPro 1.3.0
   * tests for adtpro existence with either adtpro.sh or ADTPro.html
   * TTYtter installs properly on non-Pi systems
 
- -- Ivan Drucker <ivan@ivanx.com>  Mon, 07 Apr 2014 00:00:00 +0000
-
-a2cloud (1.6.7) stable; urgency=low
+## [1.6.7] - 2014-02-19
 
   * cppo installed from a2cloud directory on web server (a2server has symlink)
   * fixed cppo -e bug that always created a resource fork file even if there
@@ -205,9 +191,7 @@ a2cloud (1.6.7) stable; urgency=low
   * renamed MACRO files on server to be .txt and moved to files
   * added screen to a2cloud-help
 
- -- Ivan Drucker <ivan@ivanx.com>  Mon, 19 Nov 2014 00:00:00 +0000
-
-a2cloud (1.6.6) stable; urgency=low
+## [1.6.6] - 2014-02-17
 
   * beta support for Debian and Ubuntu Linux on non-Pi machines
     * compiles binaries rather than downloads if not running on Pi
@@ -229,17 +213,13 @@ a2cloud (1.6.6) stable; urgency=low
   * setup exits properly whether run via source or shell
   * moved cftp to files
 
- -- Ivan Drucker <ivan@ivanx.com>  Sat, 17 Feb 2014 00:00:00 +0000
-
-a2cloud (1.6.5) stable; urgency=low
+## [1.6.5] - 2014-02-05
 
   * can use "term mono" and "term color" instead of "term vt100" and "term
     pcansi", "none" also works
   * minor reorganization of configuration of a2cloudrc and screenrc
 
- -- Ivan Drucker <ivan@ivanx.com>  Wed, 05 Feb 2014 00:00:00 +0000
-
-a2cloud (1.6.4) stable; urgency=low
+## [1.6.4] - 2014-01-31
 
   * support for "screen" command to allow switching between multiple terminals
     on Apple II
@@ -247,9 +227,7 @@ a2cloud (1.6.4) stable; urgency=low
   * bash.bashrc now calls /usr/local/etc/a2cloudrc, which in turn calls
     a2cloud-aliases
 
- -- Ivan Drucker <ivan@ivanx.com>  Fri, 31 Jan 2014 00:00:00 +0000
-
-a2cloud (1.6.3) stable; urgency=low
+## [1.6.3] - 2014-01-23
 
   * Set TTYtter to always use -ssl mode, which is required by Twitter after
     14-Jan-14.
@@ -259,9 +237,7 @@ a2cloud (1.6.3) stable; urgency=low
   * Provided TTYtter readline module for enhanced input with -readline option
   * Added "appleiipi-update" command
 
- -- Ivan Drucker <ivan@ivanx.com>  Wed, 23 Jan 2014 00:00:00 +0000
-
-a2cloud (1.6.2) stable; urgency=low
+## [1.6.2 - 2014-01-19
 
   * Improved display of non-ASCII characters in Apple II terminal emulation
     programs by using ISO-8859 charset for serial port instead of UTF-8
@@ -276,19 +252,15 @@ a2cloud (1.6.2) stable; urgency=low
     pieces
   * revised intrudiction info in setup script
 
- -- Ivan Drucker <ivan@ivanx.com>  Sun, 19 Jan 2014 00:00:00 +0000
-
-a2cloud (1.6.1) stable; urgency=low
+## [1.6.1] - 2014-01-14
 
   * Added "telnet" and "ttytter" (Twitter client)
   * fix for network boot failure when set up under v1.6
   * prevents exim4 error messages after Tin installation
 
- -- Ivan Drucker <ivan@ivanx.com>  Tue, 14 Jan 2014 00:00:00 +0000
+## [1.6.0] - 2013-12-31
 
-a2cloud (1.6) stable; urgency=low
-
-  [1.6.0]
+### Changed in 1.6.0
   * include check for ADTPro updates
   * remove hardcoding of ADTPro version in favor of script variable
   * asks for prodos volume name for new disk image; 8192 max
@@ -305,7 +277,7 @@ a2cloud (1.6) stable; urgency=low
     * con: need to type vsdsync after changing active virtual drive image
       directly on the Pi
 
-  [1.5.3]
+### Changed in 1.5.3
   * gets motd from web
   * sets password to apple2
   * if A2SERVER is installed, shares the ADTPro disks folder as ADTDISKS on the
@@ -315,23 +287,19 @@ a2cloud (1.6) stable; urgency=low
     machines)
   * include backup server for shrinkit
 
- -- Ivan Drucker <ivan@ivanx.com>  Tue, 31 Dec 2013 00:00:00 +0000
+## [1.5.2] - 2013-12-22
 
-a2cloud (1.5.2) stable; urgency=low
-
-  [1.5.2]
+### Changed in 1.5.2
   * Apple II Pi is now installed with GSport emulator and “apple2user” packages
   * speedier install by downloading A2CLOUD disk images instead of building them
   * cleans up after installation
   * misc bug fixes
   * -h option for installer help
 
-  [1.5.1]
+### Changed in 1.5.1
   * added "dos2pro" command
 
- -- Ivan Drucker <ivan@ivanx.com>  Sun, 22 Dec 2013 00:00:00 +0000
-
-a2cloud (1.5) stable; urgency=low
+## [1.5] - 2013-12-01
 
   * Adds IRC and newsreader clients (Irssi and Tin) and, with shortcuts for
     Apple II community ("a2chat" and "a2news" commands)
@@ -339,14 +307,16 @@ a2cloud (1.5) stable; urgency=low
   * installs Apple II Pi
   * easy installation via Raspple II
 
- -- Ivan Drucker <ivan@ivanx.com>  Sun, 01 Dec 2013 00:00:00 +0000
+## [1.2.3] - 2013-11-30
 
-a2cloud (1.2.3) stable; urgency=low
+### Changed after 1.2.3
+  * Date is approximated in changelog format conversion
+  * Rewrote entry to combine multiple different changelogs
 
-  [1.2.3]
+### Changed in 1.2.3
   * A2PI client version 1.3 added to A2CLOUD disk
 
-  [1.2.2]
+### Changed in 1.2.2
   * download pre-compiled unar/lsar, nulib2, and cftp if possible
   * install only runtime dependencies for these tools if compiling them is
     unnecessary
@@ -356,21 +326,11 @@ a2cloud (1.2.3) stable; urgency=low
     computer
   * adds DSK2FILE image utility to A2CLOUD disk
 
-  [Joseph Carter]
-  * Date is approximated in changelog format conversion
-  * Rewrote entry to combine multiple different changelogs
-
- -- Ivan Drucker <ivan@ivanx.com>  Sat, 30 Nov 2013 00:00:00 +0000
-
-a2cloud (1.0) stable; urgency=low
+## [1.0] - 2013-09-02
 
   * first proper release with full documentation, bug fixes, and demo video
 
- -- Ivan Drucker <ivan@ivanx.com>  Mon, 02 Sep 2013 00:00:00 +0000
-
-a2cloud (0.99beta) stable; urgency=low
+## [0.99beta] - 2013-07-27
 
   * internet access and virtual drives for any Apple II via a Raspberry Pi;
     introduced at KansasFest 2013
-
- -- Ivan Drucker <ivan@ivanx.com>  Sat, 27 Jul 2013 00:00:00 +0000
