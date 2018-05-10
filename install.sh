@@ -10,6 +10,8 @@
 
 a2cloudVersion="2.9.0"  # Leave this quoted!
 
+noPicoPkg=
+
 # Find the path of our source directory
 a2cSource="$( dirname "${BASH_SOURCE[0]}" )"
 pushd $a2cSource >/dev/null
@@ -20,6 +22,20 @@ if [[ ! -f "$a2cSource/.a2cloud_source" ]]; then
 	exit 1
 fi
 
+process_args() {
+	while [[ $1 ]]; do
+		if [[ $1 == "-c" ]]; then
+			shift
+			noPicoPkg=1
+		else
+			shift
+		fi
+	done
+}
+
+process_args "$@"
+
+# FIXME: Show version, changes, config, allow reconfig, etc…
 "$a2cSource/scripts/show_changes"
 
 # Run the legacy setup script for anything not yet ported
