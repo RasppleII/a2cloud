@@ -38,6 +38,10 @@ process_args "$@"
 # FIXME: Show version, changes, config, allow reconfig, etc…
 "$a2cSource/scripts/show_changes"
 
+# Install Archive Tools
+# FIXME: Interim refactoring
+. "$a2cSource/scripts/install_archive_tools" ${noPicoPkg:+-c}
+
 # Run the legacy setup script for anything not yet ported
 if [[ -e "${a2cSource}/setup/ivan.sh" ]]; then
 	"${a2cSource}/setup/ivan.sh" "$@"

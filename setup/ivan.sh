@@ -655,10 +655,6 @@ fi
 # FIXME: Interim refactoring
 . "$a2cSource/scripts/install_emulators" ${noPicoPkg:+-c} ${slot6:+-6}
 
-# Install Archive Tools
-# FIXME: Interim refactoring
-. "$a2cSource/scripts/install_archive_tools" ${noPicoPkg:+-c}
-
 # add shortcuts to LXDE desktop
 if [[ -f /usr/bin/X ]]; then
 
