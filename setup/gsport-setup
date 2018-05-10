@@ -3,6 +3,39 @@
 
 # to do: replace Spectrum Deluxe (2.5.3) with Spectrum Gold (2.5.4)
 
+# from system_ident
+if [[ -z $ras2_os || -z $ras2_arch ]]; then
+	ras2_os="unknown"
+	if hash lsb_release 2>/dev/null; then
+		if [[ -f /usr/bin/raspi-config ]]; then
+			ras2_os="rpi-$(lsb_release -cs)"
+		else
+			case "$(lsb_release -is)" in
+				Debian)
+					ras2_os="debian-$(lsb_release -cs)"
+					;;
+				*)
+					printf "\nUnknown OS with lsb_release\n"
+					lsb_release -a
+					;;
+			esac
+		fi
+	else
+		uname_s="$(uname -s)"
+		case "$uname_s" in
+			Darwin)
+				ras2_os="$uname_s"
+				;;
+			*)
+				printf "\nUnknown OS with uname -s\n$uname_s\n"
+				;;
+		esac
+	fi
+	ras2_arch="$(uname -m)"
+	export ras2_os ras2_arch
+fi
+
+
 readcharHex () {
 # read one character from file & convert to corresponding hex value
 # arg1: filename
@@ -250,14 +283,6 @@ if ! hash unar 2> /dev/null; then
 		sudo apt-get clean
 	fi
 
-	if ! hash unar 2> /dev/null; then
-		if [[ $downloadBinaries && "$(apt-cache search '^libgnustep-base1.22$')" ]]; then
-			# Dependencies: for unar
-			sudo apt-get -y install libgnustep-base1.22
-			sudo apt-get clean
-			wget -qO- "${a2cBinaryURL}/picopkg/unar-${arch}_${debianName}.tgz" | sudo tar Pzx &> /dev/null
-		fi
-
 		# If all else fails, compile from source.
 
 		if ! hash unar 2> /dev/null; then
@@ -303,7 +328,10 @@ if ! hash nulib2 2> /dev/null; then
 	cd $tempDir
 	if [[ $downloadBinaries ]]; then
 		### ArchiveTools: Install nulib2 binaries
-		wget -qO- "${a2cBinaryURL}/picopkg/nulib2-${arch}_${debianName}.tgz" | sudo tar Pzx
+		wget -q "${a2cBinaryURL}/picopkg/nulib2-${ras2_os}_${ras2_arch}.tgz"
+		if [[ -f "nulib2-${ras2_os}_${ras2_arch}.tgz" ]]; then
+			sudo tar Pzxf "nulib2-${ras2_os}_${ras2_arch}.tgz"
+		fi
 	fi
 
 	if ! hash nulib2 2> /dev/null; then
