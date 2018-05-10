@@ -91,16 +91,9 @@ while [[ $1 ]]; do
 done
 
 echo
-echo "Your $fullme will be set up for A2CLOUD, providing you"
-echo "  with mass storage and online access for your Apple II!"
-echo
-echo "If you already have A2CLOUD installed, you will be updated to the"
-echo "  latest version. Check out http://ivanx.com/a2cloud for details."
-echo
-echo "Full installation may take an hour or longer. Updates are usually"
-echo "  much quicker. Type 'a2cloud-setup -h' for installation options."
-echo
-echo "Some actions will be performed as the root user."
+echo "The installation is now inside of ivan.sh. If you haven't passed"
+echo "-y to install.sh, you can stop the installation here if you're"
+echo "just testing stuff outside of ivan.sh."
 if [[ ! $autoAnswerYes ]]; then
 	echo
 	echo -n "Continue? "

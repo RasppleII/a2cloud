@@ -11,6 +11,7 @@
 a2cloudVersion="2.9.0"  # Leave this quoted!
 
 noPicoPkg=
+autoAnswerYes=
 
 # Find the path of our source directory
 a2cSource="$( dirname "${BASH_SOURCE[0]}" )"
@@ -26,7 +27,10 @@ process_args() {
 	while [[ $1 ]]; do
 		if [[ $1 == "-c" ]]; then
 			shift
-			noPicoPkg=1
+			noPicoPkg="-c"
+		elif [[ $1 == "-y" ]]; then
+			shift
+			autoAnswerYes="-y"
 		else
 			shift
 		fi
@@ -37,10 +41,34 @@ process_args "$@"
 
 # FIXME: Show version, changes, config, allow reconfig, etc…
 "$a2cSource/scripts/show_changes"
+cat <<EOF
+
+Your system will be set up for a2cloud, providing you with
+mass storage and online access for your Apple II!
+
+If a2cloud is already installed, it will be upgraded to the
+latest version.  It would sure be handy if we had an up to
+date website to send you to for details.  You should harass
+iKarith about that if you haven't recently.
+
+A full installation could take quite awhile on very low-end
+systems like the Raspberry Pi Zero.
+
+Also, some actions will need to be performed as the root
+(administrator) user.  We are assuming you have access to the
+sudo command for that.
+EOF
+if [[ ! $autoAnswerYes ]]; then
+	printf "\nContinue? "
+	read
+	if [[ ${REPLY:0:1} != "Y" && ${REPLY:0:1} != "y" ]]; then
+		[[ $0 == "-bash" ]] && return 2 || exit 2
+	fi
+fi
 
 # Install Archive Tools
 # FIXME: Interim refactoring
-. "$a2cSource/scripts/install_archive_tools" ${noPicoPkg:+-c}
+. "$a2cSource/scripts/install_archive_tools" $noPicoPkg
 
 # Run the legacy setup script for anything not yet ported
 if [[ -e "${a2cSource}/setup/ivan.sh" ]]; then
