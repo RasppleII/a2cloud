@@ -67,7 +67,7 @@ GSHD=/usr/local/share/gsdisks/gsoshd.hdv
 
 
 
-ttytter () { ( ansi=; seven=;  [[ $(grep ttyUSB <<< $myTTY) || $(grep ttyAMA <<< $myTTY) ]] && { seven="-seven"; [[ $TERM=="ansi" || $TERM=="pcansi" ]] && ansi="-ansi"; }; [[ -f /usr/bin/ttytter ]] && /usr/bin/ttytter -ssl $seven $ansi $@ || /usr/local/bin/ttytter -ssl $seven $ansi $@ ); }
+oysttyer () { ( ansi=; seven=;  [[ $(grep ttyUSB <<< $myTTY) || $(grep ttyAMA <<< $myTTY) ]] && { seven="-seven"; [[ $TERM=="ansi" || $TERM=="pcansi" ]] && ansi="-ansi"; }; [[ -f /usr/bin/oysttyer ]] && /usr/bin/oysttyer -ssl $seven $ansi $@ || /usr/local/bin/oysttyer -ssl $seven $ansi $@ ); }
 
 
 alias raspple-update='rasppleii-update'

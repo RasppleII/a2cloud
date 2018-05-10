@@ -67,7 +67,7 @@ wget : download a single URL from an FTP or web site
 irssi : IRC chat (general purpose)
 a2chat : IRC chat (automatically opens to Apple II channel)
 a2news : read and post on Usenet discussions (default Apple II topics)
-ttytter : tweet like there's no tomorrow
+oysttyer : tweet like there's no tomorrow
 
  emulators:
 gsport : GSport Apple IIgs emulator
