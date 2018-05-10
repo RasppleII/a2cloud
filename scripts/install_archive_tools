@@ -90,52 +90,33 @@ install_shk2image() {
 }
 
 install_unar() {
+	# Remove locally installed unar if found
+	if [[ -f /usr/local/bin/unar ]]; then
+		echo "Removing local unar in favor of the system package"
+		sudo rm -f /usr/local/bin/lsar
+		sudo rm -f /usr/local/bin/unar
+		sudo rm -f /usr/local/man/man1/lsar.1
+		sudo rm -f /usr/local/man/man1/unar.1
+	fi
+
 	# http://wakaba.c3.cx/s/apps/unarchiver.html
 	if ! hash unar 2> /dev/null; then
-
-		### ArchiveTools: Install unar package
-		echo "A2CLOUD: Installing The Unarchiver..."
-
-		# jessie and later: Just use the unar package
+		echo "a2cloud: Installing unar (The Unarchiver)..."
 		sudo apt-get -y install unar
 		sudo apt-get clean
-
-		# If all else fails, compile from source.
-		if ! hash unar 2> /dev/null; then
-			# Dependencies: build-deps for unar
-			sudo apt-get -y install build-essential libgnustep-base-dev libz-dev libbz2-dev libssl-dev libicu-dev unzip
-			sudo apt-get clean
-
-			local unarWork="$(mktemp -d /tmp/unar.XXXXXXXXXXXX)"
-			pushd "$unarWork" >/dev/null
-			if [[ $useExternalURL ]]; then
-				wget -O unar-1.8.1.zip https://github.com/incbee/Unarchiver/archive/unar-1.8.1.zip
-				unzip -o unar-1.8.1.zip &> /dev/null
-			fi
-			if [ ! -d *Unarchiver*/XADMaster ]; then # need single bracket for glob
-				wget -O unar-1.8.1.zip "${a2cBinaryURL}/source/unar-1.8.1.zip"
-				unzip -o unar-1.8.1.zip &> /dev/null
-			fi
-			cd *Unarchiver*/XADMaster
-			make -f Makefile.linux
-			sudo mv lsar unar /usr/local/bin
-			cd ../Extra
-			sudo mkdir -p /usr/local/man/man1
-			sudo mv lsar.1 unar.1 /usr/local/man/man1
-			popd >/dev/null
-			rm -rf "$unarWork"
-			sudo mandb &> /dev/null
-		fi
 	else
-		echo "A2CLOUD: The Unarchiver has already been installed."
+		echo "a2cloud: unar has already been installed."
 	fi
 }
 
 
 noPicoPkg=
-if [[ $1 == -c ]]; then
-	noPicoPkg=1
-fi
+while [[ $1 ]]; do
+	if [[ $1 == -c ]]; then
+		noPicoPkg=1
+	fi
+	shift
+done
 install_nulib2
 install_sciibin
 install_shk2image
