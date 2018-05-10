@@ -300,15 +300,6 @@ else
 	echo "A2CLOUD: avahi-daemon (mDNS) is already installed."
 fi
 
-### A2CLOUD: Install "at"
-if ! hash at 2> /dev/null; then
-	echo 'A2CLOUD: Installing "at"...'
-	sudo apt-get -y install at
-	sudo apt-get clean
-else
-	echo 'A2CLOUD: "at" is already installed.'
-fi
-
 ### A2CLOUD: Install xdg-utils (FreeDesktop menus/icon tools)
 if ! hash xdg-desktop-menu 2> /dev/null; then
 	echo "A2CLOUD: Installing xdg-utils..."
