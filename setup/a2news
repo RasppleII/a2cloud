@@ -1,6 +1,13 @@
 #! /bin/bash
 # vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
 
+# a2news - a2cloud nntp client wrapper
+#
+# To the extent possible under law, T. Joseph Carter and Ivan Drucker have
+# waived all copyright and related or neighboring rights to the a2cloud
+# scripts themselves.  Software used or installed by these scripts is subject
+# to other licenses.  This work is published from the United States.
+
 defaultNNTP="news.aioe.org"
 defaultGroups="comp.emulators.apple2:\ncomp.sys.apple2:\ncomp.sys.apple2.comm:\ncomp.sys.apple2.marketplace:\ncomp.sys.apple2.programmer:\ncomp.sys.apple2.usergroups:"
 

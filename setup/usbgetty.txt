@@ -1,6 +1,13 @@
 #! /bin/bash
 # vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
 
+# usbgetty.sh - a2cloud script to start a getty on a USB serial devie (to be replaced.)
+#
+# To the extent possible under law, T. Joseph Carter and Ivan Drucker have
+# waived all copyright and related or neighboring rights to the a2cloud
+# scripts themselves.  Software used or installed by these scripts is subject
+# to other licenses.  This work is published from the United States.
+
 ttyUSB=
 
 pkill -f "sleep 86399"

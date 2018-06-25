@@ -1,6 +1,13 @@
 #! /bin/bash
 # vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
 
+# ivan.sh - a2cloud legacy installation script (to be removed)
+#
+# To the extent possible under law, T. Joseph Carter and Ivan Drucker have
+# waived all copyright and related or neighboring rights to the a2cloud
+# scripts themselves.  Software used or installed by these scripts is subject
+# to other licenses.  This work is published from the United States.
+
 # FIXME: Remove this when convenient.
 version="2.9.0"
 

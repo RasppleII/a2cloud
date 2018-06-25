@@ -1,6 +1,17 @@
 #! /bin/bash
 # vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
 
+# adtpro.sh - a2cloud wrapper for adtpro
+#
+# To the extent possible under law, T. Joseph Carter and Ivan Drucker have
+# waived all copyright and related or neighboring rights to the a2cloud
+# scripts themselves.  Software used or installed by these scripts is subject
+# to other licenses.  This work is published from the United States.
+
+# This script may have some common history with the similar script found in
+# ADTPro's source tree.  The original may have been written by David Schmidt,
+# and we should check on that.
+
 # ADTPro - *nix startup shell script
 #
 # Note:

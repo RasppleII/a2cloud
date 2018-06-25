@@ -56,9 +56,10 @@ it no longer does.
   more user-friendly.
 
 - Ivan Drucker has agreed to allow his scripts and future work to be
-  released under this more mainstream alternative to the "WTFPL".  Less
-  "expressive", but more legally correct in countries without explicit
-  support for public domain or a sense of humor.  ;)
+  released under the CC0 Public Domain release.  Previously his scripts were
+  under the "WTFPL".  Creative Commons is less "expressive", but more legally
+  correct in countries without explicit support for public domain or a sense
+  of humor.  ;)
 
 - On desktop Debian systems, we now use default-jre instead of Oracle.
   For now we're still using Oracle on RPi, but that may soon change.
