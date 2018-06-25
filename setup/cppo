@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 # vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=python:
 
+# cppu - a simple tool to list/extract Apple II archives and disk images
+#
+# To the extent possible under law, T. Joseph Carter and Ivan Drucker have
+# waived all copyright and related or neighboring rights to the a2cloud
+# scripts themselves.  Software used or installed by these scripts is subject
+# to other licenses.  This work is published from the United States.
+
+
 """cppo: Copy/catalog files from a ProDOS/DOS 3.3/ShrinkIt image/archive.
 
 copy all files: cppo [options] imagefile target_directory

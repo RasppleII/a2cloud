@@ -1,5 +1,13 @@
 #! /bin/bash
 # vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
+
+# a2cloud-alieases - User-installed command aliases for bash
+#
+# To the extent possible under law, T. Joseph Carter and Ivan Drucker have
+# waived all copyright and related or neighboring rights to the a2cloud
+# scripts themselves.  Software used or installed by these scripts is subject
+# to other licenses.  This work is published from the United States.
+
 alias a2cloud-setup='wget -qO /tmp/a2cloud-setup ivanx.com/a2cloud/setup/; source /tmp/a2cloud-setup'
 alias a2cloud-help='(IFS=""; while read thisLine; do [[ ${#thisLine} -eq 0 ]] && echo || echo "$(tput bold)${thisLine%% *}$(tput sgr0) ${thisLine#* }"; done < /usr/local/etc/a2cloud-help.txt | more)'
 alias a2cloud-version='cat /usr/local/etc/A2CLOUD-version'

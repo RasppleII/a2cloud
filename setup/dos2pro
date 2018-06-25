@@ -1,6 +1,13 @@
 #! /bin/bash
 # vim: set tabstop=4 shiftwidth=4 noexpandtab filetype=sh:
 
+# dos2pro - extract files from DOS 3.3 image and convert to ProDOS
+#
+# To the extent possible under law, T. Joseph Carter and Ivan Drucker have
+# waived all copyright and related or neighboring rights to the a2cloud
+# scripts themselves.  Software used or installed by these scripts is subject
+# to other licenses.  This work is published from the United States.
+
 readcharDec () {
 # read one character from file & convert to equivalent decimal value
 # arg1: filename
