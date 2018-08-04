@@ -10,6 +10,11 @@
 
 a2cloudVersion="2.9.0"  # Leave this quoted!
 
+if test "x$BASH" = "x"; then
+	printf "This script requires bash. Please run\nit as ./install.sh from the source\ndirectory.\n"
+	exit 1
+fi
+
 noPicoPkg=
 autoAnswerYes=
 
