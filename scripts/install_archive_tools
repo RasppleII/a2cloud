@@ -8,7 +8,10 @@
 # scripts themselves.  Software used or installed by these scripts is subject
 # to other licenses.  This work is published from the United States.
 
+nulib2Version="3.1.0"
+
 a2cBinaryURL="http://blocksfree.com/downloads"
+versionDir="/usr/local/lib/raspple2"
 
 # Find the path of our source directory
 a2cSource="$( dirname "${BASH_SOURCE[0]}" )/.."
@@ -24,42 +27,53 @@ fi
 . "$a2cSource/scripts/system_ident" -q
 
 install_nulib2() {
-	if ! hash nulib2 2> /dev/null; then
+	nulib2installed=
+	if [[ -f ${versionDir}/nulib2-version ]]; then
+		read nulib2Installed < ${versionDir}/nulib2-version
+	fi
 
-		echo "A2CLOUD: Installing nulib2..."
+	if [[ $nulib2Installed != $nulib2Version ]]; then
+		printf "a2cloud: Installing nulib2 %s...\n" "${nulib2Version}"
 
 		local nulibWork="$(mktemp -d /tmp/nulib.XXXXXXXXXXXX)"
 		pushd "$nulibWork" >/dev/null
+
 		if [[ ! $noPicoPkg ]]; then
 			### ArchiveTools: Install nulib2 binaries
-			wget -q "${a2cBinaryURL}/picopkg/nulib2-${ras2_os}_${ras2_arch}.tgz"
-			if [[ -f "nulib2-${ras2_os}_${ras2_arch}.tgz" ]]; then
-				sudo tar Pzxf "nulib2-${ras2_os}_${ras2_arch}.tgz"
+			wget -q "${a2cBinaryURL}/picopkg/nulib2-${nulib2Version}_${ras2_os}_${ras2_arch}.tgz"
+			if [[ -f "nulib2-${nulib2Version}_${ras2_os}_${ras2_arch}.tgz" ]]; then
+				sudo tar Pzxf "nulib2-${nulib2Version}_${ras2_os}_${ras2_arch}.tgz"
 			fi
 		fi
 
-		if ! hash nulib2 2> /dev/null; then
+		if [[ -f ${versionDir}/nulib2-version ]]; then
+			read nulib2Installed < ${versionDir}/nulib2-version
+		fi
+		if [[ $nulib2Installed != $nulib2Version ]]; then
+
 			### ArchiveTools: Install nulib2 from source
 			sudo apt-get -y install build-essential
 			sudo apt-get -y install zlib1g-dev
 			sudo apt-get -y clean
 
 			# install nulib2
-			wget -O nulib.tgz http://web.archive.org/web/20131031160750/http://www.nulib.com/downloads/nulibdist.tar.gz
-			tar zxf nulib.tgz
-			cd nufxlib*
+			wget -O nulib-${nulib2Version}.tar.gz "https://github.com/fadden/nulib2/archive/v${nulib2Version}.tar.gz"
+			tar zxf nulib-${nulib2Version}.tar.gz
+			cd nulib2-${nulib2Version}/nufxlib
 			./configure
 			make
 			sudo make install
-			cd ../nulib2*
+			cd ../nulib2
 			./configure
 			make
 			sudo make install
+			sudo install -d -m 755 -o root -g root "${versionDir}"
+			echo ${nulib2Version} | sudo tee "${versionDir}/nulib2-version" >/dev/null
 		fi
 		popd >/dev/null
 		rm -rf "$nulibWork"
 	else
-		echo "A2CLOUD: nulib2 is already installed."
+		printf "a2cloud: nulib2 %s already installed.\n" "${nulib2Version}"
 	fi
 }
 
