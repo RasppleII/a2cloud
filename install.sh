@@ -71,6 +71,9 @@ if [[ ! $autoAnswerYes ]]; then
 	fi
 fi
 
+# Fix any mistakes we've made in previous versions
+. "$a2cSource/scripts/fixup"
+
 # Install Archive Tools
 # FIXME: Interim refactoring
 . "$a2cSource/scripts/install_archive_tools" $noPicoPkg

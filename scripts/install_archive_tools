@@ -11,7 +11,7 @@
 nulib2Version="3.1.0"
 
 a2cBinaryURL="http://blocksfree.com/downloads"
-versionDir="/usr/local/lib/raspple2"
+ras2_pkginfo="/usr/local/lib/raspple2/pkginfo"
 
 # Find the path of our source directory
 a2cSource="$( dirname "${BASH_SOURCE[0]}" )/.."
@@ -28,8 +28,8 @@ fi
 
 install_nulib2() {
 	nulib2installed=
-	if [[ -f ${versionDir}/nulib2-version ]]; then
-		read nulib2Installed < ${versionDir}/nulib2-version
+	if [[ -f ${ras2_pkginfo}/nulib2-version ]]; then
+		read nulib2Installed < ${ras2_pkginfo}/nulib2-version
 	fi
 
 	if [[ $nulib2Installed != $nulib2Version ]]; then
@@ -46,8 +46,8 @@ install_nulib2() {
 			fi
 		fi
 
-		if [[ -f ${versionDir}/nulib2-version ]]; then
-			read nulib2Installed < ${versionDir}/nulib2-version
+		if [[ -f ${ras2_pkginfo}/nulib2-version ]]; then
+			read nulib2Installed < ${ras2_pkginfo}/nulib2-version
 		fi
 		if [[ $nulib2Installed != $nulib2Version ]]; then
 
@@ -67,8 +67,8 @@ install_nulib2() {
 			./configure
 			make
 			sudo make install
-			sudo install -d -m 755 -o root -g root "${versionDir}"
-			echo ${nulib2Version} | sudo tee "${versionDir}/nulib2-version" >/dev/null
+			sudo install -d -m 755 -o root -g root "${ras2_pkginfo}"
+			echo ${nulib2Version} | sudo tee "${ras2_pkginfo}/nulib2-version" >/dev/null
 		fi
 		popd >/dev/null
 		rm -rf "$nulibWork"
