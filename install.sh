@@ -16,12 +16,12 @@ if test "x$BASH" = "x"; then
 fi
 
 # Find the path of our source directory
-a2cSource="$( dirname "${BASH_SOURCE[0]}" )"
-pushd $a2cSource >/dev/null
-a2cSource="$PWD"
+top_src="$( dirname "${BASH_SOURCE[0]}" )"
+pushd $top_src >/dev/null
+top_src="$PWD"
 popd >/dev/null
-if [[ ! -f "$a2cSource/.a2cloud_source" ]]; then
-	printf "\na2cloud: cannot find a2cloud source directory in $a2cSource.\n\n"
+if [[ ! -f "$top_src/.a2cloud_source" ]]; then
+	printf "\na2cloud: cannot find a2cloud source directory in $top_src.\n\n"
 	exit 1
 fi
 
@@ -45,7 +45,7 @@ process_args() {
 process_args "$@"
 
 # FIXME: Show version, changes, config, allow reconfig, etc…
-"$a2cSource/scripts/show_changes"
+"$top_src/scripts/show_changes"
 cat <<EOF
 
 Your system will be set up for a2cloud, providing you with
@@ -72,13 +72,13 @@ if [[ ! $autoAnswerYes ]]; then
 fi
 
 # Fix any mistakes we've made in previous versions
-. "$a2cSource/scripts/fixup"
+. "$top_src/scripts/fixup"
 
 # Install Archive Tools
 # FIXME: Interim refactoring
-. "$a2cSource/scripts/install_archive_tools" $noPicoPkg
+. "$top_src/scripts/install_archive_tools" $noPicoPkg
 
 # Run the legacy setup script for anything not yet ported
-if [[ -e "${a2cSource}/setup/ivan.sh" ]]; then
-	"${a2cSource}/setup/ivan.sh" "$@"
+if [[ -e "${top_src}/setup/ivan.sh" ]]; then
+	"${top_src}/setup/ivan.sh" "$@"
 fi
