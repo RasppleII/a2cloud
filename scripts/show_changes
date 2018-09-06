@@ -21,7 +21,7 @@ fi
 newVersion=$(grep '^a2cloudVersion' "$a2cSource/install.sh" | cut -d '"' -f 2)
 
 if [[ -f /usr/local/etc/A2CLOUD-version ]]; then
-	installedVersion="$(cat /usr/local/etc/A2CLOUD-version)"
+	read installedVersion </usr/local/etc/A2CLOUD-version
 	if [[ $installedVersion != *.*.* ]]; then
 		installedVersion="${installedVersion:0:1}.${installedVersion:1:1}.${installedVersion:2}"
 	fi
