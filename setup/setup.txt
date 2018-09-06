@@ -12,14 +12,14 @@ a2cBranch="master"
 a2cScriptURL="https://raw.githubusercontent.com/RasppleII/a2cloud/${a2cBranch}"
 a2cTarball="https://github.com/RasppleII/a2cloud/archive/${a2cBranch}.tar.gz"
 
-# Set a2cSource to the location of the source tree if we're running in one
-a2cSource="$( dirname "${BASH_SOURCE[0]}" )/.."
-pushd $a2cSource >/dev/null
-a2cSource="$PWD"
+# Set top_src to the location of the source tree if we're running in one
+top_src="$( dirname "${BASH_SOURCE[0]}" )/.."
+pushd $top_src >/dev/null
+top_src="$PWD"
 popd >/dev/null
-if [[ ! -f "$a2cSource/.a2cloud_source" ]]; then
+if [[ ! -f "$top_src/.a2cloud_source" ]]; then
 	a2cWebUpdate=1
-	a2cSource=$(mktemp -d /tmp/a2cloud.XXXXXXXXXXXX)
+	top_src=$(mktemp -d /tmp/a2cloud.XXXXXXXXXXXX)
 fi
 
 installedVersion=
@@ -51,7 +51,7 @@ if (( $a2cWebUpdate )); then
 	future, but it still does what you expect for now.
 	EOT
 else
-	newVersion=$(grep '^a2cloudVersion' "$a2cSource/install.sh" | cut -d '"' -f 2)
+	newVersion=$(grep '^a2cloudVersion' "$top_src/install.sh" | cut -d '"' -f 2)
 	cat <<-EOT
 	You've started the single command a2cloud install script from inside the
 	a2cloud source directory for version $newVersion.  This script will only
@@ -76,20 +76,20 @@ if [[ ! $autoAnswerYes ]]; then
 fi
 
 if (( $a2cWebUpdate )); then
-	a2cSource=$(mktemp -d /tmp/a2cloud.XXXXXXXXXXXX)
+	top_src=$(mktemp -d /tmp/a2cloud.XXXXXXXXXXXX)
 
 	# Normally tarballs unpack in a subdirectory, but we want it to unpack into
-	# $a2cSource directly (even though the directory has the tarball in it.)
-	printf "\na2cloud: Downloading installer to $a2cSource.\n"
-	wget -O "$a2cSource/a2cloud-$a2cBranch.tar.gz" "$a2cTarball"
-	tar -C $a2cSource --strip-components=1 -zxf "$a2cSource/a2cloud-${a2cBranch}.tar.gz"
+	# $top_src directly (even though the directory has the tarball in it.)
+	printf "\na2cloud: Downloading installer to $top_src.\n"
+	wget -O "$top_src/a2cloud-$a2cBranch.tar.gz" "$a2cTarball"
+	tar -C $top_src --strip-components=1 -zxf "$top_src/a2cloud-${a2cBranch}.tar.gz"
 fi
 
 # Now we actually run the installer as if we were installing it by hand
 printf "\na2cloud: Running the installer now.\n"
-"${a2cSource}/install.sh" "$@"
+"${top_src}/install.sh" "$@"
 
 if (( $a2cWebUpdate )); then
-	printf "\na2cloud: Finished with installer, now deleting ${a2cSource}.\n"
-	rm -rf "$a2cSource"
+	printf "\na2cloud: Finished with installer, now deleting ${top_src}.\n"
+	rm -rf "$top_src"
 fi
