@@ -15,9 +15,6 @@ if test "x$BASH" = "x"; then
 	exit 1
 fi
 
-noPicoPkg=
-autoAnswerYes=
-
 # Find the path of our source directory
 a2cSource="$( dirname "${BASH_SOURCE[0]}" )"
 pushd $a2cSource >/dev/null
@@ -27,6 +24,9 @@ if [[ ! -f "$a2cSource/.a2cloud_source" ]]; then
 	printf "\na2cloud: cannot find a2cloud source directory in $a2cSource.\n\n"
 	exit 1
 fi
+
+noPicoPkg=
+autoAnswerYes=
 
 process_args() {
 	while [[ $1 ]]; do
